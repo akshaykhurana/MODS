@@ -1,0 +1,255 @@
+/* ==========================================================================
+   _theme.css
+   Tailwind v4 @theme blocks — all Tier 1 design tokens.
+   Pure-numeric tokens go in @theme {} (statically resolved by v4).
+   Tokens referencing CSS vars go in @theme inline {} (Chunk 5).
+   ========================================================================== */
+
+@theme {
+
+  /* ==========================================================================
+     BREAKPOINTS — min-width, mobile-first
+     Generates: mob-p:, mob-l:, tab-s:, tab-l:, scr-s:, scr-m:, scr-l: variants
+     ========================================================================== */
+
+  --breakpoint-mob-p: 250px;  /* All phones portrait   */
+  --breakpoint-mob-l: 480px;  /* All phones landscape  */
+  --breakpoint-tab-s: 768px;  /* iPads                 */
+  --breakpoint-tab-l: 992px;  /* iPad Pro              */
+  --breakpoint-scr-s: 1280px; /* Desktop small         */
+  --breakpoint-scr-m: 1440px; /* MacBooks              */
+  --breakpoint-scr-l: 1920px; /* Desktop large         */
+
+
+  /* ==========================================================================
+     SPACING — g-scale
+     Formula: gN = N × 8px | gNh = (N × 8) + 4px
+     Generates: p-g3, mt-g2, gap-g4, px-g1h etc.
+     ========================================================================== */
+
+  --spacing-g0:   0px;
+  --spacing-g0h:  4px;
+  --spacing-g1:   8px;
+  --spacing-g1h:  12px;
+  --spacing-g2:   16px;
+  --spacing-g2h:  20px;
+  --spacing-g3:   24px;
+  --spacing-g3h:  28px;
+  --spacing-g4:   32px;
+  --spacing-g4h:  36px;
+  --spacing-g5:   40px; /* NOTE: 30px was a bug in the old config — correct value is 40px */
+  --spacing-g5h:  44px;
+  --spacing-g6:   48px;
+  --spacing-g6h:  52px;
+  --spacing-g7:   56px;
+  --spacing-g7h:  60px;
+  --spacing-g8:   64px;
+  --spacing-g8h:  68px;
+  --spacing-g9:   72px;
+  --spacing-g9h:  76px;
+  --spacing-g10:  80px;
+  --spacing-g10h: 84px;
+  --spacing-g11:  88px;
+  --spacing-g11h: 92px;
+  --spacing-g12:  96px;
+  --spacing-g12h: 100px;
+  --spacing-g13:  104px;
+  --spacing-g13h: 108px;
+  --spacing-g15:  120px;
+  --spacing-g16:  128px;
+  --spacing-g20:  160px;
+  --spacing-g25:  200px;
+
+
+  /* ==========================================================================
+     FONT SIZES — f-scale (minor third ratio, snapped to 1.5px)
+     Generates: text-f1 through text-f15
+     ========================================================================== */
+
+  --font-size-f1:  9px;
+  --font-size-f2:  10.5px;
+  --font-size-f3:  12px;
+  --font-size-f4:  15px;
+  --font-size-f5:  18px;
+  --font-size-f6:  21px;
+  --font-size-f7:  24px;
+  --font-size-f8:  30px;
+  --font-size-f9:  36px;
+  --font-size-f10: 42px;
+  --font-size-f11: 48px;
+  --font-size-f12: 57px;
+  --font-size-f13: 69px;
+  --font-size-f14: 81px;
+  --font-size-f15: 96px;
+
+
+  /* ==========================================================================
+     LINE HEIGHTS
+     Three scales for three text roles — applied independently from font size.
+     Generates: leading-lb4, leading-lt9, leading-ld11 etc.
+     ========================================================================== */
+
+  /* lb — Body / Label / Overline leading (~1.5×) */
+  --line-height-lb1: 12px;
+  --line-height-lb2: 16px;
+  --line-height-lb3: 20px;
+  --line-height-lb4: 24px;
+  --line-height-lb5: 28px;
+  --line-height-lb6: 32px;
+  --line-height-lb7: 36px;
+  --line-height-lb8: 40px;
+
+  /* lt — Title leading (~1.33×) */
+  --line-height-lt1:  12px;
+  --line-height-lt2:  16px;
+  --line-height-lt3:  16px;
+  --line-height-lt4:  20px;
+  --line-height-lt5:  24px;
+  --line-height-lt6:  28px;
+  --line-height-lt7:  32px;
+  --line-height-lt8:  40px;
+  --line-height-lt9:  48px;
+  --line-height-lt10: 56px;
+  --line-height-lt11: 64px;
+  --line-height-lt12: 76px;
+  --line-height-lt13: 92px;
+  --line-height-lt14: 108px;
+  --line-height-lt15: 128px;
+
+  /* ld — Display leading (~1.2×) — ld6–ld15 only (small sizes not used for display) */
+  --line-height-ld6:  24px;
+  --line-height-ld7:  28px;
+  --line-height-ld8:  36px;
+  --line-height-ld9:  44px;
+  --line-height-ld10: 52px;
+  --line-height-ld11: 56px;
+  --line-height-ld12: 64px;
+  --line-height-ld13: 80px;
+  --line-height-ld14: 96px;
+  --line-height-ld15: 112px;
+
+
+  /* ==========================================================================
+     BORDER RADIUS — sh-scale
+     Formula: sh{h} = h ÷ 8 (radius is one-eighth of component height)
+     Generates: rounded-sh32, rounded-sh48, rounded-sh-full etc.
+     ========================================================================== */
+
+  --radius-sh8:     1px;
+  --radius-sh16:    2px;
+  --radius-sh24:    3px;
+  --radius-sh32:    4px;
+  --radius-sh40:    5px;
+  --radius-sh48:    6px;
+  --radius-sh56:    7px;
+  --radius-sh64:    8px;
+  --radius-sh72:    9px;
+  --radius-sh-full: 9999px;
+
+
+  /* ==========================================================================
+     SHADOWS — 3-layer composites (ambient + umbra + penumbra)
+     Each level pairs with a surface level token.
+     shadow-level1 → level1 surface, shadow-level2 → level2/level2a etc.
+     ========================================================================== */
+
+  --shadow-level1:
+    0px 4px 10px 0px rgba(15, 18, 2, 0.09),
+    0px 1px 20px 0px rgba(15, 18, 2, 0.06),
+    0px 2px  8px 0px rgba(15, 18, 2, 0.12);
+
+  --shadow-level2:
+    0px 4px 10px 0px rgba(20, 10, 51, 0.05),
+    0px 1px 20px 0px rgba(20, 10, 51, 0.03),
+    0px 2px  8px 0px rgba(20, 10, 51, 0.07);
+
+  --shadow-level3:
+    0px  6px 20px 0px rgba(20, 10, 51, 0.05),
+    0px  1px 36px 0px rgba(20, 10, 51, 0.03),
+    0px  3px 10px 0px rgba(20, 10, 51, 0.07);
+
+  --shadow-level4:
+    0px  8px 20px 0px rgba(20, 10, 51, 0.05),
+    0px  3px 28px 0px rgba(20, 10, 51, 0.03),
+    0px  5px 10px 0px rgba(20, 10, 51, 0.07);
+
+  --shadow-level5:
+    0px 16px 48px 0px rgba(20, 10, 51, 0.05),
+    0px  6px 60px 0px rgba(20, 10, 51, 0.03),
+    0px  8px 20px 0px rgba(20, 10, 51, 0.07);
+
+
+  /* ==========================================================================
+     FONT FAMILIES
+     All roles default to Roboto. Override per-project in _fonts.css.
+     Generates: font-display, font-heading, font-title, font-body, font-label
+     ========================================================================== */
+
+  --font-family-display: 'Roboto', sans-serif;
+  --font-family-heading: 'Roboto', sans-serif;
+  --font-family-title:   'Roboto', sans-serif;
+  --font-family-body:    'Roboto', sans-serif;
+  --font-family-label:   'Roboto', sans-serif;
+
+}
+
+
+/* ==========================================================================
+   @theme inline — Colour tokens that reference CSS custom properties.
+   v4 must not statically resolve these — the vars are set at runtime.
+   Generates: bg-brand-main, text-level2, bg-action-primary-default etc.
+
+   NOTE: Text and border colours with alpha composition are NOT here.
+   They are surfaced as @utility in _components.css because their values
+   are rgb(var(--text-high) / var(--text-alpha-high)) — two independent
+   vars that cannot collapse to a single theme token.
+   ========================================================================== */
+
+@theme inline {
+
+  /* BRAND */
+  --color-brand-main:     rgb(var(--brand-main));
+  --color-brand-lighter:  rgb(var(--brand-lighter));
+  --color-brand-accent-1: rgb(var(--brand-accent-1));
+  --color-brand-accent-2: rgb(var(--brand-accent-2));
+
+  /* SURFACES
+     --surfaces-alpha (0.96) is baked in — surfaces are always translucent by design.
+     level-invert is fully opaque (no alpha) to guarantee legibility on dark backgrounds. */
+  --color-level0:       rgb(var(--surfaces-base)   / var(--surfaces-alpha));
+  --color-level1:       rgb(var(--surfaces-l1)     / var(--surfaces-alpha));
+  --color-level2:       rgb(var(--surfaces-l2)     / var(--surfaces-alpha));
+  --color-level2a:      rgb(var(--surfaces-l2a)    / var(--surfaces-alpha));
+  --color-level3:       rgb(var(--surfaces-l3)     / var(--surfaces-alpha));
+  --color-level4:       rgb(var(--surfaces-l4)     / var(--surfaces-alpha));
+  --color-level5:       rgb(var(--surfaces-l5)     / var(--surfaces-alpha));
+  --color-level-invert: rgb(var(--surfaces-invert));
+
+  /* ACTIONS — fully opaque, no alpha */
+  --color-action-primary-default:  rgb(var(--action-primary-default));
+  --color-action-primary-hover:    rgb(var(--action-primary-hover));
+  --color-action-primary-focus:    rgb(var(--action-primary-focus));
+  --color-action-primary-disabled: rgb(var(--action-primary-disabled));
+  --color-action-secondary-hover:  rgb(var(--action-secondary-hover));
+  --color-action-secondary-focus:  rgb(var(--action-secondary-focus));
+  --color-action-neutral-default:  rgb(var(--action-neutral-default));
+  --color-action-neutral-hover:    rgb(var(--action-neutral-hover));
+  --color-action-neutral-focus:    rgb(var(--action-neutral-focus));
+
+  /* MEANING — fully opaque */
+  --color-meaning-error:   rgb(var(--meaning-error));
+  --color-meaning-alert:   rgb(var(--meaning-alert));
+  --color-meaning-success: rgb(var(--meaning-success));
+
+  /* CHARTS — --chart-alpha (0.81) baked in for consistent data visualisation opacity */
+  --color-chart-1: rgb(var(--chart-1) / var(--chart-alpha));
+  --color-chart-2: rgb(var(--chart-2) / var(--chart-alpha));
+  --color-chart-3: rgb(var(--chart-3) / var(--chart-alpha));
+  --color-chart-4: rgb(var(--chart-4) / var(--chart-alpha));
+  --color-chart-5: rgb(var(--chart-5) / var(--chart-alpha));
+  --color-chart-6: rgb(var(--chart-6) / var(--chart-alpha));
+  --color-chart-7: rgb(var(--chart-7) / var(--chart-alpha));
+  --color-chart-8: rgb(var(--chart-8) / var(--chart-alpha));
+  --color-chart-9: rgb(var(--chart-9) / var(--chart-alpha));
+
+}

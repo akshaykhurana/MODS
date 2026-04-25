@@ -1,0 +1,815 @@
+/* ==========================================================================
+   _components.css
+   Tailwind v4 component and utility definitions.
+
+   Structure:
+     1. @utility — alpha-composited text and border colour utilities
+        (cannot go in @theme inline because they compose two separate vars)
+     2. @layer components — all component classes in order:
+        Typography → Buttons → Icon buttons → Form controls →
+        Badges → Chips → Layout utilities
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. ALPHA-COMPOSITED COLOUR UTILITIES
+   Text colour: rgb(colour channels / alpha)
+   Border colour: rgb(colour channels / alpha)
+   These two-var compositions cannot be expressed as @theme inline tokens.
+   ========================================================================== */
+
+/* On-surface text */
+@utility text-high {
+  color: rgb(var(--text-high) / var(--text-alpha-high));
+}
+@utility text-medium {
+  color: rgb(var(--text-medium) / var(--text-alpha-medium));
+}
+@utility text-low {
+  color: rgb(var(--text-low) / var(--text-alpha-low));
+}
+@utility text-max {
+  color: rgb(var(--text-max) / var(--text-alpha-max));
+}
+@utility text-accent {
+  color: rgb(var(--text-accent));
+}
+
+/* On-invert-surface text */
+@utility text-invert-max {
+  color: rgb(var(--text-invert-max) / var(--text-alpha-max));
+}
+@utility text-invert-high {
+  color: rgb(var(--text-invert-high) / var(--text-alpha-high));
+}
+@utility text-invert-medium {
+  color: rgb(var(--text-invert-medium) / var(--text-alpha-medium));
+}
+@utility text-invert-low {
+  color: rgb(var(--text-invert-low) / var(--text-alpha-low));
+}
+@utility text-invert-accent {
+  color: rgb(var(--text-invert-accent));
+}
+
+/* Border colours */
+@utility border-high {
+  border-color: rgb(var(--border-high) / var(--border-alpha-high));
+}
+@utility border-medium {
+  border-color: rgb(var(--border-medium) / var(--border-alpha-medium));
+}
+@utility border-low {
+  border-color: rgb(var(--border-low) / var(--border-alpha-low));
+}
+@utility border-focus {
+  border-color: rgb(var(--border-focus));
+}
+
+
+/* ==========================================================================
+   2. COMPONENT CLASSES
+   ========================================================================== */
+
+@layer components {
+
+  /* ========================================================================
+     TYPOGRAPHY
+     Pairing rule: f-number and leading-number always match.
+     Responsive rule: tab-s, scr-s, scr-l are the only change points.
+     Global scr-l rule: every size steps up exactly one level at scr-l.
+     ======================================================================== */
+
+  /* --- Display — ld scale, font-display, weight 700 --- */
+  /* Steps at scr-s and scr-l only (tab-s = same as mobile for d1 and d1) */
+
+  .d1 {
+    @apply text-f8 scr-s:text-f11 scr-l:text-f13;
+    @apply leading-ld8 scr-s:leading-ld11 scr-l:leading-ld13;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .d2 {
+    @apply text-f8 tab-s:text-f10 scr-s:text-f12 scr-l:text-f14;
+    @apply leading-ld8 tab-s:leading-ld10 scr-s:leading-ld12 scr-l:leading-ld14;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .d3 {
+    @apply text-f7 tab-s:text-f8 scr-s:text-f11 scr-l:text-f12;
+    @apply leading-ld7 tab-s:leading-ld8 scr-s:leading-ld11 scr-l:leading-ld12;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  /* --- Headings — lt scale, font-heading, weight 700 --- */
+  /* Steps at all 3 responsive breakpoints */
+
+  .h1 {
+    @apply text-f8 tab-s:text-f9 scr-s:text-f10 scr-l:text-f11;
+    @apply leading-lt8 tab-s:leading-lt9 scr-s:leading-lt10 scr-l:leading-lt11;
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .h2 {
+    @apply text-f7 tab-s:text-f8 scr-s:text-f9 scr-l:text-f10;
+    @apply leading-lt7 tab-s:leading-lt8 scr-s:leading-lt9 scr-l:leading-lt10;
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .h3 {
+    @apply text-f6 tab-s:text-f7 scr-s:text-f8 scr-l:text-f9;
+    @apply leading-lt6 tab-s:leading-lt7 scr-s:leading-lt8 scr-l:leading-lt9;
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  /* --- Titles — lt scale, font-title, weight 700 --- */
+  /* Fixed until scr-l (where all sizes step up one level) */
+
+  .title-l {
+    @apply text-f7 scr-l:text-f8;
+    @apply leading-lt7 scr-l:leading-lt8;
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  .title-m {
+    @apply text-f6 scr-l:text-f7;
+    @apply leading-lt6 scr-l:leading-lt7;
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  .title-s {
+    @apply text-f5 scr-l:text-f6;
+    @apply leading-lt5 scr-l:leading-lt6;
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  .title-xs {
+    @apply text-f4 scr-l:text-f5;
+    @apply leading-lt4 scr-l:leading-lt5;
+    font-family: var(--font-title);
+    font-weight: 700;
+  }
+
+  /* --- Body — lb scale, font-body --- */
+  /* Fixed until scr-l. Each class has -b (bold) and -i (italic) variants. */
+
+  .body-l {
+    @apply text-f5 scr-l:text-f6;
+    @apply leading-lb5 scr-l:leading-lb6;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  .body-l-b {
+    @apply text-f5 scr-l:text-f6;
+    @apply leading-lb5 scr-l:leading-lb6;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .body-l-i {
+    @apply text-f5 scr-l:text-f6;
+    @apply leading-lb5 scr-l:leading-lb6;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .body-m {
+    @apply text-f4 scr-l:text-f5;
+    @apply leading-lb4 scr-l:leading-lb5;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  .body-m-b {
+    @apply text-f4 scr-l:text-f5;
+    @apply leading-lb4 scr-l:leading-lb5;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .body-m-i {
+    @apply text-f4 scr-l:text-f5;
+    @apply leading-lb4 scr-l:leading-lb5;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .body-s {
+    @apply text-f3 scr-l:text-f4;
+    @apply leading-lb3 scr-l:leading-lb4;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  .body-s-b {
+    @apply text-f3 scr-l:text-f4;
+    @apply leading-lb3 scr-l:leading-lb4;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .body-s-i {
+    @apply text-f3 scr-l:text-f4;
+    @apply leading-lb3 scr-l:leading-lb4;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .body-xs {
+    @apply text-f2 scr-l:text-f3;
+    @apply leading-lb2 scr-l:leading-lb3;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  .body-xs-b {
+    @apply text-f2 scr-l:text-f3;
+    @apply leading-lb2 scr-l:leading-lb3;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .body-xs-i {
+    @apply text-f2 scr-l:text-f3;
+    @apply leading-lb2 scr-l:leading-lb3;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .body-xxs {
+    @apply text-f1 scr-l:text-f2;
+    @apply leading-lb1 scr-l:leading-lb2;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  .body-xxs-b {
+    @apply text-f1 scr-l:text-f2;
+    @apply leading-lb1 scr-l:leading-lb2;
+    font-family: var(--font-body);
+    font-weight: 700;
+  }
+  .body-xxs-i {
+    @apply text-f1 scr-l:text-f2;
+    @apply leading-lb1 scr-l:leading-lb2;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* --- Labels — lb scale, font-label, weight 600, NOT uppercase --- */
+
+  .label-l {
+    @apply text-f5 scr-l:text-f6;
+    @apply leading-lb5 scr-l:leading-lb6;
+    font-family: var(--font-label);
+    font-weight: 600;
+  }
+
+  .label-m {
+    @apply text-f4 scr-l:text-f5;
+    @apply leading-lb4 scr-l:leading-lb5;
+    font-family: var(--font-label);
+    font-weight: 600;
+  }
+
+  .label-s {
+    @apply text-f3 scr-l:text-f4;
+    @apply leading-lb3 scr-l:leading-lb4;
+    font-family: var(--font-label);
+    font-weight: 600;
+  }
+
+  /* --- Overlines — lb scale, font-label, weight 600, uppercase, letter-spacing 2px --- */
+  /* overline-xl steps at all 3 breakpoints; others only at scr-l */
+
+  .overline-xl {
+    @apply text-f3 tab-s:text-f4 scr-s:text-f5 scr-l:text-f6;
+    @apply leading-lb3 tab-s:leading-lb4 scr-s:leading-lb5 scr-l:leading-lb6;
+    font-family: var(--font-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .overline-l {
+    @apply text-f3 scr-l:text-f4;
+    @apply leading-lb3 scr-l:leading-lb4;
+    font-family: var(--font-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .overline-m {
+    @apply text-f2 scr-l:text-f3;
+    @apply leading-lb2 scr-l:leading-lb3;
+    font-family: var(--font-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .overline-s {
+    @apply text-f1 scr-l:text-f2;
+    @apply leading-lb1 scr-l:leading-lb2;
+    font-family: var(--font-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* ========================================================================
+     BUTTONS
+     Heights follow the global scr-l rule — each size steps up one level at 1920px.
+     Padding and radius also step up at scr-l.
+     Size classes set only dimensions/radius/label pairing — colour is set separately.
+     ======================================================================== */
+
+  /* Base */
+  .btn {
+    @apply w-fit flex flex-row place-items-center gap-g1 transition-all duration-150 cursor-pointer select-none;
+  }
+
+  /* Tight variant — collapses horizontal padding; restores on hover/focus */
+  .btn-tight {
+    @apply px-g0;
+  }
+  .btn-tight:hover,
+  .btn-tight:focus-visible {
+    @apply px-inherit;
+  }
+
+  /* Size variants */
+  .btn-xs {
+    @apply h-g4 scr-l:h-g5 px-g2h;
+    border-radius: var(--shape-xs);
+    @apply scr-l:[border-radius:var(--shape-s)];
+  }
+
+  .btn-s {
+    @apply h-g5 scr-l:h-g6 px-g3;
+    border-radius: var(--shape-s);
+    @apply scr-l:[border-radius:var(--shape-m)];
+  }
+
+  .btn-m {
+    @apply h-g6 scr-l:h-g7 px-g4;
+    border-radius: var(--shape-m);
+    @apply scr-l:[border-radius:var(--shape-l)];
+  }
+
+  .btn-l {
+    @apply h-g7 scr-l:h-g8 px-g4;
+    border-radius: var(--shape-l);
+    @apply scr-l:[border-radius:var(--shape-xl)];
+  }
+
+  .btn-xl {
+    @apply h-g8 scr-l:h-g9 px-g5;
+    border-radius: var(--shape-xl);
+    @apply scr-l:[border-radius:var(--shape-xxl)];
+  }
+
+  /* Colour variants */
+  .btn-primary {
+    background-color: rgb(var(--action-primary-default));
+    @apply text-invert-high shadow-level2;
+  }
+  .btn-primary:hover {
+    background-color: rgb(var(--action-primary-hover));
+    @apply shadow-level4;
+  }
+  .btn-primary:focus-visible {
+    background-color: rgb(var(--action-primary-focus));
+    @apply shadow-level4;
+  }
+  .btn-primary:disabled {
+    background-color: rgb(var(--action-primary-disabled));
+    @apply shadow-none cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 1px solid rgb(var(--brand-main));
+    @apply text-accent;
+  }
+  .btn-secondary:hover {
+    background-color: rgb(var(--action-secondary-hover));
+  }
+  .btn-secondary:focus-visible {
+    background-color: rgb(var(--action-secondary-focus));
+  }
+  .btn-secondary:disabled {
+    border-color: rgb(var(--action-primary-disabled));
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply cursor-not-allowed;
+  }
+
+  .btn-tertiary {
+    background-color: transparent;
+    @apply text-high;
+  }
+  .btn-tertiary:hover {
+    background-color: rgb(var(--action-secondary-hover));
+  }
+  .btn-tertiary:focus-visible {
+    background-color: rgb(var(--action-secondary-focus));
+  }
+  .btn-tertiary:disabled {
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply cursor-not-allowed;
+  }
+
+
+  /* ========================================================================
+     ICON BUTTONS
+     Square buttons — no text. Heights match btn-* sizes exactly.
+     Default radius: shape-full (pill/circle). Add .btn-icon-sq for square.
+     ======================================================================== */
+
+  /* Base */
+  .btn-icon {
+    @apply flex items-center justify-center transition-all duration-150 cursor-pointer select-none;
+    border-radius: var(--shape-full);
+  }
+
+  /* Square radius modifier — overrides shape-full with the size's square radius */
+  .btn-icon-sq.btn-icon-xs  { border-radius: var(--shape-xs);  @apply scr-l:[border-radius:var(--shape-s)];  }
+  .btn-icon-sq.btn-icon-s   { border-radius: var(--shape-s);   @apply scr-l:[border-radius:var(--shape-m)];  }
+  .btn-icon-sq.btn-icon-m   { border-radius: var(--shape-m);   @apply scr-l:[border-radius:var(--shape-l)];  }
+  .btn-icon-sq.btn-icon-l   { border-radius: var(--shape-l);   @apply scr-l:[border-radius:var(--shape-xl)]; }
+  .btn-icon-sq.btn-icon-xl  { border-radius: var(--shape-xl);  @apply scr-l:[border-radius:var(--shape-xxl)];}
+
+  /* Size variants */
+  .btn-icon-xs {
+    @apply w-g4 h-g4 scr-l:w-g5 scr-l:h-g5;
+  }
+
+  .btn-icon-s {
+    @apply w-g5 h-g5 scr-l:w-g6 scr-l:h-g6;
+  }
+
+  .btn-icon-m {
+    @apply w-g6 h-g6 scr-l:w-g7 scr-l:h-g7;
+  }
+
+  .btn-icon-l {
+    @apply w-g7 h-g7 scr-l:w-g8 scr-l:h-g8;
+  }
+
+  .btn-icon-xl {
+    @apply w-g8 h-g8 scr-l:w-g9 scr-l:h-g9;
+  }
+
+  /* Colour variants */
+  .btn-icon-primary {
+    background-color: rgb(var(--action-primary-default));
+    @apply text-invert-high;
+  }
+  .btn-icon-primary:hover {
+    background-color: rgb(var(--action-primary-hover));
+  }
+  .btn-icon-primary:focus-visible {
+    background-color: rgb(var(--action-primary-focus));
+  }
+  .btn-icon-primary:disabled {
+    background-color: rgb(var(--action-primary-disabled));
+    @apply cursor-not-allowed;
+  }
+
+  .btn-icon-secondary {
+    background-color: transparent;
+    border: 1px solid rgb(var(--brand-main));
+    @apply text-accent;
+  }
+  .btn-icon-secondary:hover {
+    background-color: rgb(var(--action-secondary-hover));
+  }
+  .btn-icon-secondary:focus-visible {
+    background-color: rgb(var(--action-secondary-focus));
+  }
+  .btn-icon-secondary:disabled {
+    border-color: rgb(var(--action-primary-disabled));
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply cursor-not-allowed;
+  }
+
+  .btn-icon-tertiary {
+    background-color: transparent;
+    @apply text-high;
+  }
+  .btn-icon-tertiary:hover {
+    background-color: rgb(var(--action-secondary-hover));
+  }
+  .btn-icon-tertiary:focus-visible {
+    background-color: rgb(var(--action-secondary-focus));
+  }
+  .btn-icon-tertiary:disabled {
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply cursor-not-allowed;
+  }
+
+  /* ========================================================================
+     Chunks 9–10 appended below: Form controls, Badges, Chips, Layout utilities.
+     ======================================================================== */
+
+  /* ========================================================================
+     FORM INPUTS
+     Base + size variants. Heights follow global scr-l rule.
+     Padding is symmetric — adjust per project as needed.
+     ======================================================================== */
+
+  /* Base — apply to all input elements */
+  .input {
+    @apply w-full flex items-center border transition-all duration-150 outline-none;
+    border-color: rgb(var(--border-medium) / var(--border-alpha-medium));
+    background-color: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
+    color: rgb(var(--text-high) / var(--text-alpha-high));
+    @apply px-g2;
+  }
+  .input::placeholder {
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+  }
+  .input:focus,
+  .input:focus-within {
+    border-color: rgb(var(--border-focus));
+  }
+  .input:disabled {
+    background-color: rgb(var(--action-primary-disabled));
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply pointer-events-none;
+  }
+  .input-error {
+    border-color: rgb(var(--meaning-error)) !important;
+  }
+  .input-error-msg {
+    color: rgb(var(--meaning-error));
+    @apply label-s mt-g0h;
+  }
+  .input-success {
+    border-color: rgb(var(--meaning-success)) !important;
+  }
+
+  /* Size variants */
+  .input-s {
+    @apply h-g4 scr-l:h-g5;
+    border-radius: var(--shape-xs);
+    @apply scr-l:[border-radius:var(--shape-s)];
+  }
+
+  .input-m {
+    @apply h-g5 scr-l:h-g6;
+    border-radius: var(--shape-s);
+    @apply scr-l:[border-radius:var(--shape-m)];
+  }
+
+  .input-l {
+    @apply h-g6 scr-l:h-g7;
+    border-radius: var(--shape-m);
+    @apply scr-l:[border-radius:var(--shape-l)];
+  }
+
+
+  /* ========================================================================
+     CHECKBOXES
+     16×16px (scr-l: 20×20px). Appearance reset — fully custom styled.
+     Uses accent-color for checked/indeterminate states where supported,
+     with explicit fallback via border and background.
+     ======================================================================== */
+
+  .checkbox {
+    @apply appearance-none cursor-pointer flex-shrink-0;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid rgb(var(--border-medium) / var(--border-alpha-medium));
+    border-radius: var(--shape-control);
+    background-color: transparent;
+    transition: background-color 150ms, border-color 150ms;
+    accent-color: rgb(var(--action-primary-default));
+  }
+  .checkbox:checked,
+  .checkbox:indeterminate {
+    background-color: rgb(var(--action-primary-default));
+    border-color: rgb(var(--action-primary-default));
+    /* Tick and dash rendered via browser accent-color — override in project if needed */
+  }
+  .checkbox:focus-visible {
+    outline: 2px solid rgb(var(--border-focus));
+    outline-offset: 2px;
+  }
+  .checkbox:disabled {
+    background-color: rgb(var(--action-primary-disabled));
+    border-color: rgb(var(--action-primary-disabled));
+    @apply cursor-not-allowed;
+  }
+  @media (min-width: 1920px) {
+    .checkbox {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+
+  /* ========================================================================
+     RADIOS
+     16×16px (scr-l: 20×20px). shape-full. Checked: outer ring + filled dot.
+     ======================================================================== */
+
+  .radio {
+    @apply appearance-none cursor-pointer flex-shrink-0;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid rgb(var(--border-medium) / var(--border-alpha-medium));
+    border-radius: var(--shape-full);
+    background-color: transparent;
+    transition: background-color 150ms, border-color 150ms;
+    accent-color: rgb(var(--action-primary-default));
+  }
+  .radio:checked {
+    border-color: rgb(var(--action-primary-default));
+    /* Centre dot via box-shadow inset — no extra element needed */
+    box-shadow: inset 0 0 0 4px rgb(var(--action-primary-default));
+    background-color: rgb(var(--surfaces-base) / var(--surfaces-alpha));
+  }
+  .radio:focus-visible {
+    outline: 2px solid rgb(var(--border-focus));
+    outline-offset: 2px;
+  }
+  .radio:disabled {
+    border-color: rgb(var(--action-primary-disabled));
+    @apply cursor-not-allowed;
+  }
+  .radio:disabled:checked {
+    box-shadow: inset 0 0 0 4px rgb(var(--action-primary-disabled));
+  }
+  @media (min-width: 1920px) {
+    .radio {
+      width: 20px;
+      height: 20px;
+    }
+    .radio:checked {
+      box-shadow: inset 0 0 0 5px rgb(var(--action-primary-default));
+    }
+  }
+
+
+  /* ========================================================================
+     TOGGLES
+     Pill track (32×16px, scr-l: 40×20px). Thumb is white circle with shadow.
+     Uses <input type="checkbox"> — styled via :checked.
+     ======================================================================== */
+
+  .toggle {
+    @apply appearance-none cursor-pointer flex-shrink-0 relative;
+    width: 32px;
+    height: 16px;
+    border-radius: var(--shape-full);
+    background-color: rgb(var(--action-neutral-default));
+    transition: background-color 150ms;
+  }
+  /* Thumb */
+  .toggle::before {
+    content: '';
+    @apply absolute top-0 left-0;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--shape-full);
+    background-color: white;
+    box-shadow: var(--shadow-level2);
+    transition: transform 150ms;
+  }
+  .toggle:checked {
+    background-color: rgb(var(--action-primary-default));
+  }
+  .toggle:checked::before {
+    transform: translateX(16px);
+  }
+  .toggle:focus-visible {
+    outline: 2px solid rgb(var(--border-focus));
+    outline-offset: 2px;
+  }
+  .toggle:disabled {
+    background-color: rgb(var(--action-primary-disabled));
+    @apply cursor-not-allowed;
+  }
+  .toggle:disabled:not(:checked) {
+    background-color: rgb(var(--action-neutral-default));
+    opacity: 0.38;
+  }
+  @media (min-width: 1920px) {
+    .toggle {
+      width: 40px;
+      height: 20px;
+    }
+    .toggle::before {
+      width: 20px;
+      height: 20px;
+    }
+    .toggle:checked::before {
+      transform: translateX(20px);
+    }
+  }
+
+  /* ========================================================================
+     Chunk 10 appended below: Badges, Chips, Layout utilities.
+     ======================================================================== */
+
+  /* ========================================================================
+     BADGES
+     Non-interactive labels. No hover state. shape-full pill.
+     ======================================================================== */
+
+  .badge {
+    @apply w-fit inline-flex items-center px-g1h py-g0h label-s;
+    border-radius: var(--shape-full);
+  }
+
+  .badge-primary {
+    background-color: rgb(var(--brand-main));
+    @apply text-invert-high;
+  }
+
+  .badge-success {
+    background-color: rgb(var(--meaning-success) / 0.15);
+    color: rgb(var(--meaning-success));
+  }
+
+  .badge-error {
+    background-color: rgb(var(--meaning-error) / 0.15);
+    color: rgb(var(--meaning-error));
+  }
+
+  .badge-alert {
+    background-color: rgb(var(--meaning-alert) / 0.15);
+    color: rgb(var(--meaning-alert));
+  }
+
+  .badge-neutral {
+    background-color: rgb(var(--surfaces-l2) / var(--surfaces-alpha));
+    @apply text-medium;
+  }
+
+
+  /* ========================================================================
+     CHIPS
+     Interactive — selectable and/or dismissible.
+     32px height (scr-l: 40px). Matches .btn-xs height.
+     ======================================================================== */
+
+  .chip {
+    @apply h-g4 scr-l:h-g8 inline-flex items-center gap-g1 px-g2 label-s cursor-pointer select-none transition-all duration-150;
+    border-radius: var(--shape-full);
+    border: 1px solid rgb(var(--border-medium) / var(--border-alpha-medium));
+    background-color: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
+    color: rgb(var(--text-high) / var(--text-alpha-high));
+  }
+
+  .chip.selected {
+    border-color: rgb(var(--action-primary-default));
+    background-color: rgb(var(--brand-lighter));
+    @apply text-accent;
+  }
+
+  /* Dismiss button inside a chip — trailing × */
+  .chip-dismiss {
+    @apply inline-flex items-center justify-center cursor-pointer;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--shape-full);
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 150ms;
+  }
+  .chip-dismiss:hover {
+    opacity: 1;
+  }
+
+  .chip:disabled,
+  .chip[aria-disabled="true"] {
+    color: rgb(var(--text-low) / var(--text-alpha-low));
+    @apply pointer-events-none;
+  }
+
+
+  /* ========================================================================
+     LAYOUT UTILITIES
+     Responsive gap and container helpers used across the system.
+     ======================================================================== */
+
+  /* Default responsive gap — steps at tab-s and scr-l */
+  .gap-default {
+    @apply gap-g2 tab-s:gap-g3 scr-l:gap-g4;
+  }
+
+  /* Full-width container with responsive horizontal padding */
+  .container-fluid {
+    @apply w-full px-g2 tab-s:px-g3 scr-s:px-g4;
+  }
+
+}

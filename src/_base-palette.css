@@ -1,0 +1,77 @@
+/* ==========================================================================
+   _base-palette.css
+   Tier 1 — Raw palette vars. All values are raw RGB channels (no rgb() wrapper)
+   so alpha can be applied at point of use: rgb(var(--p40) / 0.87)
+   Replace all placeholder values from Figma per project.
+   ========================================================================== */
+
+:root {
+
+  /* ---- Primary palette (p) — replace from Figma ---- */
+  --p10:  240 240 240;
+  --p20:  220 220 220;
+  --p30:  200 200 200;
+  --p40:  180 180 180;
+  --p50:  150 150 150;
+  --p60:  120 120 120;
+  --p70:  90  90  90;
+  --p80:  60  60  60;
+  --p90:  30  30  30;
+  --p100: 10  10  10;
+
+  /* ---- Secondary palette (s) — replace from Figma ---- */
+  --s10:  240 240 240;
+  --s20:  220 220 220;
+  --s30:  200 200 200;
+  --s40:  180 180 180;
+  --s50:  150 150 150;
+  --s60:  120 120 120;
+  --s70:  90  90  90;
+  --s80:  60  60  60;
+  --s90:  30  30  30;
+  --s100: 10  10  10;
+
+  /* ---- Neutral palette (n) — replace from Figma ---- */
+  --n10:  245 245 245;
+  --n20:  230 230 230;
+  --n30:  215 215 215;
+  --n35:  207 207 207; /* midpoint — used for --surfaces-l2a only */
+  --n40:  200 200 200;
+  --n50:  180 180 180;
+  --n60:  160 160 160;
+  --n65:  140 140 140; /* midpoint — used for --surfaces-l2a in dark mode only */
+  --n70:  120 120 120;
+  --n80:  80  80  80;
+  --n90:  40  40  40;
+  --n100: 10  10  10;
+
+  /* ---- Meaning tones — two fixed tones per meaning, not full palettes ----
+     r = red/error, y = yellow/alert, g = green/success
+     30 = light mode tone, 70 = dark mode tone
+     Replace from Figma per project.
+     -------------------------------------------------------------------- */
+  --r30: 220 80  80;  /* error light  */
+  --r70: 255 140 140; /* error dark   */
+  --y30: 180 140 20;  /* alert light  */
+  --y70: 255 210 80;  /* alert dark   */
+  --g30: 40  140 80;  /* success light */
+  --g70: 100 220 140; /* success dark  */
+
+  /* ---- Shadow base — raw RGB channels for 3-layer shadow composition ---- */
+  --shadow-color: 20 10 51;
+
+  /* ---- Chart colours — replace from Figma per project ----
+     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
+     -------------------------------------------------------- */
+  --chart-1: 255 99  132;
+  --chart-2: 255 159 64;
+  --chart-3: 205 220 57;
+  --chart-4: 75  192 192;
+  --chart-5: 54  162 235;
+  --chart-6: 153 102 255;
+  --chart-7: 255 206 86;
+  --chart-8: 231 233 237;
+  --chart-9: 100 181 246;
+  --chart-alpha: 0.81;
+
+}
