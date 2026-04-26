@@ -527,16 +527,43 @@
     .pg-swatch-val {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      cid="palette-p" class="pg-swatch-row"></div>
-
-  <div class="pg-group-label">Secondary (s)</div>
-  <div id="palette-s" class="pg-swatch-row"></div>
-
-  <div class="pg-group-label">Neutral (n) — n35 and n65 are midpoints used for surfaces-l2a only</div>
-  <div id="palette-n" class="pg-swatch-row"></div>
-
-  <div class="pg-group-label">Meaning tones — 30 = light mode · 70 = dark mode</div>
-  <div id="palette-meaning" class="pg-swatch-row">av class="pg-nav">
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pg-swatch-pencil {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 0 2px;
+      line-height: 1;
+      color: rgb(var(--text-low) / var(--text-alpha-low));
+      transition: color 120ms;
+    }
+    .pg-swatch-pencil:hover { color: rgb(var(--text-high) / var(--text-alpha-high)); }
+    .pg-swatch-input {
+      display: none;
+      width: 100%;
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      padding: 2px 4px;
+      border-radius: 3px;
+      border: 1px solid rgb(var(--border-focus));
+      background: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      outline: none;
+      box-sizing: border-box;
+    }
+    .pg-swatch-input.invalid { border-color: rgb(var(--meaning-error)); }
+  </style>
+</head>
+<body>
+<nav class="pg-nav">
   <span class="pg-nav-title">MODS Playground</span>
   <div class="pg-nav-links">
     <a href="#colour">Colour</a>
@@ -567,58 +594,16 @@
   <h3 class="pg-subsection-title">Raw Palette</h3>
 
   <div class="pg-group-label">Primary (p)</div>
-  <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--p10"><div class="pg-swatch-color" style="background:rgb(var(--p10))"></div><div class="pg-swatch-name">p10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">240 240 240</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p20"><div class="pg-swatch-color" style="background:rgb(var(--p20))"></div><div class="pg-swatch-name">p20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 220 220</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p30"><div class="pg-swatch-color" style="background:rgb(var(--p30))"></div><div class="pg-swatch-name">p30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p40"><div class="pg-swatch-color" style="background:rgb(var(--p40))"></div><div class="pg-swatch-name">p40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p50"><div class="pg-swatch-color" style="background:rgb(var(--p50))"></div><div class="pg-swatch-name">p50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">150 150 150</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p60"><div class="pg-swatch-color" style="background:rgb(var(--p60))"></div><div class="pg-swatch-name">p60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p70"><div class="pg-swatch-color" style="background:rgb(var(--p70))"></div><div class="pg-swatch-name">p70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">90 90 90</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p80"><div class="pg-swatch-color" style="background:rgb(var(--p80))"></div><div class="pg-swatch-name">p80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">60 60 60</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p90"><div class="pg-swatch-color" style="background:rgb(var(--p90))"></div><div class="pg-swatch-name">p90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">30 30 30</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--p100"><div class="pg-swatch-color" style="background:rgb(var(--p100))"></div><div class="pg-swatch-name">p100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-  </div>
+  <div id="palette-p" class="pg-swatch-row"></div>
 
   <div class="pg-group-label">Secondary (s)</div>
-  <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--s10"><div class="pg-swatch-color" style="background:rgb(var(--s10))"></div><div class="pg-swatch-name">s10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">240 240 240</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s20"><div class="pg-swatch-color" style="background:rgb(var(--s20))"></div><div class="pg-swatch-name">s20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 220 220</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s30"><div class="pg-swatch-color" style="background:rgb(var(--s30))"></div><div class="pg-swatch-name">s30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s40"><div class="pg-swatch-color" style="background:rgb(var(--s40))"></div><div class="pg-swatch-name">s40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s50"><div class="pg-swatch-color" style="background:rgb(var(--s50))"></div><div class="pg-swatch-name">s50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">150 150 150</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s60"><div class="pg-swatch-color" style="background:rgb(var(--s60))"></div><div class="pg-swatch-name">s60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s70"><div class="pg-swatch-color" style="background:rgb(var(--s70))"></div><div class="pg-swatch-name">s70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">90 90 90</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s80"><div class="pg-swatch-color" style="background:rgb(var(--s80))"></div><div class="pg-swatch-name">s80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">60 60 60</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s90"><div class="pg-swatch-color" style="background:rgb(var(--s90))"></div><div class="pg-swatch-name">s90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">30 30 30</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--s100"><div class="pg-swatch-color" style="background:rgb(var(--s100))"></div><div class="pg-swatch-name">s100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-  </div>
+  <div id="palette-s" class="pg-swatch-row"></div>
 
   <div class="pg-group-label">Neutral (n) — n35 and n65 are midpoints used for surfaces-l2a only</div>
-  <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--n10"><div class="pg-swatch-color" style="background:rgb(var(--n10))"></div><div class="pg-swatch-name">n10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">245 245 245</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n20"><div class="pg-swatch-color" style="background:rgb(var(--n20))"></div><div class="pg-swatch-name">n20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">230 230 230</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n30"><div class="pg-swatch-color" style="background:rgb(var(--n30))"></div><div class="pg-swatch-name">n30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">215 215 215</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n35"><div class="pg-swatch-color" style="background:rgb(var(--n35))"></div><div class="pg-swatch-name">n35</div><div class="pg-swatch-edit"><span class="pg-swatch-val">207 207 207</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n40"><div class="pg-swatch-color" style="background:rgb(var(--n40))"></div><div class="pg-swatch-name">n40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n50"><div class="pg-swatch-color" style="background:rgb(var(--n50))"></div><div class="pg-swatch-name">n50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n60"><div class="pg-swatch-color" style="background:rgb(var(--n60))"></div><div class="pg-swatch-name">n60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">160 160 160</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n65"><div class="pg-swatch-color" style="background:rgb(var(--n65))"></div><div class="pg-swatch-name">n65</div><div class="pg-swatch-edit"><span class="pg-swatch-val">140 140 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n70"><div class="pg-swatch-color" style="background:rgb(var(--n70))"></div><div class="pg-swatch-name">n70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n80"><div class="pg-swatch-color" style="background:rgb(var(--n80))"></div><div class="pg-swatch-name">n80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">80 80 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n90"><div class="pg-swatch-color" style="background:rgb(var(--n90))"></div><div class="pg-swatch-name">n90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">40 40 40</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--n100"><div class="pg-swatch-color" style="background:rgb(var(--n100))"></div><div class="pg-swatch-name">n100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-  </div>
+  <div id="palette-n" class="pg-swatch-row"></div>
 
   <div class="pg-group-label">Meaning tones — 30 = light mode · 70 = dark mode</div>
-  <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--r30"><div class="pg-swatch-color" style="background:rgb(var(--r30))"></div><div class="pg-swatch-name">r30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 80 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--r70"><div class="pg-swatch-color" style="background:rgb(var(--r70))"></div><div class="pg-swatch-name">r70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">255 140 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--y30"><div class="pg-swatch-color" style="background:rgb(var(--y30))"></div><div class="pg-swatch-name">y30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 140 20</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--y70"><div class="pg-swatch-color" style="background:rgb(var(--y70))"></div><div class="pg-swatch-name">y70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">255 210 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--g30"><div class="pg-swatch-color" style="background:rgb(var(--g30))"></div><div class="pg-swatch-name">g30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">40 140 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-    <div class="pg-swatch" data-var="--g70"><div class="pg-swatch-color" style="background:rgb(var(--g70))"></div><div class="pg-swatch-name">g70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">100 220 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
-  </div>
+  <div id="palette-meaning" class="pg-swatch-row"></div>
 
   <!-- SEMANTIC TOKENS -->
   <h3 class="pg-subsection-title">Semantic Tokens</h3>
@@ -628,7 +613,12 @@
     <div class="pg-swatch" data-var="--brand-main"><div class="pg-swatch-color" style="background:rgb(var(--brand-main))"></div><div class="pg-swatch-name">main</div><select class="pg-swatch-select" data-var="--brand-main"></select></div>
   </div>
 
-  <div class="pg-group-label">Surfaces — elevation stack at 0.96 opacity on checker background</div>
+  <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
+    Surfaces — elevation stack
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-low)/var(--text-alpha-low))">α</span>
+    <input id="surfaces-alpha-input" type="text" value="0.96" spellcheck="false"
+      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+  </div>
   <div class="pg-swatch-row">
     <div class="pg-swatch pg-checker" data-var="--surfaces-base"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-base))"></div></div><div class="pg-swatch-name">base</div><select class="pg-swatch-select" data-var="--surfaces-base"></select></div>
     <div class="pg-swatch pg-checker" data-var="--surfaces-l1"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l1) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l1</div><select class="pg-swatch-select" data-var="--surfaces-l1"></select></div>
@@ -1303,10 +1293,11 @@
   const dirtyPalette   = new Map(); // patch-mode only: varName → rgb
   const dirtySemanticL = new Map();
   const dirtySemanticD = new Map();
+  const dirtySemanticRaw = new Map(); // raw non-var values e.g. --surfaces-alpha
 
   function updateSaveBar() {
     const palCount = paletteMode === 'full' ? 1 : dirtyPalette.size;
-    const total    = palCount + dirtySemanticL.size + dirtySemanticD.size;
+    const total    = palCount + dirtySemanticL.size + dirtySemanticD.size + dirtySemanticRaw.size;
     const statusEl = document.getElementById('save-status');
     const saveBtn  = document.getElementById('save-btn');
     if (total === 0) {
@@ -1332,6 +1323,12 @@
     try {
       const r = await fetch('/config');
       semanticConfig = await r.json();
+      // Seed alpha input from server config
+      const alpha = semanticConfig.rawValues && semanticConfig.rawValues['--surfaces-alpha'];
+      if (alpha) {
+        const inp = document.getElementById('surfaces-alpha-input');
+        if (inp) inp.value = alpha;
+      }
     } catch (e) {
       // server not running — dropdowns default to first option
     }
@@ -1359,7 +1356,7 @@
     valSpan.style.display = 'none';
     btn.style.display     = 'none';
     input.value           = valSpan.textContent.trim();
-    input.style.display   = '';
+    input.style.display   = 'block';
     input.focus();
     input.select();
   }
@@ -1516,6 +1513,7 @@
       palette:       palettePayload,
       semanticLight: Object.fromEntries(dirtySemanticL),
       semanticDark:  Object.fromEntries(dirtySemanticD),
+      semanticRaw:   Object.fromEntries(dirtySemanticRaw),
     };
 
     try {
@@ -1544,6 +1542,7 @@
         dirtyPalette.clear();
         dirtySemanticL.clear();
         dirtySemanticD.clear();
+        dirtySemanticRaw.clear();
         paletteMode = 'patch';
         clearAllDirty();
         const statusEl = document.getElementById('save-status');
@@ -1590,6 +1589,31 @@
     renderPaletteGroups();
     await loadConfig();
   }
+
+  // ── Surfaces alpha input ─────────────────────────────────────────────
+  (function () {
+    const inp = document.getElementById('surfaces-alpha-input');
+    if (!inp) return;
+    function commitAlpha() {
+      const raw = inp.value.trim();
+      const val = parseFloat(raw);
+      if (isNaN(val) || val < 0 || val > 1) {
+        inp.style.borderColor = 'rgb(var(--meaning-error))';
+        return;
+      }
+      inp.style.borderColor = '';
+      const clamped = Math.round(val * 100) / 100;
+      inp.value = clamped;
+      document.documentElement.style.setProperty('--surfaces-alpha', clamped);
+      dirtySemanticRaw.set('--surfaces-alpha', String(clamped));
+      updateSaveBar();
+    }
+    inp.addEventListener('change', commitAlpha);
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); commitAlpha(); inp.blur(); }
+      if (e.key === 'Escape') { inp.blur(); }
+    });
+  })();
 
   initSemanticSelects();
   loadPalette();

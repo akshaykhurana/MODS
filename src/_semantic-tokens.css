@@ -15,7 +15,7 @@
      Replace palette steps per project. Lighter = higher contrast on brand bg.
      ========================================================================== */
 
-  --brand-main: var(--p50);
+  --brand-main: var(--p30);
 
 
   /* ==========================================================================
@@ -88,9 +88,9 @@
      neutral = non-brand interactive elements (e.g. neutral icon buttons)
      ========================================================================== */
 
-  --action-primary-default:  var(--p40); /* base state */
-  --action-primary-hover:    var(--p30); /* lighter — hover */
-  --action-primary-focus:    var(--p20); /* lighter still — focus */
+  --action-primary-default:  var(--p30); /* base state */
+  --action-primary-hover:    var(--p40); /* lighter — hover */
+  --action-primary-focus:    var(--p50); /* lighter still — focus */
   --action-primary-disabled: var(--n30); /* neutral, no outline */
 
   --action-secondary-default: var(--p90); /* near-transparent brand tint on light bg */
@@ -153,8 +153,8 @@
 .dark {
 
   /* Surfaces — invert the ramp (lightest step = invert, darkest = base) */
-  --surfaces-base:   var(--n90);
-  --surfaces-l1:     var(--n80);
+  --surfaces-base:   var(--s5);
+  --surfaces-l1:     var(--s7);
   --surfaces-l2:     var(--n70);
   --surfaces-l2a:    var(--n65); /* dark mode midpoint between l2 and l3 */
   --surfaces-l3:     var(--n60);

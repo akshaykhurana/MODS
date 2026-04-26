@@ -62,6 +62,15 @@ function parseSemanticConfig() {
   return {
     light: extractMappings(rootPart),
     dark:  extractMappings(darkPart),
+    rawValues: (() => {
+      const result = {};
+      const re = /(--[\w-]+):\s*([\d.]+)\s*;/g;
+      let m;
+      while ((m = re.exec(rootPart)) !== null) {
+        result[m[1]] = m[2];
+      }
+      return result;
+    })(),
   };
 }
 
@@ -72,7 +81,7 @@ function parseSemanticConfig() {
 function replaceVarInFile(content, varName, newValue) {
   // Escape var name for regex
   const escaped = varName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`([ \\t]*${escaped}:[ \\t*)([^;]+)(;)`, 'g');
+  const re = new RegExp(`([ \\t]*${escaped}:[ \\t]*)([^;]+)(;)`, 'g');
   return content.replace(re, (_, prefix, _old, semi) => {
     return `${prefix}${newValue}${semi}`;
   });
@@ -175,6 +184,15 @@ function writePaletteFull(newVars) {
   fs.writeFileSync(PALETTE, lines.join('\n'), 'utf8');
 }
 
+// Write raw (non-var) semantic token changes to _semantic-tokens.css
+function saveSemanticRaw(rawChanges) {
+  let content = fs.readFileSync(SEMANTIC, 'utf8');
+  for (const [varName, value] of Object.entries(rawChanges)) {
+    content = replaceVarInFile(content, varName, value);
+  }
+  fs.writeFileSync(SEMANTIC, content, 'utf8');
+}
+
 // Write semantic token changes to _semantic-tokens.css
 // light changes go into :root, dark changes go into .dark {}
 function saveSemantic(lightChanges, darkChanges) {
@@ -264,7 +282,7 @@ const server = http.createServer((req, res) => {
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
       try {
-        const { palette = {}, semanticLight = {}, semanticDark = {} } = JSON.parse(body);
+        const { palette = {}, semanticLight = {}, semanticDark = {}, semanticRaw = {} } = JSON.parse(body);
 
         if (palette.mode === 'full') {
           writePaletteFull(palette.vars || {});
@@ -276,6 +294,8 @@ const server = http.createServer((req, res) => {
         }
         if (Object.keys(semanticLight).length || Object.keys(semanticDark).length)
           saveSemantic(semanticLight, semanticDark);
+        if (Object.keys(semanticRaw).length)
+          saveSemanticRaw(semanticRaw);
 
         // Rebuild CSS
         exec('npm run build:css', { cwd: ROOT }, (err, stdout, stderr) => {
