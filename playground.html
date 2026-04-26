@@ -615,7 +615,7 @@
 
   <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
     Surfaces — elevation stack
-    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-low)/var(--text-alpha-low))">α</span>
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-low)/var(--text-alpha-low))">Alpha (Opacity)</span>
     <input id="surfaces-alpha-input" type="text" value="0.96" spellcheck="false"
       style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
   </div>
@@ -728,6 +728,51 @@
      ================================================================ -->
 <section id="text" class="pg-section">
   <h2 class="pg-section-title">Text</h2>
+
+  <h3 class="pg-subsection-title">Colour tokens</h3>
+
+  <div class="pg-group-label">On-surface text — shared colour, four opacity levels</div>
+  <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:28px;">
+    <div class="pg-swatch" style="flex-shrink:0;">
+      <div class="pg-swatch-color" id="text-onsurface-preview" style="background:rgb(var(--text-high))"></div>
+      <div class="pg-swatch-name">max · high · medium · low</div>
+      <select id="text-onsurface-select" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));box-sizing:border-box;"></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="pg-group-label" style="margin:0;">Opacity per level</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Max</span>
+          <input id="text-alpha-max" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+          <input id="text-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+          <input id="text-alpha-medium" type="text" value="0.60" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+          <input id="text-alpha-low" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-group-label">Accent text</div>
+  <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:32px;">
+    <div class="pg-swatch" style="flex-shrink:0;">
+      <div class="pg-swatch-color" id="text-accent-preview" style="background:rgb(var(--text-accent))"></div>
+      <div class="pg-swatch-name">accent colour</div>
+      <select id="text-accent-select" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));box-sizing:border-box;"></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Alpha (Opacity)</span>
+      <input id="text-alpha-accent" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    </div>
+  </div>
 
   <h3 class="pg-subsection-title">Display</h3>
   <div class="pg-type-row">
@@ -1337,6 +1382,38 @@
 
   function isDark() { return document.body.classList.contains('dark'); }
 
+  function initTextControls() {
+    const mode     = isDark() ? 'dark' : 'light';
+    const map      = semanticConfig[mode] || {};
+    const raw      = semanticConfig.rawValues || {};
+
+    const osSel = document.getElementById('text-onsurface-select');
+    if (osSel) osSel.innerHTML = buildSelectOptions(map['text-high'] || '');
+
+    const osPreview = document.getElementById('text-onsurface-preview');
+    if (osPreview) {
+      const step = map['text-high'];
+      osPreview.style.background = step ? `rgb(var(--${step}))` : `rgb(var(--text-high))`;
+    }
+
+    ['max', 'high', 'medium', 'low'].forEach(level => {
+      const inp = document.getElementById(`text-alpha-${level}`);
+      if (inp && raw[`--text-alpha-${level}`] !== undefined) inp.value = raw[`--text-alpha-${level}`];
+    });
+
+    const acSel = document.getElementById('text-accent-select');
+    if (acSel) acSel.innerHTML = buildSelectOptions(map['text-accent'] || '');
+
+    const acPreview = document.getElementById('text-accent-preview');
+    if (acPreview) {
+      const step = map['text-accent'];
+      acPreview.style.background = step ? `rgb(var(--${step}))` : `rgb(var(--text-accent))`;
+    }
+
+    const acAlpha = document.getElementById('text-alpha-accent');
+    if (acAlpha && raw['--text-alpha-accent'] !== undefined) acAlpha.value = raw['--text-alpha-accent'];
+  }
+
   function initDropdowns() {
     const mode = isDark() ? 'dark' : 'light';
     const map  = semanticConfig[mode] || {};
@@ -1346,6 +1423,7 @@
       const currentVal = map[bareKey] || map[varName] || '';
       sel.innerHTML    = buildSelectOptions(currentVal);
     });
+    initTextControls();
   }
 
   // ── Pencil edit helpers ───────────────────────────────────────────────
@@ -1562,9 +1640,15 @@
 
   // ── Dark mode toggle ──────────────────────────────────────────────────
   const darkBtn = document.getElementById('darkToggle');
+  if (localStorage.getItem('pg-dark') === '1') {
+    document.body.classList.add('dark');
+    darkBtn.textContent = '\u2600 Light';
+  }
   darkBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark');
-    darkBtn.textContent = isDark() ? '\u2600 Light' : '\u263E Dark';
+    const dark = isDark();
+    darkBtn.textContent = dark ? '\u2600 Light' : '\u263E Dark';
+    localStorage.setItem('pg-dark', dark ? '1' : '0');
     initDropdowns();
   });
 
@@ -1613,6 +1697,83 @@
       if (e.key === 'Enter') { e.preventDefault(); commitAlpha(); inp.blur(); }
       if (e.key === 'Escape') { inp.blur(); }
     });
+  })();
+
+  // ── Text colour / alpha controls ──────────────────────────────────────
+  const TEXT_ON_SURFACE_VARS = ['--text-max', '--text-high', '--text-medium', '--text-low'];
+
+  (function wireTextControls() {
+    // Shared on-surface colour
+    const osSel = document.getElementById('text-onsurface-select');
+    if (osSel) {
+      osSel.addEventListener('change', () => {
+        const chosen = osSel.value;
+        TEXT_ON_SURFACE_VARS.forEach(v => {
+          document.documentElement.style.setProperty(v, `var(--${chosen})`);
+          const bareKey = v.replace(/^--/, '');
+          if (isDark()) dirtySemanticD.set(bareKey, chosen);
+          else          dirtySemanticL.set(bareKey, chosen);
+        });
+        const preview = document.getElementById('text-onsurface-preview');
+        if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+        updateSaveBar();
+      });
+    }
+
+    // Per-level alpha inputs
+    ['max', 'high', 'medium', 'low'].forEach(level => {
+      const inp = document.getElementById(`text-alpha-${level}`);
+      if (!inp) return;
+      function commit() {
+        const val = parseFloat(inp.value.trim());
+        if (isNaN(val) || val < 0 || val > 1) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+        inp.style.borderColor = '';
+        const v = String(Math.round(val * 100) / 100);
+        inp.value = v;
+        document.documentElement.style.setProperty(`--text-alpha-${level}`, v);
+        dirtySemanticRaw.set(`--text-alpha-${level}`, v);
+        updateSaveBar();
+      }
+      inp.addEventListener('change', commit);
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commit(); inp.blur(); }
+        if (e.key === 'Escape') { inp.blur(); }
+      });
+    });
+
+    // Accent colour
+    const acSel = document.getElementById('text-accent-select');
+    if (acSel) {
+      acSel.addEventListener('change', () => {
+        const chosen = acSel.value;
+        document.documentElement.style.setProperty('--text-accent', `var(--${chosen})`);
+        if (isDark()) dirtySemanticD.set('text-accent', chosen);
+        else          dirtySemanticL.set('text-accent', chosen);
+        const preview = document.getElementById('text-accent-preview');
+        if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+        updateSaveBar();
+      });
+    }
+
+    // Accent alpha
+    const acAlpha = document.getElementById('text-alpha-accent');
+    if (acAlpha) {
+      function commitAccent() {
+        const val = parseFloat(acAlpha.value.trim());
+        if (isNaN(val) || val < 0 || val > 1) { acAlpha.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+        acAlpha.style.borderColor = '';
+        const v = String(Math.round(val * 100) / 100);
+        acAlpha.value = v;
+        document.documentElement.style.setProperty('--text-alpha-accent', v);
+        dirtySemanticRaw.set('--text-alpha-accent', v);
+        updateSaveBar();
+      }
+      acAlpha.addEventListener('change', commitAccent);
+      acAlpha.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commitAccent(); acAlpha.blur(); }
+        if (e.key === 'Escape') { acAlpha.blur(); }
+      });
+    }
   })();
 
   initSemanticSelects();

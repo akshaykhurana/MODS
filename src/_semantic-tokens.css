@@ -33,7 +33,7 @@
   --surfaces-l4:     var(--n50);
   --surfaces-l5:     var(--n60);
   --surfaces-invert: var(--n90);
-  --surfaces-alpha:  0.96;
+  --surfaces-alpha:  0.93;
 
 
   /* ==========================================================================
@@ -62,6 +62,7 @@
   --text-alpha-medium: 0.60;
   --text-alpha-low:    0.38;
   --text-alpha-max:    1;
+  --text-alpha-accent: 1;
 
 
   /* ==========================================================================
@@ -79,6 +80,12 @@
   --border-alpha-high:   0.87;
   --border-alpha-medium: 0.38;
   --border-alpha-low:    0.12;
+
+  /* Width scale — override per project */
+  --border-width-low:    1px;
+  --border-width-medium: 1px;
+  --border-width-high:   2px;
+  --border-width-focus:  2px;
 
 
   /* ==========================================================================
@@ -186,9 +193,9 @@
   --border-focus:  var(--p30);
 
   /* Actions — shift to lighter primary tones for legibility on dark surfaces */
-  --action-primary-default:  var(--p30); /* base state (lighter than light mode) */
-  --action-primary-hover:    var(--p20); /* lighter — hover */
-  --action-primary-focus:    var(--p10); /* lighter still — focus */
+  --action-primary-default:  var(--p70); /* base state (lighter than light mode) */
+  --action-primary-hover:    var(--p80); /* lighter — hover */
+  --action-primary-focus:    var(--p90); /* lighter still — focus */
   --action-primary-disabled: var(--n70); /* neutral, darker in dark mode */
 
   --action-secondary-default: var(--p10); /* barely-there brand tint on dark bg */

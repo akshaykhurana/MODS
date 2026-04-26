@@ -32,7 +32,7 @@
   color: rgb(var(--text-max) / var(--text-alpha-max));
 }
 @utility text-accent {
-  color: rgb(var(--text-accent));
+  color: rgb(var(--text-accent) / var(--text-alpha-accent));
 }
 
 /* On-invert-surface text */
@@ -52,17 +52,21 @@
   color: rgb(var(--text-invert-accent));
 }
 
-/* Border colours */
+/* Border colours + widths */
 @utility border-high {
+  border-width: var(--border-width-high);
   border-color: rgb(var(--border-high) / var(--border-alpha-high));
 }
 @utility border-medium {
+  border-width: var(--border-width-medium);
   border-color: rgb(var(--border-medium) / var(--border-alpha-medium));
 }
 @utility border-low {
+  border-width: var(--border-width-low);
   border-color: rgb(var(--border-low) / var(--border-alpha-low));
 }
 @utility border-focus {
+  border-width: var(--border-width-focus);
   border-color: rgb(var(--border-focus));
 }
 
