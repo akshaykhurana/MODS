@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MODS Playground</title>
+  <link rel="stylesheet" href="/dist/style.css">
+  <link rel="stylesheet" href="/playground/playground.css">
+</head>
+<body>
+<script>if (localStorage.getItem('pg-dark') === '1') document.body.classList.add('dark');</script>
+<script>
+  (function() {
+    const y = sessionStorage.getItem('pg-scroll');
+    if (y !== null) { sessionStorage.removeItem('pg-scroll'); window.addEventListener('load', () => window.scrollTo(0, +y)); }
+  })();
+</script>
+<nav class="pg-nav">
+  <span class="pg-nav-title">MODS Playground</span>
+  <div class="pg-nav-links">
+    <a href="#colour">Colour</a>
+    <a href="#text">Text</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#shape">Shape</a>
+    <a href="#elevations">Elevations</a>
+    <a href="#components">Components</a>
+  </div>
+  <button class="pg-dark-toggle" id="darkToggle">&#9790; Dark</button>
+</nav>
+
+
+<!-- ================================================================
+     SAVE BAR (sticky below navbar)
+     ================================================================ -->
+<div class="pg-save-bar" id="save-bar">
+  <span class="pg-save-status" id="save-status">No unsaved changes</span>
+  <button class="pg-discard-btn" id="discard-btn" disabled>Discard</button>
+  <button class="pg-save-btn" id="save-btn" disabled>Save</button>
+</div>
+
+<!-- ================================================================
+     COLOUR
+     ================================================================ -->
+<section id="colour" class="pg-section">
+  <h2 class="pg-section-title">Colour</h2>
+
+  <!-- RAW PALETTE -->
+  <h3 class="pg-subsection-title">Base Colours</h3>
+
+  <div class="pg-group-label">Primary Tones (P)</div>
+  <div id="palette-p" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Secondary Tones (S)</div>
+  <div id="palette-s" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Neutral Tones (N)</div>
+  <div id="palette-n" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Meaning Tones (R,G,B)</div>
+  <div id="palette-meaning" class="pg-swatch-row"></div>
+
+  <!-- SEMANTIC TOKENS -->
+  <h3 class="pg-subsection-title">Semantic Colours</h3>
+
+  <div class="pg-group-label">Brand Colours</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--brand-main"><div class="pg-swatch-color" style="background:rgb(var(--brand-main))"></div><div class="pg-swatch-name">main</div><select class="pg-swatch-select" data-var="--brand-main" data-mode="light"></select><select class="pg-swatch-select" data-var="--brand-main" data-mode="dark"></select></div>
+  </div>
+
+  <div class="pg-group-label">Action Colours</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--action-primary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-default))"></div><div class="pg-swatch-name">primary-default</div><select class="pg-swatch-select" data-var="--action-primary-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-overlay"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-overlay))"></div><div class="pg-swatch-name">primary-overlay</div><select class="pg-swatch-select" data-var="--action-primary-overlay" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-overlay" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-default))"></div><div class="pg-swatch-name">secondary-default</div><select class="pg-swatch-select" data-var="--action-secondary-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-secondary-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-overlay"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-overlay))"></div><div class="pg-swatch-name">secondary-overlay</div><select class="pg-swatch-select" data-var="--action-secondary-overlay" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-secondary-overlay" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-default"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-default))"></div><div class="pg-swatch-name">neutral-default</div><select class="pg-swatch-select" data-var="--action-neutral-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-disabled))"></div><div class="pg-swatch-name">neutral-disabled</div><select class="pg-swatch-select" data-var="--action-neutral-disabled" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-disabled" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-filled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-filled))"></div><div class="pg-swatch-name">neutral-filled</div><select class="pg-swatch-select" data-var="--action-neutral-filled" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-filled" data-mode="dark"></select></div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top:16px;">Overlay alpha — mode-independent</div>
+  <div style="display:flex;gap:24px;align-items:flex-end;margin-bottom:8px;">
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span class="pg-token-label">Hover alpha</span>
+      <input id="action-overlay-alpha-hover" type="text" value="0.12" spellcheck="false" class="pg-token-input">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span class="pg-token-label">Pressed alpha</span>
+      <input id="action-overlay-alpha-pressed" type="text" value="0.22" spellcheck="false" class="pg-token-input">
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 24px">Action colours on surfaces (Lc&gt;15 Non-Text Elements)</div>
+  <div class="pg-apca-wrap"><div id="apca-action-table"></div></div>
+
+  <div class="pg-group-label">Meaning Colours</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--meaning-error"><div class="pg-swatch-color" style="background:rgb(var(--meaning-error))"></div><div class="pg-swatch-name">error</div><select class="pg-swatch-select" data-var="--meaning-error" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-error" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--meaning-alert"><div class="pg-swatch-color" style="background:rgb(var(--meaning-alert))"></div><div class="pg-swatch-name">alert</div><select class="pg-swatch-select" data-var="--meaning-alert" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-alert" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--meaning-success"><div class="pg-swatch-color" style="background:rgb(var(--meaning-success))"></div><div class="pg-swatch-name">success</div><select class="pg-swatch-select" data-var="--meaning-success" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-success" data-mode="dark"></select></div>
+  </div>
+
+  <div class="pg-group-label">Text Colours</div>
+  <div style="display:flex;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:28px;">
+
+    <!-- Accent column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;flex-shrink:0;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="text-accent-preview" style="background:rgb(var(--text-accent))"></div>
+        <div class="pg-swatch-name">accent colour</div>
+        <select id="text-accent-select-light" data-mode="light" class="pg-token-select"></select>
+        <select id="text-accent-select-dark" data-mode="dark" class="pg-token-select"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+        <div class="pg-text-alpha-light">
+          <div class="pg-group-label" style="margin:0;">Light opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="text-light-alpha-accent-high" type="text" value="0.85" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="text-light-alpha-accent-medium" type="text" value="0.60" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="text-light-alpha-accent-low" type="text" value="0.38" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+        <div class="pg-text-alpha-dark">
+          <div class="pg-group-label" style="margin:0;">Dark opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="text-dark-alpha-accent-high" type="text" value="0.95" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="text-dark-alpha-accent-medium" type="text" value="0.70" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="text-dark-alpha-accent-low" type="text" value="0.45" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- On-surface column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="text-onsurface-preview" style="background:rgb(var(--text-color))"></div>
+        <div class="pg-swatch-name">high · medium · low · disabled</div>
+        <select id="text-onsurface-select-light" data-mode="light" class="pg-token-select"></select>
+        <select id="text-onsurface-select-dark" data-mode="dark" class="pg-token-select"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="pg-text-alpha-light">
+          <div class="pg-group-label" style="margin:0;">Light opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="text-light-alpha-high" type="text" value="1" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="text-light-alpha-medium" type="text" value="0.89" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="text-light-alpha-low" type="text" value="0.60" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Disabled</span>
+              <input id="text-light-alpha-disabled" type="text" value="0.38" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+        <div class="pg-text-alpha-dark">
+          <div class="pg-group-label" style="margin:0;">Dark opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="text-dark-alpha-high" type="text" value="1" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="text-dark-alpha-medium" type="text" value="0.96" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="text-dark-alpha-low" type="text" value="0.77" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Disabled</span>
+              <input id="text-dark-alpha-disabled" type="text" value="0.59" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="apca-text-combined" style="overflow-x:auto;margin-top:28px;"></div>
+
+  <div class="pg-group-label" style="margin-top: 28px">Text tokens — on surface · alpha pairs, rendered via .text-* utility classes</div>
+  <div class="pg-text-tokens">
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-medium">Text High</div>
+      <div class="pg-text-token-meta" id="meta-text-medium">--text-color<br>opacity high</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-medium">Text Medium</div>
+      <div class="pg-text-token-meta" id="meta-text-medium">--text-color<br>opacity medium</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-low">Text Low</div>
+      <div class="pg-text-token-meta" id="meta-text-low">--text-color<br>opacity low</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-disabled">Text Disabled</div>
+      <div class="pg-text-token-meta" id="meta-text-disabled">--text-color<br>opacity disabled</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-accent-high">Accent High</div>
+      <div class="pg-text-token-meta" id="meta-text-accent-high">--text-accent<br>opacity accent-high</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-accent-medium">Accent Medium</div>
+      <div class="pg-text-token-meta" id="meta-text-accent-medium">--text-accent<br>opacity accent-medium</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-accent-low">Accent Low</div>
+      <div class="pg-text-token-meta" id="meta-text-accent-low">--text-accent<br>opacity accent-low</div>
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 20px">Text tokens — on invert surface</div>
+  <div class="pg-invert-panel">
+    <div class="pg-text-tokens">
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-high">Invert High</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-high">--text-invert-color<br>opacity high</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-medium">Invert Medium</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-medium">--text-invert-color<br>opacity medium</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-low">Invert Low</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-low">--text-invert-color<br>opacity low</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-disabled">Invert Disabled</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-disabled">--text-invert-color<br>opacity disabled</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-accent">Invert Accent</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-accent">--text-invert-accent<br>opacity accent</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-accent-high">Invert Accent High</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-accent-high">--text-invert-accent<br>opacity accent-high</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-accent-medium">Invert Accent Medium</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-accent-medium">--text-invert-accent<br>opacity accent-medium</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-accent-low">Invert Accent Low</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-accent-low">--text-invert-accent<br>opacity accent-low</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 28px">Border tokens — shared colour, separate light + dark opacity</div>
+  <div style="display:flex;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:28px;">
+
+    <!-- Focus colour column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;flex-shrink:0;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="border-focus-preview" style="background:rgb(var(--border-focus))"></div>
+        <div class="pg-swatch-name">focus</div>
+        <select id="border-focus-select-light" data-mode="light" class="pg-token-select"></select>
+        <select id="border-focus-select-dark" data-mode="dark" class="pg-token-select"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px;padding-top:4px;">
+        <span class="pg-token-label">Focus alpha</span>
+        <input id="border-alpha-focus" type="text" value="1" spellcheck="false" class="pg-token-input">
+      </div>
+    </div>
+
+    <!-- Base colour column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="border-base-preview" style="background:rgb(var(--border-color))"></div>
+        <div class="pg-swatch-name">high · medium · low</div>
+        <select id="border-base-select-light" data-mode="light" class="pg-token-select"></select>
+        <select id="border-base-select-dark" data-mode="dark" class="pg-token-select"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="pg-border-alpha-light">
+          <div class="pg-group-label" style="margin:0;">Light opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="border-light-alpha-high" type="text" value="0.87" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="border-light-alpha-medium" type="text" value="0.38" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="border-light-alpha-low" type="text" value="0.12" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+        <div class="pg-border-alpha-dark">
+          <div class="pg-group-label" style="margin:0;">Dark opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">High</span>
+              <input id="border-dark-alpha-high" type="text" value="0.87" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Medium</span>
+              <input id="border-dark-alpha-medium" type="text" value="0.38" spellcheck="false" class="pg-token-input">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span class="pg-token-label">Low</span>
+              <input id="border-dark-alpha-low" type="text" value="0.12" spellcheck="false" class="pg-token-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pg-group-label">Width — mode-independent</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;">
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span class="pg-token-label">Border</span>
+      <input id="border-width" type="text" value="1px" spellcheck="false" class="pg-token-input">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span class="pg-token-label">Focus</span>
+      <input id="border-width-focus" type="text" value="2px" spellcheck="false" class="pg-token-input">
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 28px">APCA contrast — border tokens on surfaces (raw Lc)</div>
+  <div class="pg-apca-wrap"><div id="apca-border-table"></div></div>
+  <p style="font-size:11px;color:rgb(var(--text-color)/var(--text-alpha-medium));margin:6px 0 0;max-width:640px;line-height:1.6;">
+    <strong style="color:rgb(var(--text-color)/var(--text-alpha-high));">Note:</strong> APCA is calibrated for text and large shapes — it is an unreliable guide for border colours and alphas. Lc values below 7.5 might return zero values. Use visual judgement on actual surfaces; treat these numbers as a rough reference only.
+  </p>
+
+  <div class="pg-group-label" style="margin-top: 16px">Border tokens — rendered via .border-* utility classes</div>
+  <div class="pg-border-tokens">
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-high"></div>
+      <div class="pg-border-meta" id="border-meta-high">--border-color<br>opacity high</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-medium"></div>
+      <div class="pg-border-meta" id="border-meta-medium">--border-color<br>opacity medium</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-low"></div>
+      <div class="pg-border-meta" id="border-meta-low">--border-color<br>opacity low</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-focus"></div>
+      <div class="pg-border-meta" id="border-meta-focus">--border-focus<br>opacity focus</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     ELEVATIONS
+     ================================================================ -->
+<section id="elevations" class="pg-section">
+  <h2 class="pg-section-title">Elevations</h2>
+  <p style="font-size:12px;font-family:ui-monospace,'SF Mono',monospace;color:rgb(var(--text-color)/var(--text-alpha-medium));margin:-20px 0 32px;">
+    Elevations contain both shadows and fills in light mode and only fills in dark mode.
+  </p>
+
+  <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
+    Alphas
+    <span class="pg-token-label">--surfaces-alpha</span>
+    <input id="surfaces-alpha-input" type="text" value="0.96" spellcheck="false" class="pg-token-input">
+    <span class="pg-token-label" style="margin-left:12px">--surfaces-blur</span>
+    <input id="surfaces-blur-input" type="text" value="12px" spellcheck="false" class="pg-token-input" style="width:54px">
+  </div>
+
+  <div class="pg-group-label">Shadows</div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:32px;">
+    <span class="pg-token-label">--shadow-color</span>
+    <select id="shadow-color-select"
+      class="pg-token-select" style="margin-top:0"></select>
+    <span class="pg-token-label">Umbra</span>
+    <input id="shadow-alpha-umbra" type="text" value="0.08" spellcheck="false" class="pg-token-input">
+    <span class="pg-token-label">Penumbra</span>
+    <input id="shadow-alpha-penumbra" type="text" value="0.04" spellcheck="false" class="pg-token-input">
+    <span class="pg-token-label">Ambient</span>
+    <input id="shadow-alpha-ambient" type="text" value="0.06" spellcheck="false" class="pg-token-input">
+  </div>
+
+  <div class="pg-swatch-row" style="padding-bottom:24px;gap:16px;">
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-base">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-base))"></div>
+      <div class="pg-swatch-name">base</div>
+      <div class="pg-swatch-sub">--surfaces-base</div>
+      <select class="pg-swatch-select" data-var="--surfaces-base" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-base" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l1" data-var="--surfaces-l1">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l1) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l1</div>
+      <div class="pg-swatch-sub">--surfaces-l1<br>--shadow-level1</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l1" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l1" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l2" data-var="--surfaces-l2">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l2) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l2</div>
+      <div class="pg-swatch-sub">--surfaces-l2<br>--shadow-level2</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l2" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l2" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l2" data-var="--surfaces-l2a">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l2a) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l2a</div>
+      <div class="pg-swatch-sub">--surfaces-l2a<br>--shadow-level2</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l2a" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l2a" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l3" data-var="--surfaces-l3">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l3) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l3</div>
+      <div class="pg-swatch-sub">--surfaces-l3<br>--shadow-level3</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l3" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l3" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l4" data-var="--surfaces-l4">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l4) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l4</div>
+      <div class="pg-swatch-sub">--surfaces-l4<br>--shadow-level4</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l4" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l4" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l5" data-var="--surfaces-l5">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l5) / var(--surfaces-alpha))"></div>
+      <div class="pg-swatch-name">l5</div>
+      <div class="pg-swatch-sub">--surfaces-l5<br>--shadow-level5</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l5" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l5" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-invert">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-invert))"></div>
+      <div class="pg-swatch-name">invert</div>
+      <div class="pg-swatch-sub">--surfaces-invert</div>
+      <select class="pg-swatch-select" data-var="--surfaces-invert" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-invert" data-mode="dark"></select>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     TEXT
+     ================================================================ -->
+<section id="text" class="pg-section">
+  <h2 class="pg-section-title">Text</h2>
+
+  <h3 class="pg-subsection-title">Display</h3>
+  <div class="pg-type-row">
+    <div class="d1 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d1 · font-display · 700 · base: f8 (30px) / ld8 (36px) → tab-s: f11 (48px) / ld11 (56px) → scr-l: f13 (69px) / ld13 (80px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="d2 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d2 · font-display · 700 · base: f8 (30px) / ld8 (36px) → tab-s: f10 (42px) / ld10 (52px) → scr-l: f12 (57px) / ld12 (64px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="d3 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d3 · font-display · 700 · base: f7 (24px) / ld7 (28px) → tab-s: f8 (30px) / ld8 (36px) → scr-l: f11 (48px) / ld11 (56px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Heading</h3>
+  <div class="pg-type-row">
+    <div class="h1 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h1 · font-heading · 700 · base: f8 (30px) / lt8 (40px) → tab-s: f9 (36px) → tab-l: f10 (42px) → scr-l: f11 (48px) / lt11 (64px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="h2 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h2 · font-heading · 700 · base: f7 (24px) / lt7 (32px) → tab-s: f8 (30px) → tab-l: f9 (36px) → scr-l: f10 (42px) / lt10 (56px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="h3 text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h3 · font-heading · 700 · base: f6 (21px) / lt6 (28px) → tab-s: f7 (24px) → tab-l: f8 (30px) → scr-l: f9 (36px) / lt9 (48px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Title</h3>
+  <div class="pg-type-row">
+    <div class="title-l text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-l · font-title · 700 · base: f7 (24px) / lt7 (32px) → scr-l: f8 (30px) / lt8 (40px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-m text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-m · font-title · 700 · base: f6 (21px) / lt6 (28px) → scr-l: f7 (24px) / lt7 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-s text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-s · font-title · 700 · base: f5 (18px) / lt5 (24px) → scr-l: f6 (21px) / lt6 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-xs text-medium pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-xs · font-title · 700 · base: f4 (15px) / lt4 (20px) → scr-l: f5 (18px) / lt5 (24px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Body</h3>
+  <div class="pg-type-row">
+    <div class="body-l text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l · font-body · 400 · f5 (18px) / lb5 (28px) → scr-l: f6 (21px) / lb6 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-l-b text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l-b · font-body · 700 · f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-l-i text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l-i · font-body · 400 italic · f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m · font-body · 400 · f4 (15px) / lb4 (24px) → scr-l: f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m-b text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m-b · font-body · 700 · f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m-i text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m-i · font-body · 400 italic · f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s · font-body · 400 · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s-b text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s-b · font-body · 700 · f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s-i text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s-i · font-body · 400 italic · f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs · font-body · 400 · f2 (10.5px) / lb2 (16px) → scr-l: f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs-b text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs-b · font-body · 700 · f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs-i text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs-i · font-body · 400 italic · f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs · font-body · 400 · f1 (9px) / lb1 (12px) → scr-l: f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs-b text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs-b · font-body · 700 · f1 (9px) / lb1 (12px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs-i text-medium pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs-i · font-body · 400 italic · f1 (9px) / lb1 (12px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Label</h3>
+  <div class="pg-type-row">
+    <div class="label-l text-medium pg-type-sample">Label Large</div>
+    <div class="pg-type-meta">.label-l · font-label · 600 · f5 (18px) / lb5 (28px) → scr-l: f6 (21px) / lb6 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="label-m text-medium pg-type-sample">Label Medium</div>
+    <div class="pg-type-meta">.label-m · font-label · 600 · f4 (15px) / lb4 (24px) → scr-l: f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="label-s text-medium pg-type-sample">Label Small</div>
+    <div class="pg-type-meta">.label-s · font-label · 600 · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Overline</h3>
+  <div class="pg-type-row">
+    <div class="overline-xl text-medium pg-type-sample">Overline Extra Large</div>
+    <div class="pg-type-meta">.overline-xl · font-label · 600 · UPPERCASE · letter-spacing: 2px · f3 (12px) → tab-s: f4 (15px) → scr-s: f5 (18px) → scr-l: f6 (21px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-l text-medium pg-type-sample">Overline Large</div>
+    <div class="pg-type-meta">.overline-l · font-label · 600 · UPPERCASE · letter-spacing: 2px · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-m text-medium pg-type-sample">Overline Medium</div>
+    <div class="pg-type-meta">.overline-m · font-label · 600 · UPPERCASE · letter-spacing: 2px · f2 (10.5px) / lb2 (16px) → scr-l: f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-s text-medium pg-type-sample">Overline Small</div>
+    <div class="pg-type-meta">.overline-s · font-label · 600 · UPPERCASE · letter-spacing: 2px · f1 (9px) / lb1 (12px) → scr-l: f2 (10.5px) / lb2 (16px)</div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SPACING
+     ================================================================ -->
+<section id="spacing" class="pg-section">
+  <h2 class="pg-section-title">Spacing</h2>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -20px 0 28px;">
+    G-scale: gN = N &times; 8px &nbsp;|&nbsp; Half-steps add 4px (g0h=4, g1h=12, g2h=20 &hellip;) &nbsp;|&nbsp; Showing integer steps only
+  </p>
+  <div class="pg-space-rows">
+    <div class="pg-space-row"><div class="pg-space-name">g0</div><div class="pg-space-bar" style="width:2px"></div><div class="pg-space-px">0px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g1</div><div class="pg-space-bar" style="width:var(--spacing-g1)"></div><div class="pg-space-px">8px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g2</div><div class="pg-space-bar" style="width:var(--spacing-g2)"></div><div class="pg-space-px">16px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g3</div><div class="pg-space-bar" style="width:var(--spacing-g3)"></div><div class="pg-space-px">24px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g4</div><div class="pg-space-bar" style="width:var(--spacing-g4)"></div><div class="pg-space-px">32px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g5</div><div class="pg-space-bar" style="width:var(--spacing-g5)"></div><div class="pg-space-px">40px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g6</div><div class="pg-space-bar" style="width:var(--spacing-g6)"></div><div class="pg-space-px">48px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g7</div><div class="pg-space-bar" style="width:var(--spacing-g7)"></div><div class="pg-space-px">56px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g8</div><div class="pg-space-bar" style="width:var(--spacing-g8)"></div><div class="pg-space-px">64px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g9</div><div class="pg-space-bar" style="width:var(--spacing-g9)"></div><div class="pg-space-px">72px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g10</div><div class="pg-space-bar" style="width:var(--spacing-g10)"></div><div class="pg-space-px">80px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g11</div><div class="pg-space-bar" style="width:var(--spacing-g11)"></div><div class="pg-space-px">88px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g12</div><div class="pg-space-bar" style="width:var(--spacing-g12)"></div><div class="pg-space-px">96px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g13</div><div class="pg-space-bar" style="width:var(--spacing-g13)"></div><div class="pg-space-px">104px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g15</div><div class="pg-space-bar" style="width:var(--spacing-g15)"></div><div class="pg-space-px">120px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g16</div><div class="pg-space-bar" style="width:var(--spacing-g16)"></div><div class="pg-space-px">128px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g20</div><div class="pg-space-bar" style="width:var(--spacing-g20)"></div><div class="pg-space-px">160px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g25</div><div class="pg-space-bar" style="width:var(--spacing-g25)"></div><div class="pg-space-px">200px</div></div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SHAPE
+     ================================================================ -->
+<section id="shape" class="pg-section">
+  <h2 class="pg-section-title">Shape</h2>
+
+  <h3 class="pg-subsection-title">Border Radius — Semantic Tier</h3>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -12px 0 24px;">
+    Formula: sh{h} = h &divide; 8 &nbsp;&mdash;&nbsp; radius is one-eighth of component height
+  </p>
+  <div class="pg-shape-row">
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xs); width: 32px; height: 32px;"></div>
+      <div class="pg-shape-meta">--shape-xs<br>sh32 · 4px<br>h32 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-s); width: 40px; height: 40px;"></div>
+      <div class="pg-shape-meta">--shape-s<br>sh40 · 5px<br>h40 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-m); width: 48px; height: 48px;"></div>
+      <div class="pg-shape-meta">--shape-m<br>sh48 · 6px<br>h48 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-l); width: 56px; height: 56px;"></div>
+      <div class="pg-shape-meta">--shape-l<br>sh56 · 7px<br>h56 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xl); width: 64px; height: 64px;"></div>
+      <div class="pg-shape-meta">--shape-xl<br>sh64 · 8px<br>h64 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xxl); width: 72px; height: 72px;"></div>
+      <div class="pg-shape-meta">--shape-xxl<br>sh72 · 9px<br>h72 at scr-l</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-full); width: 72px; height: 32px;"></div>
+      <div class="pg-shape-meta">--shape-full<br>sh-full · pill<br>badges, chips</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-control); width: 16px; height: 16px;"></div>
+      <div class="pg-shape-meta">--shape-control<br>sh16 · 2px<br>h16 controls</div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================================================================
+     COMPONENTS
+     ================================================================ -->
+<section id="components" class="pg-section">
+  <h2 class="pg-section-title">Components</h2>
+
+  <!-- ---- Buttons ---- -->
+  <h3 class="pg-subsection-title">Buttons</h3>
+
+  <div class="pg-comp-label">Primary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-primary">XS</button>
+    <button class="btn btn-s btn-primary">Small</button>
+    <button class="btn btn-m btn-primary">Medium</button>
+    <button class="btn btn-l btn-primary">Large</button>
+    <button class="btn btn-xl btn-primary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-primary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-primary" disabled>XS</button>
+    <button class="btn btn-s btn-primary" disabled>Small</button>
+    <button class="btn btn-m btn-primary" disabled>Medium</button>
+    <button class="btn btn-l btn-primary" disabled>Large</button>
+    <button class="btn btn-xl btn-primary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Secondary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-secondary">XS</button>
+    <button class="btn btn-s btn-secondary">Small</button>
+    <button class="btn btn-m btn-secondary">Medium</button>
+    <button class="btn btn-l btn-secondary">Large</button>
+    <button class="btn btn-xl btn-secondary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-secondary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-secondary" disabled>XS</button>
+    <button class="btn btn-s btn-secondary" disabled>Small</button>
+    <button class="btn btn-m btn-secondary" disabled>Medium</button>
+    <button class="btn btn-l btn-secondary" disabled>Large</button>
+    <button class="btn btn-xl btn-secondary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Tertiary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-tertiary">XS</button>
+    <button class="btn btn-s btn-tertiary">Small</button>
+    <button class="btn btn-m btn-tertiary">Medium</button>
+    <button class="btn btn-l btn-tertiary">Large</button>
+    <button class="btn btn-xl btn-tertiary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-tertiary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-tertiary" disabled>XS</button>
+    <button class="btn btn-s btn-tertiary" disabled>Small</button>
+    <button class="btn btn-m btn-tertiary" disabled>Medium</button>
+    <button class="btn btn-l btn-tertiary" disabled>Large</button>
+    <button class="btn btn-xl btn-tertiary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Tight — borderless, expands on hover</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-m btn-tight btn-primary">Tight Primary</button>
+    <button class="btn btn-m btn-tight btn-secondary">Tight Secondary</button>
+    <button class="btn btn-m btn-tight btn-tertiary">Tight Tertiary</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-m .btn-tight .btn-{variant}</div>
+
+  <!-- ---- Icon Buttons ---- -->
+  <h3 class="pg-subsection-title">Icon Buttons</h3>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -12px 0 20px;">SVG placeholder icon used. Replace with your icon library.</p>
+
+  <div class="pg-comp-label">Primary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-primary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-primary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-primary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-primary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-primary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-primary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-primary &nbsp;· last = disabled</div>
+
+  <div class="pg-comp-label">Secondary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-secondary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-secondary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-secondary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-secondary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-secondary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-secondary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-secondary</div>
+
+  <div class="pg-comp-label">Tertiary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-tertiary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-tertiary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-tertiary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-tertiary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-tertiary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-tertiary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-tertiary</div>
+
+  <div class="pg-comp-label">Square variant (.btn-icon-sq) — one per size</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-sq btn-icon-xs btn-icon-primary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-s btn-icon-secondary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-m btn-icon-tertiary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-l btn-icon-primary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-xl btn-icon-secondary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-sq .btn-icon-{xs|s|m|l|xl} .btn-icon-{variant}</div>
+
+  <!-- ---- Form Inputs ---- -->
+  <h3 class="pg-subsection-title">Form Inputs</h3>
+
+  <div class="pg-comp-label">Sizes — default state</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <input class="input input-s" type="text" placeholder="Small input">
+      <div class="pg-form-note">.input .input-s</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m" type="text" placeholder="Medium input">
+      <div class="pg-form-note">.input .input-m</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-l" type="text" placeholder="Large input">
+      <div class="pg-form-note">.input .input-l</div>
+    </div>
+  </div>
+
+  <div class="pg-comp-label" style="margin-top: 24px">States</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <input class="input input-m input-error" type="text" value="Invalid value">
+      <div class="input-error-msg">This field has an error</div>
+      <div class="pg-form-note">.input-error + .input-error-msg</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m input-success" type="text" value="Valid value">
+      <div class="pg-form-note">.input-success</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m" type="text" placeholder="Disabled input" disabled>
+      <div class="pg-form-note">disabled</div>
+    </div>
+  </div>
+
+  <!-- ---- Controls ---- -->
+  <h3 class="pg-subsection-title">Controls</h3>
+  <div class="pg-controls">
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Checkbox</div>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox"> Unchecked</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" checked> Checked</label>
+      <label class="pg-control-item"><input class="checkbox js-indeterminate" type="checkbox"> Indeterminate</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" disabled> Disabled</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" checked disabled> Disabled checked</label>
+      <div class="pg-form-note">.checkbox</div>
+    </div>
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Radio</div>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio"> Unselected</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio" checked> Selected</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio-d" disabled> Disabled</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio-d" checked disabled> Disabled selected</label>
+      <div class="pg-form-note">.radio</div>
+    </div>
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Toggle</div>
+      <label class="pg-control-item"><input class="toggle" type="checkbox"> Off</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" checked> On</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" disabled> Disabled off</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" checked disabled> Disabled on</label>
+      <div class="pg-form-note">.toggle</div>
+    </div>
+
+  </div>
+
+  <!-- ---- Badges ---- -->
+  <h3 class="pg-subsection-title">Badges</h3>
+  <div class="pg-comp-row">
+    <span class="badge badge-primary">Primary</span>
+    <span class="badge badge-success">Success</span>
+    <span class="badge badge-error">Error</span>
+    <span class="badge badge-alert">Alert</span>
+    <span class="badge badge-neutral">Neutral</span>
+  </div>
+  <div class="pg-comp-note">.badge .badge-{primary|success|error|alert|neutral}</div>
+
+  <!-- ---- Chips ---- -->
+  <h3 class="pg-subsection-title">Chips</h3>
+  <div class="pg-comp-row">
+    <button class="chip">Default</button>
+    <button class="chip selected">Selected</button>
+    <button class="chip" disabled>Disabled</button>
+    <button class="chip selected">
+      With dismiss
+      <span class="chip-dismiss" role="button" aria-label="Remove" tabindex="0">&times;</span>
+    </button>
+  </div>
+  <div class="pg-comp-note">.chip &nbsp;· .chip.selected &nbsp;· .chip[disabled] &nbsp;· .chip.selected + .chip-dismiss</div>
+
+  <!-- ---- Select ---- -->
+  <h3 class="pg-subsection-title">Select</h3>
+
+  <div class="pg-comp-label">Sizes — default state</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <div class="select-wrap">
+        <select class="select select-s">
+          <option>Small select</option>
+          <option>Option two</option>
+          <option>Option three</option>
+        </select>
+      </div>
+      <div class="pg-form-note">.select .select-s</div>
+    </div>
+    <div class="pg-form-col">
+      <div class="select-wrap">
+        <select class="select select-m">
+          <option>Medium select</option>
+          <option>Option two</option>
+          <option>Option three</option>
+        </select>
+      </div>
+      <div class="pg-form-note">.select .select-m</div>
+    </div>
+    <div class="pg-form-col">
+      <div class="select-wrap">
+        <select class="select select-l">
+          <option>Large select</option>
+          <option>Option two</option>
+          <option>Option three</option>
+        </select>
+      </div>
+      <div class="pg-form-note">.select .select-l</div>
+    </div>
+  </div>
+
+  <div class="pg-comp-label" style="margin-top:24px">States</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <div class="select-wrap">
+        <select class="select select-m" disabled>
+          <option>Disabled select</option>
+        </select>
+      </div>
+      <div class="pg-form-note">disabled</div>
+    </div>
+  </div>
+
+  <!-- ---- Textarea ---- -->
+  <h3 class="pg-subsection-title">Textarea</h3>
+
+  <div class="pg-comp-label">States</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <textarea class="textarea" rows="3" placeholder="Default textarea"></textarea>
+      <div class="pg-form-note">.textarea</div>
+    </div>
+    <div class="pg-form-col">
+      <textarea class="textarea textarea-error" rows="3">Invalid content</textarea>
+      <div class="input-error-msg">This field has an error</div>
+      <div class="pg-form-note">.textarea .textarea-error</div>
+    </div>
+    <div class="pg-form-col">
+      <textarea class="textarea" rows="3" placeholder="Disabled textarea" disabled></textarea>
+      <div class="pg-form-note">disabled</div>
+    </div>
+  </div>
+
+  <!-- ---- Avatar ---- -->
+  <h3 class="pg-subsection-title">Avatar</h3>
+
+  <div class="pg-comp-label">Sizes — initials</div>
+  <div class="pg-comp-row" style="align-items:center">
+    <div class="avatar avatar-s">S</div>
+    <div class="avatar avatar-m">AB</div>
+    <div class="avatar avatar-l">AB</div>
+  </div>
+  <div class="pg-comp-note">.avatar .avatar-{s|m|l}</div>
+
+  <!-- ---- Tooltip ---- -->
+  <h3 class="pg-subsection-title">Tooltip</h3>
+  <p style="font-size:11px;font-family:ui-monospace,'SF Mono',monospace;color:rgb(var(--text-color)/var(--text-alpha-medium));margin:-12px 0 20px;">Pure CSS — hover or focus the element to reveal.</p>
+
+  <div class="pg-comp-label">Examples</div>
+  <div class="pg-comp-row" style="padding-top:32px">
+    <span class="tooltip-wrap">
+      <button class="btn btn-m btn-primary">Hover me</button>
+      <span class="tooltip">This is a tooltip</span>
+    </span>
+    <span class="tooltip-wrap">
+      <button class="btn btn-m btn-secondary">And me</button>
+      <span class="tooltip">Another tooltip</span>
+    </span>
+  </div>
+  <div class="pg-comp-note">.tooltip-wrap &gt; .tooltip — visible on :hover / :focus-within</div>
+
+  <!-- ---- Progress ---- -->
+  <h3 class="pg-subsection-title">Progress</h3>
+
+  <div class="pg-comp-label">Determinate</div>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:400px;margin-bottom:24px;">
+    <div class="progress"><div class="progress-bar" style="width:25%"></div></div>
+    <div class="progress"><div class="progress-bar" style="width:65%"></div></div>
+    <div class="progress"><div class="progress-bar" style="width:100%"></div></div>
+  </div>
+
+  <div class="pg-comp-label">Indeterminate</div>
+  <div style="max-width:400px;margin-bottom:8px;">
+    <div class="progress progress-indeterminate"><div class="progress-bar"></div></div>
+  </div>
+  <div class="pg-comp-note">.progress &gt; .progress-bar &nbsp;· add .progress-indeterminate for animation</div>
+
+  <!-- ---- Tabs ---- -->
+  <h3 class="pg-subsection-title">Tabs</h3>
+
+  <div class="tabs">
+    <button class="tab active" aria-selected="true">Overview</button>
+    <button class="tab">Details</button>
+    <button class="tab">Activity</button>
+    <button class="tab" aria-disabled="true">Disabled</button>
+  </div>
+  <div class="pg-comp-note" style="margin-top:8px">.tabs &gt; .tab &nbsp;· active: .tab.active or [aria-selected="true"]</div>
+
+  <!-- ---- Toast ---- -->
+  <h3 class="pg-subsection-title">Toast</h3>
+
+  <div style="display:flex;flex-direction:column;gap:10px;max-width:480px;margin-bottom:8px;">
+    <div class="toast toast-success">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.707-9.293a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4z" clip-rule="evenodd"/></svg>
+      Changes saved successfully.
+    </div>
+    <div class="toast toast-error">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.707 7.293a1 1 0 0 0-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 1 0 1.414 1.414L10 11.414l1.293 1.293a1 1 0 0 0 1.414-1.414L11.414 10l1.293-1.293a1 1 0 0 0-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+      Something went wrong. Please try again.
+    </div>
+    <div class="toast toast-alert">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-1-3a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0v1a1 1 0 0 1-1 1z" clip-rule="evenodd"/></svg>
+      Your session will expire in 5 minutes.
+    </div>
+    <div class="toast toast-neutral">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 9a1 1 0 0 0 0 2v3a1 1 0 0 0 1 1h1a1 1 0 1 0 0-2v-3a1 1 0 0 0-1-1H9z" clip-rule="evenodd"/></svg>
+      New version available. Reload to update.
+    </div>
+  </div>
+  <div class="pg-comp-note">.toast .toast-{success|error|alert|neutral}</div>
+
+</section>
+
+
+<script type="importmap">
+{
+  "imports": {
+    "colorparsley": "/node_modules/colorparsley/src/colorparsley.js",
+    "apca-w3": "/node_modules/apca-w3/src/apca-w3.js"
+  }
+}
+</script>
+<script type="module" src="/playground/playground.js"></script>
+</body>
+</html>

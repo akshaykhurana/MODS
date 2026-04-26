@@ -16,7 +16,9 @@
      Replace palette steps per project. Lighter = higher contrast on brand bg.
      ========================================================================== */
 
-  --brand-main: var(--p60);
+  --brand-light-main: var(--p60);
+  --brand-dark-main:  var(--p80);
+  --brand-main: var(--brand-light-main);
 
 
   /* ==========================================================================
@@ -61,21 +63,21 @@
   /* ==========================================================================
      TEXT
      Each role is a pair: colour channels + alpha. Composed at point of use:
-       color: rgb(var(--text-high) / var(--text-alpha-high));
+       color: rgb(var(--text-high) / var(--text-alpha-medium));
      Alpha follows the MD emphasis scale. Not overridden in dark mode.
      ========================================================================== */
 
   /* Base — light mode */
   --text-light-color:         var(--s10);
-  --text-light-accent:        var(--p35);
+  --text-light-accent:        var(--p30);
   --text-light-invert-color:  var(--s95);
-  --text-light-invert-accent: var(--p80);
+  --text-light-invert-accent: var(--p85);
 
   /* Base — dark mode */
   --text-dark-color:         var(--s95);
-  --text-dark-accent:        var(--p80);
+  --text-dark-accent:        var(--p85);
   --text-dark-invert-color:  var(--s10);
-  --text-dark-invert-accent: var(--p35);
+  --text-dark-invert-accent: var(--p30);
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
   --text-color:         var(--text-light-color);         /* on-surface text */
@@ -84,11 +86,14 @@
   --text-invert-accent: var(--text-light-invert-accent); /* on-invert-surface accent */
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
-  --text-alpha-max:    var(--text-light-alpha-max);
-  --text-alpha-high:   var(--text-light-alpha-high);
-  --text-alpha-medium: var(--text-light-alpha-medium);
-  --text-alpha-low:    var(--text-light-alpha-low);
-  --text-alpha-accent: var(--text-light-alpha-accent);
+  --text-alpha-high:    var(--text-light-alpha-high);
+  --text-alpha-medium:   var(--text-light-alpha-medium);
+  --text-alpha-low: var(--text-light-alpha-low);
+  --text-alpha-disabled:    var(--text-light-alpha-disabled);
+  --text-alpha-accent:        var(--text-light-alpha-accent);
+  --text-alpha-accent-high:   var(--text-light-alpha-accent-high);
+  --text-alpha-accent-medium: var(--text-light-alpha-accent-medium);
+  --text-alpha-accent-low:    var(--text-light-alpha-accent-low);
 
 
   /* ==========================================================================
@@ -99,12 +104,12 @@
      ========================================================================== */
 
   /* Base — light mode */
-  --border-light-color: var(--n90);
+  --border-light-color: var(--s70);
   --border-light-focus: var(--p50);
 
   /* Base — dark mode */
-  --border-dark-color: var(--n10);
-  --border-dark-focus: var(--p30);
+  --border-dark-color: var(--s60);
+  --border-dark-focus: var(--p80);
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
   --border-color: var(--border-light-color);
@@ -116,45 +121,44 @@
 
 
   /* ==========================================================================
-     ACTIONS — fully opaque, no alpha
+     ACTIONS — fully opaque base colours + alpha overlay for hover/pressed states
      primary = brand-coloured interactive elements
      secondary = subtle background state for hover/focus (e.g. ghost buttons)
      neutral = non-brand interactive elements (e.g. neutral icon buttons)
      ========================================================================== */
 
   /* Base — light mode */
-  --action-light-primary-default:   var(--p40);
-  --action-light-primary-hover:     var(--p50);
-  --action-light-primary-disabled:  var(--s70);
-  --action-light-secondary-default: var(--p80);
-  --action-light-secondary-hover:   var(--p90);
-  --action-light-secondary-pressed: var(--p80);
-  --action-light-neutral-default:   var(--n70);
-  --action-light-neutral-disabled:  var(--n50);
-  --action-light-neutral-filled:    var(--n40);
+  --action-light-primary-default:    var(--p70);
+  --action-light-primary-overlay:    var(--p40); /* brand tint composited on hover/pressed */
+  --action-light-secondary-disabled: var(--s70);
+  --action-light-secondary-default:  var(--p80);
+  --action-light-secondary-overlay:  var(--p80); /* brand tint for secondary/tertiary overlay */
+  --action-light-neutral-default:    var(--n70);
+  --action-light-neutral-disabled:   var(--n50);
+  --action-light-neutral-filled:     var(--n40);
 
   /* Base — dark mode */
-  --action-dark-primary-default:   var(--p80);
-  --action-dark-primary-hover:     var(--p70);
-  --action-dark-primary-disabled:  var(--s30);
-  --action-dark-secondary-default: var(--p40);
-  --action-dark-secondary-hover:   var(--p30);
-  --action-dark-secondary-pressed: var(--p50);
-  --action-dark-neutral-default:   var(--n60);
-  --action-dark-neutral-disabled:  var(--n70);
-  --action-dark-neutral-filled:    var(--n80);
+  --action-dark-primary-default:    var(--p60);
+  --action-dark-primary-overlay:    var(--p80);
+  --action-dark-secondary-disabled: var(--s30);
+  --action-dark-secondary-default:  var(--p50);
+  --action-dark-secondary-overlay:  var(--p80);
+  --action-dark-neutral-default:    var(--n60);
+  --action-dark-neutral-disabled:   var(--n70);
+  --action-dark-neutral-filled:     var(--n80);
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
-  --action-primary-default:   var(--action-light-primary-default);   /* base state */
-  --action-primary-hover:     var(--action-light-primary-hover);     /* lighter — hover */
-  --action-primary-pressed:   var(--p60);                            /* mode-independent */
-  --action-primary-disabled:  var(--action-light-primary-disabled);  /* neutral, no outline */
-  --action-secondary-default: var(--action-light-secondary-default); /* near-transparent brand tint on light bg */
-  --action-secondary-hover:   var(--action-light-secondary-hover);
-  --action-secondary-pressed: var(--action-light-secondary-pressed);
-  --action-neutral-default:   var(--action-light-neutral-default);
-  --action-neutral-disabled:  var(--action-light-neutral-disabled);
-  --action-neutral-filled:    var(--action-light-neutral-filled);
+  --action-primary-default:    var(--action-light-primary-default);   /* base state */
+  --action-primary-overlay:    var(--action-light-primary-overlay);   /* brand tint overlay — hover/pressed via alpha */
+  --action-secondary-disabled: var(--action-light-secondary-disabled);
+  --action-secondary-default:  var(--action-light-secondary-default);
+  --action-secondary-overlay:  var(--action-light-secondary-overlay); /* brand tint overlay — hover/pressed via alpha */
+  --action-neutral-default:    var(--action-light-neutral-default);
+  --action-neutral-disabled:   var(--action-light-neutral-disabled);
+  --action-neutral-filled:     var(--action-light-neutral-filled);
+  /* Overlay alpha — mode-independent, defined in _base.css */
+  --action-overlay-alpha-hover:   var(--action-overlay-alpha-hover);
+  --action-overlay-alpha-pressed: var(--action-overlay-alpha-pressed);
 
 
   /* ==========================================================================
@@ -227,16 +231,18 @@
   --border-alpha-medium: var(--border-dark-alpha-medium);
   --border-alpha-low:    var(--border-dark-alpha-low);
 
+  /* Brand — re-point alias to dark base set */
+  --brand-main: var(--brand-dark-main);
+
   /* Actions — re-point aliases to dark base set */
-  --action-primary-default:   var(--action-dark-primary-default);
-  --action-primary-hover:     var(--action-dark-primary-hover);
-  --action-primary-disabled:  var(--action-dark-primary-disabled);
-  --action-secondary-default: var(--action-dark-secondary-default);
-  --action-secondary-hover:   var(--action-dark-secondary-hover);
-  --action-secondary-pressed: var(--action-dark-secondary-pressed);
-  --action-neutral-default:   var(--action-dark-neutral-default);
-  --action-neutral-disabled:  var(--action-dark-neutral-disabled);
-  --action-neutral-filled:    var(--action-dark-neutral-filled);
+  --action-primary-default:    var(--action-dark-primary-default);
+  --action-primary-overlay:    var(--action-dark-primary-overlay);
+  --action-secondary-disabled: var(--action-dark-secondary-disabled);
+  --action-secondary-default:  var(--action-dark-secondary-default);
+  --action-secondary-overlay:  var(--action-dark-secondary-overlay);
+  --action-neutral-default:    var(--action-dark-neutral-default);
+  --action-neutral-disabled:   var(--action-dark-neutral-disabled);
+  --action-neutral-filled:     var(--action-dark-neutral-filled);
 
   /* Meaning — re-point aliases to dark base set */
   --meaning-error:   var(--meaning-dark-error);
@@ -244,10 +250,13 @@
   --meaning-success: var(--meaning-dark-success);
 
   /* Text alpha — re-point aliases to dark base set */
-  --text-alpha-max:    var(--text-dark-alpha-max);
-  --text-alpha-high:   var(--text-dark-alpha-high);
-  --text-alpha-medium: var(--text-dark-alpha-medium);
-  --text-alpha-low:    var(--text-dark-alpha-low);
-  --text-alpha-accent: var(--text-dark-alpha-accent);
+  --text-alpha-high:    var(--text-dark-alpha-high);
+  --text-alpha-medium:   var(--text-dark-alpha-medium);
+  --text-alpha-low: var(--text-dark-alpha-low);
+  --text-alpha-disabled:    var(--text-dark-alpha-disabled);
+  --text-alpha-accent:        var(--text-dark-alpha-accent);
+  --text-alpha-accent-high:   var(--text-dark-alpha-accent-high);
+  --text-alpha-accent-medium: var(--text-dark-alpha-accent-medium);
+  --text-alpha-accent-low:    var(--text-dark-alpha-accent-low);
 
 }

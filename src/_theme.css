@@ -175,7 +175,7 @@
 
    NOTE: Text and border colours with alpha composition are NOT here.
    They are surfaced as @utility in _components.css because their values
-   are rgb(var(--text-high) / var(--text-alpha-high)) — two independent
+   are rgb(var(--text-high) / var(--text-alpha-medium)) — two independent
    vars that cannot collapse to a single theme token.
    ========================================================================== */
 
@@ -200,7 +200,7 @@
   --color-action-primary-default:  rgb(var(--action-primary-default));
   --color-action-primary-hover:    rgb(var(--action-primary-hover));
   --color-action-primary-pressed:  rgb(var(--action-primary-pressed));
-  --color-action-primary-disabled: rgb(var(--action-primary-disabled));
+  --color-action-secondary-disabled: rgb(var(--action-secondary-disabled));
   --color-action-secondary-hover:  rgb(var(--action-secondary-hover));
   --color-action-secondary-pressed:rgb(var(--action-secondary-pressed));
   --color-action-neutral-default:  rgb(var(--action-neutral-default));

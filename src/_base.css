@@ -28,6 +28,7 @@
   --p60: 113 144 213;
   --p70: 140 170 241;
   --p80: 175 198 255;
+  --p85: 196 212 255;
   --p90: 217 226 255;
   --p95: 237 240 255;
   --p98: 250 248 255;
@@ -139,19 +140,33 @@
      ========================================================================== */
 
   /* Light mode */
-  --text-light-alpha-max:    1;
-  --text-light-alpha-high:   0.89;
-  --text-light-alpha-medium: 0.60;
-  --text-light-alpha-low:    0.38;
-  --text-light-alpha-accent: 0.85;
+  --text-light-alpha-high:    0.83;
+  --text-light-alpha-medium:   0.66;
+  --text-light-alpha-low: 0.51;
+  --text-light-alpha-disabled:    0.26;
+  --text-light-alpha-accent:        0.85;
+  --text-light-alpha-accent-high:   1;
+  --text-light-alpha-accent-medium: 0.82;
+  --text-light-alpha-accent-low:    0.63;
 
   /* Dark mode */
-  --text-dark-alpha-max:    1;
-  --text-dark-alpha-high:   0.96;
-  --text-dark-alpha-medium: 0.77;
-  --text-dark-alpha-low:    0.59;
-  --text-dark-alpha-accent: 0.95;
+  --text-dark-alpha-high:    0.96;
+  --text-dark-alpha-medium:   0.84;
+  --text-dark-alpha-low: 0.72;
+  --text-dark-alpha-disabled:    0.46;
+  --text-dark-alpha-accent:        0.95;
+  --text-dark-alpha-accent-high:   1;
+  --text-dark-alpha-accent-medium: 0.97;
+  --text-dark-alpha-accent-low:    0.89;
 
+
+  /* ==========================================================================
+     ACTION OVERLAY — alpha scales (mode-independent)
+     Applied as a brand-tinted layer on top of the base action colour.
+     ========================================================================== */
+
+  --action-overlay-alpha-hover:   0.35;
+  --action-overlay-alpha-pressed: 0.45;
 
   /* ==========================================================================
      BORDERS — alpha + width scales
@@ -159,20 +174,18 @@
      ========================================================================== */
 
   /* Alpha scale — light mode */
-  --border-light-alpha-high:   0.87;
-  --border-light-alpha-medium: 0.38;
-  --border-light-alpha-low:    0.12;
+  --border-light-alpha-high:   0.48;
+  --border-light-alpha-medium: 0.36;
+  --border-light-alpha-low:    0.25;
   /* Alpha scale — dark mode */
-  --border-dark-alpha-high:   0.87;
-  --border-dark-alpha-medium: 0.38;
-  --border-dark-alpha-low:    0.12;
+  --border-dark-alpha-high:   0.62;
+  --border-dark-alpha-medium: 0.53;
+  --border-dark-alpha-low:    0.4;
   /* Focus alpha — mode-independent */
-  --border-alpha-focus: 1;
+  --border-alpha-focus: 0.68;
 
   /* Width scale — override per project */
-  --border-width-low:    1px;
-  --border-width-medium: 1px;
-  --border-width-high:   2px;
+  --border-width:        1px;
   --border-width-focus:  2px;
 
 

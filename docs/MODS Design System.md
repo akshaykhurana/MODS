@@ -101,10 +101,10 @@ Semantic tokens map base palette steps to named roles. These are what Tailwind u
 Each token that carries an alpha value uses a separate colour var (raw RGB channels) and an alpha var, composed at point of use:
 
 ```css
-color: rgb(var(--text-high) / var(--text-alpha-high));
+color: rgb(var(--text-high) / var(--text-alpha-medium));
 ```
 
-`max`-level tokens are always fully opaque and have no alpha var.
+`high`-level tokens are always fully opaque and have no alpha var.
 
 The alpha values follow the Material Design emphasis scale and are rarely overridden per project because the MD contrast system maintains readability when swapping hues.
 
@@ -114,24 +114,24 @@ The alpha values follow the Material Design emphasis scale and are rarely overri
 /* Defined in _base-vars.css */
 
 /* Text alphas — light and dark tuned independently; aliases switch in .dark {} */
---text-light-alpha-max:    1;
---text-light-alpha-high:   0.89;
---text-light-alpha-medium: 0.60;
---text-light-alpha-low:    0.38;
+--text-light-alpha-high:     1;
+--text-light-alpha-medium: 0.89;
+--text-light-alpha-low:    0.60;
+--text-light-alpha-disabled: 0.38;
 --text-light-alpha-accent: 0.85;
 
---text-dark-alpha-max:    1;
---text-dark-alpha-high:   0.96;
---text-dark-alpha-medium: 0.77;
---text-dark-alpha-low:    0.59;
+--text-dark-alpha-high:     1;
+--text-dark-alpha-medium: 0.96;
+--text-dark-alpha-low:    0.77;
+--text-dark-alpha-disabled: 0.59;
 --text-dark-alpha-accent: 0.95;
 
 /* Active aliases live in _semantic-tokens.css — switch between light/dark in .dark {} */
---text-alpha-max:    var(--text-light-alpha-max);
---text-alpha-high:   var(--text-light-alpha-high);
---text-alpha-medium: var(--text-light-alpha-medium);
---text-alpha-low:    var(--text-light-alpha-low);
---text-alpha-accent: var(--text-light-alpha-accent);
+--text-alpha-high:     var(--text-light-alpha-high);
+--text-alpha-medium:   var(--text-light-alpha-medium);
+--text-alpha-low:      var(--text-light-alpha-low);
+--text-alpha-disabled: var(--text-light-alpha-disabled);
+--text-alpha-accent:   var(--text-light-alpha-accent);
 
 /* Border alphas — mode-independent, defined in _base-vars.css */
 --border-alpha-high:   0.87;
@@ -191,7 +191,7 @@ All mode-switching tokens follow **Pattern 1**:
 
   /* ---- Text ---- */
   /* Single colour alias per context + a shared alpha scale applied at point of use:
-       color: rgb(var(--text-color) / var(--text-alpha-high)); */
+       color: rgb(var(--text-color) / var(--text-alpha-medium)); */
 
   /* Base — light mode */
   --text-light-color:         var(--s10);
@@ -212,11 +212,11 @@ All mode-switching tokens follow **Pattern 1**:
   --text-invert-accent: var(--text-light-invert-accent);
 
   /* Alpha aliases — raw values in _base-vars.css; switch in .dark {} */
-  --text-alpha-max:    var(--text-light-alpha-max);
-  --text-alpha-high:   var(--text-light-alpha-high);
-  --text-alpha-medium: var(--text-light-alpha-medium);
-  --text-alpha-low:    var(--text-light-alpha-low);
-  --text-alpha-accent: var(--text-light-alpha-accent);
+  --text-alpha-high:     var(--text-light-alpha-high);
+  --text-alpha-medium:   var(--text-light-alpha-medium);
+  --text-alpha-low:      var(--text-light-alpha-low);
+  --text-alpha-disabled: var(--text-light-alpha-disabled);
+  --text-alpha-accent:   var(--text-light-alpha-accent);
 
   /* ---- Borders ---- */
   /* Base — light mode */
@@ -241,7 +241,7 @@ All mode-switching tokens follow **Pattern 1**:
   /* Base — light mode */
   --action-light-primary-default:   var(--p40);
   --action-light-primary-hover:     var(--p50);
-  --action-light-primary-disabled:  var(--s70);
+  --action-light-secondary-disabled:  var(--s70);
   --action-light-secondary-default: var(--p80);
   --action-light-secondary-hover:   var(--p90);
   --action-light-secondary-pressed: var(--p80);
@@ -252,25 +252,38 @@ All mode-switching tokens follow **Pattern 1**:
   /* Base — dark mode */
   --action-dark-primary-default:   var(--p80);
   --action-dark-primary-hover:     var(--p70);
-  --action-dark-primary-disabled:  var(--s30);
-  --action-dark-secondary-default: var(--p40);
-  --action-dark-secondary-hover:   var(--p30);
-  --action-dark-secondary-pressed: var(--p50);
-  --action-dark-neutral-default:   var(--n60);
-  --action-dark-neutral-disabled:  var(--n70);
-  --action-dark-neutral-filled:    var(--n80);
+  /* Base — light mode */
+  --action-light-primary-default:    var(--p70);
+  --action-light-primary-overlay:    var(--p80); /* brand tint composited on hover/pressed */
+  --action-light-secondary-disabled: var(--s70);
+  --action-light-secondary-default:  var(--p80);
+  --action-light-secondary-overlay:  var(--p80);
+  --action-light-neutral-default:    var(--n70);
+  --action-light-neutral-disabled:   var(--n50);
+  --action-light-neutral-filled:     var(--n40);
+
+  /* Base — dark mode */
+  --action-dark-primary-default:    var(--p60);
+  --action-dark-primary-overlay:    var(--p80);
+  --action-dark-secondary-disabled: var(--s30);
+  --action-dark-secondary-default:  var(--p50);
+  --action-dark-secondary-overlay:  var(--p80);
+  --action-dark-neutral-default:    var(--n60);
+  --action-dark-neutral-disabled:   var(--n70);
+  --action-dark-neutral-filled:     var(--n80);
 
   /* Active aliases */
-  --action-primary-default:   var(--action-light-primary-default);
-  --action-primary-hover:     var(--action-light-primary-hover);
-  --action-primary-pressed:   var(--p60);                            /* mode-independent */
-  --action-primary-disabled:  var(--action-light-primary-disabled);
-  --action-secondary-default: var(--action-light-secondary-default);
-  --action-secondary-hover:   var(--action-light-secondary-hover);
-  --action-secondary-pressed: var(--action-light-secondary-pressed);
-  --action-neutral-default:   var(--action-light-neutral-default);
-  --action-neutral-disabled:  var(--action-light-neutral-disabled);
-  --action-neutral-filled:    var(--action-light-neutral-filled);
+  --action-primary-default:    var(--action-light-primary-default);
+  --action-primary-overlay:    var(--action-light-primary-overlay);   /* brand tint overlay */
+  --action-secondary-disabled: var(--action-light-secondary-disabled);
+  --action-secondary-default:  var(--action-light-secondary-default);
+  --action-secondary-overlay:  var(--action-light-secondary-overlay); /* brand tint overlay */
+  --action-neutral-default:    var(--action-light-neutral-default);
+  --action-neutral-disabled:   var(--action-light-neutral-disabled);
+  --action-neutral-filled:     var(--action-light-neutral-filled);
+  /* Overlay alpha — mode-independent */
+  --action-overlay-alpha-hover:   0.12;
+  --action-overlay-alpha-pressed: 0.22;
 
   /* ---- Meaning ---- */
   /* Base — light mode */
@@ -306,14 +319,14 @@ All mode-switching tokens follow **Pattern 1**:
 
 #### Text token usage summary
 
-Text uses a single colour alias per context (`--text-color`, `--text-accent`, `--text-invert-color`, `--text-invert-accent`) combined with a shared alpha scale: `rgb(var(--text-color) / var(--text-alpha-high))`.
+Text uses a single colour alias per context (`--text-color`, `--text-accent`, `--text-invert-color`, `--text-invert-accent`) combined with a shared alpha scale: `rgb(var(--text-color) / var(--text-alpha-medium))`.
 
 | Emphasis | Colour var | Alpha var | Light | Dark |
 |---|---|---|---|---|
-| Max (icons, highest contrast) | `--text-color` | `--text-alpha-max` | 1.0 | 1.0 |
-| High (headings) | `--text-color` | `--text-alpha-high` | 0.89 | 0.96 |
-| Medium (body copy) | `--text-color` | `--text-alpha-medium` | 0.60 | 0.77 |
-| Low (disabled, placeholders) | `--text-color` | `--text-alpha-low` | 0.38 | 0.59 |
+| High (icons, highest contrast) | `--text-color` | `--text-alpha-high` | 1.0 | 1.0 |
+| Medium (headings) | `--text-color` | `--text-alpha-medium` | 0.89 | 0.96 |
+| Low (body copy) | `--text-color` | `--text-alpha-low` | 0.60 | 0.77 |
+| Disabled (placeholders) | `--text-color` | `--text-alpha-disabled` | 0.38 | 0.59 |
 | Accent (links, highlights) | `--text-accent` | `--text-alpha-accent` | 0.85 | 0.95 |
 | On inverted surfaces | `--text-invert-color` / `--text-invert-accent` | same alpha scale | — | — |
 
@@ -328,17 +341,22 @@ Borders use a single colour alias `--border-color` (mode-adaptive) combined with
 | Subtle dividers | `--border-color` | `--border-alpha-low` | 0.12 |
 | Focused inputs, active selection | `--border-focus` | `--border-alpha-focus` | 1.0 |
 
-Usage in Tailwind: `bg-brand-main`, `text-high`, `border-medium`, `bg-level2`, `bg-meaning-success`.
+Usage in Tailwind: `bg-brand-main`, `text-medium`, `border-medium`, `bg-level2`, `bg-meaning-success`.
 
 #### Action token usage summary
 
-All action colours are **solid fills — no opacity**. Hover and pressed states step progressively from the default. This ensures elements behind them cannot bleed through.
+Hover and pressed states use a **state layer overlay** model. A brand-tinted overlay colour (`action-primary-overlay` / `action-secondary-overlay`) is composited on top of the base surface at two shared alpha values — one for hover, one for pressed. This means adding a new button variant requires only a new default colour; hover/pressed are automatic.
 
 | Token | States | Usage |
 |---|---|---|
-| `action-primary-*` | default / hover / pressed / disabled | Buttons, checkboxes, dropdowns, progress bars |
-| `action-secondary-*` | default / hover / pressed | Secondary button fills, ghost button active states |
+| `action-primary-*` | default + overlay (hover/pressed) + disabled | Buttons, checkboxes, dropdowns, progress bars |
+| `action-secondary-*` | default + overlay (hover/pressed) + disabled | Secondary button fills, ghost button active states |
 | `action-neutral-*` | default / disabled / filled | Inactive toggles, unselected tabs, neutral state fills |
+
+| Alpha token | Default | Role |
+|---|---|---|
+| `--action-overlay-alpha-hover` | 0.12 | Applied to overlay colour on hover |
+| `--action-overlay-alpha-pressed` | 0.22 | Applied to overlay colour on pressed/active |
 
 #### Meaning token usage summary
 
@@ -829,9 +847,9 @@ Button sizes follow the global scr-l rule — each size steps up one level at 19
 |---|---|
 | `.btn` | Base: `w-fit flex flex-row place-items-center` + transition |
 | `.btn-tight` | Collapses `px` to 0; expands to full padding on hover/focus |
-| `.btn-primary` | Brand fill (`action-primary-default`), inverted text, `shadow-level2`; hover → `shadow-level4` |
-| `.btn-secondary` | Transparent with brand border; hover → `action-secondary-hover` bg |
-| `.btn-tertiary` | Text only; hover → `action-secondary-hover` bg |
+| `.btn-primary` | Brand fill (`action-primary-default`), inverted text, `shadow-level2`; hover/pressed → `action-primary-overlay` composited at `--action-overlay-alpha-hover/pressed` |
+| `.btn-secondary` | Transparent, `text-disabled` border + label; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
+| `.btn-tertiary` | Text only; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
 
 ### Icon buttons
 
@@ -849,9 +867,9 @@ Icon buttons are square buttons with no text, typically used in circular form. H
 |---|---|
 | `.btn-icon` | Base: `flex items-center justify-center` + transition |
 | `.btn-icon-sq` | Square radius modifier — overrides `rounded-full` with the size's square radius (see table above) |
-| `.btn-icon-primary` | `action-primary-default` bg; hover → `action-primary-hover` |
-| `.btn-icon-secondary` | Transparent with brand border; hover → `action-secondary-hover` bg |
-| `.btn-icon-tertiary` | No background; hover → `action-secondary-hover` bg |
+| `.btn-icon-primary` | `action-primary-default` bg; hover/pressed → `action-primary-overlay` at overlay alpha |
+| `.btn-icon-secondary` | Transparent with brand border; hover/pressed → `action-secondary-overlay` at overlay alpha |
+| `.btn-icon-tertiary` | No background; hover/pressed → `action-secondary-overlay` at overlay alpha |
 
 ### Typography classes
 
@@ -898,7 +916,7 @@ All input components share a base height scale that follows the global scr-l rul
 |---|---|
 | `.input` | Base: `w-full flex items-center` + border + transition. Uses `border-medium` at rest. |
 | `.input:focus` | `border-focus` colour, no size change |
-| `.input:disabled` | `text-low` colour, `action-primary-disabled` bg, no pointer events |
+| `.input:disabled` | `text-low` colour, `action-secondary-disabled` bg, no pointer events |
 | `.input-error` | `meaning-error` border; add `.input-error-msg` below for error text |
 | `.input-success` | `meaning-success` border |
 
@@ -908,14 +926,14 @@ All input components share a base height scale that follows the global scr-l rul
 |---|---|
 | `.checkbox` | 16×16px (scr-l: 20×20px), `--shape-control`. Unchecked: `border-medium`. Checked: `action-primary-default` fill, white tick. Indeterminate: `action-primary-default` fill, white dash. |
 | `.radio` | 16×16px (scr-l: 20×20px), `--shape-full`. Unchecked: `border-medium`. Checked: outer ring `action-primary-default`, filled centre dot. |
-| `.checkbox:disabled`, `.radio:disabled` | `action-primary-disabled` fill/border, no pointer events |
+| `.checkbox:disabled`, `.radio:disabled` | `action-secondary-disabled` fill/border, no pointer events |
 
 ### Toggles
 
 | Class | Description |
 |---|---|
 | `.toggle` | Pill track (32×16px, scr-l: 40×20px), `--shape-full`. Off: `action-neutral-default` track. On: `action-primary-default` track. Thumb is white, `--shape-full`, with `shadow-level2`. |
-| `.toggle:disabled` | `action-primary-disabled` / `action-neutral-disabled` fills |
+| `.toggle:disabled` | `action-secondary-disabled` / `action-neutral-disabled` fills |
 
 ### Badges
 

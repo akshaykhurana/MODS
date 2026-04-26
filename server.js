@@ -371,7 +371,7 @@ const server = http.createServer((req, res) => {
   }
 
   // --- Static files ---
-  let filePath = pathname === '/' ? '/playground.html' : pathname;
+  let filePath = pathname === '/' ? '/playground/index.html' : pathname;
   filePath = path.join(ROOT, filePath);
 
   const ext  = path.extname(filePath);
