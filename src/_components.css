@@ -938,7 +938,7 @@
 
   .chip.selected {
     border-color: rgb(var(--action-primary-default));
-    background-color: rgb(var(--brand-lighter));
+    background-color: rgb(var(--brand-main) / 0.12);
     color: rgb(var(--text-accent));
   }
 

@@ -208,10 +208,7 @@
 @theme inline {
 
   /* BRAND */
-  --color-brand-main:     rgb(var(--brand-main));
-  --color-brand-lighter:  rgb(var(--brand-lighter));
-  --color-brand-accent-1: rgb(var(--brand-accent-1));
-  --color-brand-accent-2: rgb(var(--brand-accent-2));
+  --color-brand-main: rgb(var(--brand-main));
 
   /* SURFACES
      --surfaces-alpha (0.96) is baked in — surfaces are always translucent by design.

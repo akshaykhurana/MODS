@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MODS Playground</title>
+  <link rel="stylesheet" href="dist/style.css">
+  <style>
+    /* =========================================================
+       Playground chrome — scoped pg-* classes only.
+       References MODS CSS vars for colour but never MODS classes.
+       ========================================================= */
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background-color: rgb(var(--surfaces-base));
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      transition: background-color 200ms, color 200ms;
+    }
+
+    /* --- Navbar --- */
+    .pg-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 56px;
+      background-color: rgb(var(--surfaces-l4) / var(--surfaces-alpha));
+      border-bottom: 1px solid rgb(var(--border-high) / var(--border-alpha-medium));
+    }
+    .pg-nav-title {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+    }
+    .pg-nav-links {
+      display: flex;
+      gap: 2px;
+    }
+    .pg-nav-links a {
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: background 150ms, color 150ms;
+    }
+    .pg-nav-links a:hover {
+      background: rgb(var(--text-high) / 0.08);
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+    }
+    .pg-dark-toggle {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgb(var(--border-high) / var(--border-alpha-medium));
+      background: transparent;
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      cursor: pointer;
+      transition: background 150ms;
+      letter-spacing: 0.5px;
+    }
+    .pg-dark-toggle:hover {
+      background: rgb(var(--text-high) / 0.08);
+    }
+
+    /* --- Section layout --- */
+    .pg-section {
+      padding: 88px 48px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .pg-section + .pg-section {
+      border-top: 1px solid rgb(var(--border-high) / 0.08);
+    }
+    .pg-section-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0 0 36px;
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      letter-spacing: -0.5px;
+    }
+    .pg-subsection-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin: 40px 0 16px;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      padding-top: 24px;
+      border-top: 1px solid rgb(var(--border-high) / 0.06);
+    }
+    .pg-subsection-title:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .pg-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgb(var(--text-low) / var(--text-alpha-low));
+      margin: 20px 0 8px;
+    }
+    .pg-group-label:first-of-type {
+      margin-top: 0;
+    }
+
+    /* --- Colour swatches --- */
+    .pg-swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pg-swatch {
+      width: 84px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    /* Delete button — revealed on hover */
+    .pg-swatch-delete {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgb(var(--meaning-error));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 10px;
+      line-height: 16px;
+      padding: 0;
+      text-align: center;
+      z-index: 1;
+    }
+    .pg-swatch:hover .pg-swatch-delete { display: block; }
+    /* Add-colour tile */
+    .pg-add-tile {
+      width: 56px;
+      min-height: 60px;
+      border: 1.5px dashed rgb(var(--border-high) / 0.20);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: rgb(var(--text-low) / var(--text-alpha-low));
+      flex-shrink: 0;
+      transition: border-color 120ms, color 120ms;
+    }
+    .pg-add-tile:hover {
+      border-color: rgb(var(--border-focus));
+      color: rgb(var(--text-accent));
+    }
+    /* Add-colour inline form */
+    .pg-add-form {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      width: 84px;
+      flex-shrink: 0;
+    }
+    .pg-add-prefix-sel,
+    .pg-add-name,
+    .pg-add-rgb {
+      width: 100%;
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: 1px solid rgb(var(--border-focus));
+      background: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      outline: none;
+      box-sizing: border-box;
+    }
+    .pg-add-name.invalid,
+    .pg-add-rgb.invalid { border-color: rgb(var(--meaning-error)); }
+    .pg-add-form-btns { display: flex; gap: 4px; }
+    .pg-add-confirm,
+    .pg-add-cancel {
+      flex: 1;
+      font-size: 11px;
+      padding: 3px 0;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+    }
+    .pg-add-confirm {
+      background: rgb(var(--action-primary-default));
+      color: rgb(var(--text-invert-max));
+    }
+    .pg-add-cancel {
+      background: rgb(var(--surfaces-l3) / var(--surfaces-alpha));
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+    }
+    .pg-swatch-color {
+      width: 84px;
+      height: 60px;
+      border-radius: 6px;
+      border: 1px solid rgb(var(--border-high) / 0.08);
+      margin-bottom: 6px;
+      overflow: hidden;
+    }
+    .pg-swatch-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .pg-swatch-sub {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    /* Checkered bg for surface swatches with alpha */
+    .pg-checker .pg-swatch-color {
+      background-image:
+        linear-gradient(45deg, #bbb 25%, transparent 25%),
+        linear-gradient(-45deg, #bbb 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #bbb 75%),
+        linear-gradient(-45deg, transparent 75%, #bbb 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+      background-color: #e8e8e8;
+    }
+    .pg-swatch-color-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+
+    /* --- Text token demos --- */
+    .pg-text-tokens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 4px;
+    }
+    .pg-text-token {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .pg-text-token-sample {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .pg-text-token-meta {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+    }
+
+    /* Invert surface panel */
+    .pg-invert-panel {
+      background-color: rgb(var(--surfaces-invert));
+      padding: 24px 28px;
+      border-radius: 10px;
+      margin-top: 8px;
+    }
+    .pg-invert-panel .pg-text-token-meta {
+      color: rgb(var(--text-invert-low) / 0.55);
+    }
+
+    /* Border token demos */
+    .pg-border-tokens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 4px;
+    }
+    .pg-border-token {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pg-border-swatch {
+      width: 140px;
+      height: 44px;
+      border-radius: 6px;
+      border: 2px solid;
+      background: transparent;
+    }
+    .pg-border-meta {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+    }
+
+    /* --- Typography rows --- */
+    .pg-type-row {
+      padding: 14px 0;
+      border-bottom: 1px solid rgb(var(--border-high) / 0.06);
+    }
+    .pg-type-row:last-child { border-bottom: none; }
+    .pg-type-sample { margin-bottom: 5px; }
+    .pg-type-meta {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      line-height: 1.7;
+    }
+
+    /* --- Spacing bars --- */
+    .pg-space-rows { max-width: 600px; }
+    .pg-space-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 7px;
+      min-height: 20px;
+    }
+    .pg-space-name {
+      font-size: 11px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      font-weight: 600;
+      width: 36px;
+      flex-shrink: 0;
+      color: rgb(var(--text-high) / var(--text-alpha-high));
+    }
+    .pg-space-bar {
+      height: 10px;
+      background-color: rgb(var(--brand-main));
+      border-radius: 3px;
+      min-width: 2px;
+      flex-shrink: 0;
+    }
+    .pg-space-px {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      white-space: nowrap;
+    }
+
+    /* --- Shape --- */
+    .pg-shape-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-bottom: 12px;
+      align-items: flex-end;
+    }
+    .pg-shape-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .pg-shape-box {
+      background-color: rgb(var(--action-primary-default));
+    }
+    .pg-shape-meta {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      text-align: center;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      line-height: 1.6;
+    }
+
+    /* --- Shadows --- */
+    .pg-shadow-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      padding: 16px 0 8px;
+    }
+    .pg-shadow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .pg-shadow-box {
+      width: 88px;
+      height: 88px;
+      border-radius: 8px;
+      background-color: rgb(var(--surfaces-base));
+      border: 1px solid rgb(var(--border-high) / 0.06);
+    }
+    .pg-shadow-meta {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      text-align: center;
+    }
+
+    /* --- Components layout --- */
+    .pg-comp-group { margin-bottom: 0; }
+    .pg-comp-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgb(var(--text-low) / var(--text-alpha-low));
+      margin: 20px 0 10px;
+    }
+    .pg-comp-label:first-child { margin-top: 0; }
+    .pg-comp-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .pg-comp-note {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      margin-bottom: 16px;
+    }
+
+    /* Form columns */
+    .pg-form-cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 6px;
+    }
+    .pg-form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 220px;
+      max-width: 320px;
+    }
+    .pg-form-note {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+    }
+
+    /* Controls */
+    .pg-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+    }
+    .pg-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pg-control-heading {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgb(var(--text-low) / var(--text-alpha-low));
+      margin-bottom: 2px;
+    }
+    .pg-control-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+    }
+
+    /* ---- Palette editor ---- */
+    .pg-save-bar {
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 48px;
+      background: rgb(var(--surfaces-l3) / var(--surfaces-alpha));
+      border-bottom: 1px solid rgb(var(--border-high) / 0.08);
+      backdrop-filter: blur(8px);
+    }
+    .pg-save-status {
+      font-size: 11px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      flex: 1;
+    }
+    .pg-save-status.has-changes { color: rgb(var(--meaning-alert)); }
+    .pg-save-status.building    { color: rgb(var(--text-accent)); }
+    .pg-save-status.saved       { color: rgb(var(--meaning-success)); }
+    .pg-save-status.error       { color: rgb(var(--meaning-error)); }
+    .pg-save-btn {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 20px;
+      border-radius: 20px;
+      border: none;
+      background: rgb(var(--action-primary-default));
+      color: rgb(var(--text-invert-max));
+      cursor: pointer;
+      transition: background 150ms, opacity 150ms;
+      letter-spacing: 0.3px;
+    }
+    .pg-save-btn:disabled { opacity: 0.4; cursor: default; }
+    .pg-save-btn:not(:disabled):hover { background: rgb(var(--action-primary-hover)); }
+
+    /* Editable RGB field on raw palette swatches */
+    .pg-swatch-edit {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .pg-swatch-val {
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      cid="palette-p" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Secondary (s)</div>
+  <div id="palette-s" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Neutral (n) — n35 and n65 are midpoints used for surfaces-l2a only</div>
+  <div id="palette-n" class="pg-swatch-row"></div>
+
+  <div class="pg-group-label">Meaning tones — 30 = light mode · 70 = dark mode</div>
+  <div id="palette-meaning" class="pg-swatch-row">av class="pg-nav">
+  <span class="pg-nav-title">MODS Playground</span>
+  <div class="pg-nav-links">
+    <a href="#colour">Colour</a>
+    <a href="#text">Text</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#shape">Shape</a>
+    <a href="#components">Components</a>
+  </div>
+  <button class="pg-dark-toggle" id="darkToggle">&#9790; Dark</button>
+</nav>
+
+
+<!-- ================================================================
+     SAVE BAR (sticky below navbar)
+     ================================================================ -->
+<div class="pg-save-bar" id="save-bar">
+  <span class="pg-save-status" id="save-status">No unsaved changes</span>
+  <button class="pg-save-btn" id="save-btn" disabled>Save</button>
+</div>
+
+<!-- ================================================================
+     COLOUR
+     ================================================================ -->
+<section id="colour" class="pg-section">
+  <h2 class="pg-section-title">Colour</h2>
+
+  <!-- RAW PALETTE -->
+  <h3 class="pg-subsection-title">Raw Palette</h3>
+
+  <div class="pg-group-label">Primary (p)</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--p10"><div class="pg-swatch-color" style="background:rgb(var(--p10))"></div><div class="pg-swatch-name">p10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">240 240 240</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p20"><div class="pg-swatch-color" style="background:rgb(var(--p20))"></div><div class="pg-swatch-name">p20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 220 220</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p30"><div class="pg-swatch-color" style="background:rgb(var(--p30))"></div><div class="pg-swatch-name">p30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p40"><div class="pg-swatch-color" style="background:rgb(var(--p40))"></div><div class="pg-swatch-name">p40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p50"><div class="pg-swatch-color" style="background:rgb(var(--p50))"></div><div class="pg-swatch-name">p50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">150 150 150</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p60"><div class="pg-swatch-color" style="background:rgb(var(--p60))"></div><div class="pg-swatch-name">p60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p70"><div class="pg-swatch-color" style="background:rgb(var(--p70))"></div><div class="pg-swatch-name">p70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">90 90 90</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p80"><div class="pg-swatch-color" style="background:rgb(var(--p80))"></div><div class="pg-swatch-name">p80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">60 60 60</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p90"><div class="pg-swatch-color" style="background:rgb(var(--p90))"></div><div class="pg-swatch-name">p90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">30 30 30</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--p100"><div class="pg-swatch-color" style="background:rgb(var(--p100))"></div><div class="pg-swatch-name">p100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+  </div>
+
+  <div class="pg-group-label">Secondary (s)</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--s10"><div class="pg-swatch-color" style="background:rgb(var(--s10))"></div><div class="pg-swatch-name">s10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">240 240 240</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s20"><div class="pg-swatch-color" style="background:rgb(var(--s20))"></div><div class="pg-swatch-name">s20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 220 220</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s30"><div class="pg-swatch-color" style="background:rgb(var(--s30))"></div><div class="pg-swatch-name">s30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s40"><div class="pg-swatch-color" style="background:rgb(var(--s40))"></div><div class="pg-swatch-name">s40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s50"><div class="pg-swatch-color" style="background:rgb(var(--s50))"></div><div class="pg-swatch-name">s50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">150 150 150</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s60"><div class="pg-swatch-color" style="background:rgb(var(--s60))"></div><div class="pg-swatch-name">s60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s70"><div class="pg-swatch-color" style="background:rgb(var(--s70))"></div><div class="pg-swatch-name">s70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">90 90 90</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s80"><div class="pg-swatch-color" style="background:rgb(var(--s80))"></div><div class="pg-swatch-name">s80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">60 60 60</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s90"><div class="pg-swatch-color" style="background:rgb(var(--s90))"></div><div class="pg-swatch-name">s90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">30 30 30</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--s100"><div class="pg-swatch-color" style="background:rgb(var(--s100))"></div><div class="pg-swatch-name">s100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+  </div>
+
+  <div class="pg-group-label">Neutral (n) — n35 and n65 are midpoints used for surfaces-l2a only</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--n10"><div class="pg-swatch-color" style="background:rgb(var(--n10))"></div><div class="pg-swatch-name">n10</div><div class="pg-swatch-edit"><span class="pg-swatch-val">245 245 245</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n20"><div class="pg-swatch-color" style="background:rgb(var(--n20))"></div><div class="pg-swatch-name">n20</div><div class="pg-swatch-edit"><span class="pg-swatch-val">230 230 230</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n30"><div class="pg-swatch-color" style="background:rgb(var(--n30))"></div><div class="pg-swatch-name">n30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">215 215 215</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n35"><div class="pg-swatch-color" style="background:rgb(var(--n35))"></div><div class="pg-swatch-name">n35</div><div class="pg-swatch-edit"><span class="pg-swatch-val">207 207 207</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n40"><div class="pg-swatch-color" style="background:rgb(var(--n40))"></div><div class="pg-swatch-name">n40</div><div class="pg-swatch-edit"><span class="pg-swatch-val">200 200 200</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n50"><div class="pg-swatch-color" style="background:rgb(var(--n50))"></div><div class="pg-swatch-name">n50</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 180 180</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n60"><div class="pg-swatch-color" style="background:rgb(var(--n60))"></div><div class="pg-swatch-name">n60</div><div class="pg-swatch-edit"><span class="pg-swatch-val">160 160 160</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n65"><div class="pg-swatch-color" style="background:rgb(var(--n65))"></div><div class="pg-swatch-name">n65</div><div class="pg-swatch-edit"><span class="pg-swatch-val">140 140 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n70"><div class="pg-swatch-color" style="background:rgb(var(--n70))"></div><div class="pg-swatch-name">n70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">120 120 120</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n80"><div class="pg-swatch-color" style="background:rgb(var(--n80))"></div><div class="pg-swatch-name">n80</div><div class="pg-swatch-edit"><span class="pg-swatch-val">80 80 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n90"><div class="pg-swatch-color" style="background:rgb(var(--n90))"></div><div class="pg-swatch-name">n90</div><div class="pg-swatch-edit"><span class="pg-swatch-val">40 40 40</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--n100"><div class="pg-swatch-color" style="background:rgb(var(--n100))"></div><div class="pg-swatch-name">n100</div><div class="pg-swatch-edit"><span class="pg-swatch-val">10 10 10</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+  </div>
+
+  <div class="pg-group-label">Meaning tones — 30 = light mode · 70 = dark mode</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--r30"><div class="pg-swatch-color" style="background:rgb(var(--r30))"></div><div class="pg-swatch-name">r30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">220 80 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--r70"><div class="pg-swatch-color" style="background:rgb(var(--r70))"></div><div class="pg-swatch-name">r70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">255 140 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--y30"><div class="pg-swatch-color" style="background:rgb(var(--y30))"></div><div class="pg-swatch-name">y30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">180 140 20</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--y70"><div class="pg-swatch-color" style="background:rgb(var(--y70))"></div><div class="pg-swatch-name">y70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">255 210 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--g30"><div class="pg-swatch-color" style="background:rgb(var(--g30))"></div><div class="pg-swatch-name">g30</div><div class="pg-swatch-edit"><span class="pg-swatch-val">40 140 80</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+    <div class="pg-swatch" data-var="--g70"><div class="pg-swatch-color" style="background:rgb(var(--g70))"></div><div class="pg-swatch-name">g70</div><div class="pg-swatch-edit"><span class="pg-swatch-val">100 220 140</span><button class="pg-swatch-pencil" title="Edit">✎</button><input class="pg-swatch-input" type="text" spellcheck="false"></div></div>
+  </div>
+
+  <!-- SEMANTIC TOKENS -->
+  <h3 class="pg-subsection-title">Semantic Tokens</h3>
+
+  <div class="pg-group-label">Brand</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--brand-main"><div class="pg-swatch-color" style="background:rgb(var(--brand-main))"></div><div class="pg-swatch-name">main</div><select class="pg-swatch-select" data-var="--brand-main"></select></div>
+  </div>
+
+  <div class="pg-group-label">Surfaces — elevation stack at 0.96 opacity on checker background</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch pg-checker" data-var="--surfaces-base"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-base))"></div></div><div class="pg-swatch-name">base</div><select class="pg-swatch-select" data-var="--surfaces-base"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l1"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l1) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l1</div><select class="pg-swatch-select" data-var="--surfaces-l1"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l2"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l2) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l2</div><select class="pg-swatch-select" data-var="--surfaces-l2"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l2a"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l2a) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l2a</div><select class="pg-swatch-select" data-var="--surfaces-l2a"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l3"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l3) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l3</div><select class="pg-swatch-select" data-var="--surfaces-l3"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l4"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l4) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l4</div><select class="pg-swatch-select" data-var="--surfaces-l4"></select></div>
+    <div class="pg-swatch pg-checker" data-var="--surfaces-l5"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l5) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l5</div><select class="pg-swatch-select" data-var="--surfaces-l5"></select></div>
+    <div class="pg-swatch" data-var="--surfaces-invert"><div class="pg-swatch-color" style="background:rgb(var(--surfaces-invert))"></div><div class="pg-swatch-name">invert</div><select class="pg-swatch-select" data-var="--surfaces-invert"></select></div>
+  </div>
+
+  <div class="pg-group-label">Actions — solid fills, no alpha</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--action-primary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-default))"></div><div class="pg-swatch-name">primary-default</div><select class="pg-swatch-select" data-var="--action-primary-default"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-hover))"></div><div class="pg-swatch-name">primary-hover</div><select class="pg-swatch-select" data-var="--action-primary-hover"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-focus"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-focus))"></div><div class="pg-swatch-name">primary-focus</div><select class="pg-swatch-select" data-var="--action-primary-focus"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-disabled))"></div><div class="pg-swatch-name">primary-disabled</div><select class="pg-swatch-select" data-var="--action-primary-disabled"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-default))"></div><div class="pg-swatch-name">secondary-default</div><select class="pg-swatch-select" data-var="--action-secondary-default"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-hover))"></div><div class="pg-swatch-name">secondary-hover</div><select class="pg-swatch-select" data-var="--action-secondary-hover"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-focus"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-focus))"></div><div class="pg-swatch-name">secondary-focus</div><select class="pg-swatch-select" data-var="--action-secondary-focus"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-default"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-default))"></div><div class="pg-swatch-name">neutral-default</div><select class="pg-swatch-select" data-var="--action-neutral-default"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-disabled))"></div><div class="pg-swatch-name">neutral-disabled</div><select class="pg-swatch-select" data-var="--action-neutral-disabled"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-filled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-filled))"></div><div class="pg-swatch-name">neutral-filled</div><select class="pg-swatch-select" data-var="--action-neutral-filled"></select></div>
+  </div>
+
+  <div class="pg-group-label">Meaning — 30 tone in light, 70 tone in dark (swapped by .dark)</div>
+  <div class="pg-swatch-row">
+    <div class="pg-swatch" data-var="--meaning-error"><div class="pg-swatch-color" style="background:rgb(var(--meaning-error))"></div><div class="pg-swatch-name">error</div><select class="pg-swatch-select" data-var="--meaning-error"></select></div>
+    <div class="pg-swatch" data-var="--meaning-alert"><div class="pg-swatch-color" style="background:rgb(var(--meaning-alert))"></div><div class="pg-swatch-name">alert</div><select class="pg-swatch-select" data-var="--meaning-alert"></select></div>
+    <div class="pg-swatch" data-var="--meaning-success"><div class="pg-swatch-color" style="background:rgb(var(--meaning-success))"></div><div class="pg-swatch-name">success</div><select class="pg-swatch-select" data-var="--meaning-success"></select></div>
+  </div>
+
+  <div class="pg-group-label">Text tokens — on surface · alpha pairs, rendered via .text-* utility classes</div>
+  <div class="pg-text-tokens">
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-max">Text Max</div>
+      <div class="pg-text-token-meta">--text-max · alpha 1</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-high">Text High</div>
+      <div class="pg-text-token-meta">--text-high · alpha 0.87</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-medium">Text Medium</div>
+      <div class="pg-text-token-meta">--text-medium · alpha 0.60</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-low">Text Low</div>
+      <div class="pg-text-token-meta">--text-low · alpha 0.38</div>
+    </div>
+    <div class="pg-text-token">
+      <div class="pg-text-token-sample text-accent">Text Accent</div>
+      <div class="pg-text-token-meta">--text-accent · alpha 1</div>
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 20px">Text tokens — on invert surface</div>
+  <div class="pg-invert-panel">
+    <div class="pg-text-tokens">
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-max">Invert Max</div>
+        <div class="pg-text-token-meta">--text-invert-max · alpha 1</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-high">Invert High</div>
+        <div class="pg-text-token-meta">--text-invert-high · alpha 0.87</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-medium">Invert Medium</div>
+        <div class="pg-text-token-meta">--text-invert-medium · alpha 0.60</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-low">Invert Low</div>
+        <div class="pg-text-token-meta">--text-invert-low · alpha 0.38</div>
+      </div>
+      <div class="pg-text-token">
+        <div class="pg-text-token-sample text-invert-accent">Invert Accent</div>
+        <div class="pg-text-token-meta">--text-invert-accent · alpha 1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 20px">Border tokens — border-color via .border-* utility classes</div>
+  <div class="pg-border-tokens">
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-high" style="border: 2px solid"></div>
+      <div class="pg-border-meta">--border-high · alpha 0.87</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-medium" style="border: 2px solid"></div>
+      <div class="pg-border-meta">--border-medium · alpha 0.38</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-low" style="border: 2px solid"></div>
+      <div class="pg-border-meta">--border-low · alpha 0.12</div>
+    </div>
+    <div class="pg-border-token">
+      <div class="pg-border-swatch border-focus" style="border: 2px solid"></div>
+      <div class="pg-border-meta">--border-focus · alpha 1</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     TEXT
+     ================================================================ -->
+<section id="text" class="pg-section">
+  <h2 class="pg-section-title">Text</h2>
+
+  <h3 class="pg-subsection-title">Display</h3>
+  <div class="pg-type-row">
+    <div class="d1 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d1 · font-display · 700 · base: f8 (30px) / ld8 (36px) → tab-s: f11 (48px) / ld11 (56px) → scr-l: f13 (69px) / ld13 (80px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="d2 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d2 · font-display · 700 · base: f8 (30px) / ld8 (36px) → tab-s: f10 (42px) / ld10 (52px) → scr-l: f12 (57px) / ld12 (64px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="d3 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.d3 · font-display · 700 · base: f7 (24px) / ld7 (28px) → tab-s: f8 (30px) / ld8 (36px) → scr-l: f11 (48px) / ld11 (56px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Heading</h3>
+  <div class="pg-type-row">
+    <div class="h1 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h1 · font-heading · 700 · base: f8 (30px) / lt8 (40px) → tab-s: f9 (36px) → tab-l: f10 (42px) → scr-l: f11 (48px) / lt11 (64px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="h2 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h2 · font-heading · 700 · base: f7 (24px) / lt7 (32px) → tab-s: f8 (30px) → tab-l: f9 (36px) → scr-l: f10 (42px) / lt10 (56px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="h3 text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.h3 · font-heading · 700 · base: f6 (21px) / lt6 (28px) → tab-s: f7 (24px) → tab-l: f8 (30px) → scr-l: f9 (36px) / lt9 (48px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Title</h3>
+  <div class="pg-type-row">
+    <div class="title-l text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-l · font-title · 700 · base: f7 (24px) / lt7 (32px) → scr-l: f8 (30px) / lt8 (40px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-m text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-m · font-title · 700 · base: f6 (21px) / lt6 (28px) → scr-l: f7 (24px) / lt7 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-s text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-s · font-title · 700 · base: f5 (18px) / lt5 (24px) → scr-l: f6 (21px) / lt6 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="title-xs text-high pg-type-sample">The quick brown fox</div>
+    <div class="pg-type-meta">.title-xs · font-title · 700 · base: f4 (15px) / lt4 (20px) → scr-l: f5 (18px) / lt5 (24px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Body</h3>
+  <div class="pg-type-row">
+    <div class="body-l text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l · font-body · 400 · f5 (18px) / lb5 (28px) → scr-l: f6 (21px) / lb6 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-l-b text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l-b · font-body · 700 · f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-l-i text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-l-i · font-body · 400 italic · f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m · font-body · 400 · f4 (15px) / lb4 (24px) → scr-l: f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m-b text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m-b · font-body · 700 · f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m-i text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-m-i · font-body · 400 italic · f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s · font-body · 400 · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s-b text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s-b · font-body · 700 · f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-s-i text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-s-i · font-body · 400 italic · f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs · font-body · 400 · f2 (10.5px) / lb2 (16px) → scr-l: f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs-b text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs-b · font-body · 700 · f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xs-i text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xs-i · font-body · 400 italic · f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs · font-body · 400 · f1 (9px) / lb1 (12px) → scr-l: f2 (10.5px) / lb2 (16px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs-b text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs-b · font-body · 700 · f1 (9px) / lb1 (12px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-xxs-i text-high pg-type-sample">The quick brown fox jumps over the lazy dog</div>
+    <div class="pg-type-meta">.body-xxs-i · font-body · 400 italic · f1 (9px) / lb1 (12px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Label</h3>
+  <div class="pg-type-row">
+    <div class="label-l text-high pg-type-sample">Label Large</div>
+    <div class="pg-type-meta">.label-l · font-label · 600 · f5 (18px) / lb5 (28px) → scr-l: f6 (21px) / lb6 (32px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="label-m text-high pg-type-sample">Label Medium</div>
+    <div class="pg-type-meta">.label-m · font-label · 600 · f4 (15px) / lb4 (24px) → scr-l: f5 (18px) / lb5 (28px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="label-s text-high pg-type-sample">Label Small</div>
+    <div class="pg-type-meta">.label-s · font-label · 600 · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+
+  <h3 class="pg-subsection-title">Overline</h3>
+  <div class="pg-type-row">
+    <div class="overline-xl text-high pg-type-sample">Overline Extra Large</div>
+    <div class="pg-type-meta">.overline-xl · font-label · 600 · UPPERCASE · letter-spacing: 2px · f3 (12px) → tab-s: f4 (15px) → scr-s: f5 (18px) → scr-l: f6 (21px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-l text-high pg-type-sample">Overline Large</div>
+    <div class="pg-type-meta">.overline-l · font-label · 600 · UPPERCASE · letter-spacing: 2px · f3 (12px) / lb3 (20px) → scr-l: f4 (15px) / lb4 (24px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-m text-high pg-type-sample">Overline Medium</div>
+    <div class="pg-type-meta">.overline-m · font-label · 600 · UPPERCASE · letter-spacing: 2px · f2 (10.5px) / lb2 (16px) → scr-l: f3 (12px) / lb3 (20px)</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="overline-s text-high pg-type-sample">Overline Small</div>
+    <div class="pg-type-meta">.overline-s · font-label · 600 · UPPERCASE · letter-spacing: 2px · f1 (9px) / lb1 (12px) → scr-l: f2 (10.5px) / lb2 (16px)</div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SPACING
+     ================================================================ -->
+<section id="spacing" class="pg-section">
+  <h2 class="pg-section-title">Spacing</h2>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -20px 0 28px;">
+    G-scale: gN = N &times; 8px &nbsp;|&nbsp; Half-steps add 4px (g0h=4, g1h=12, g2h=20 &hellip;) &nbsp;|&nbsp; Showing integer steps only
+  </p>
+  <div class="pg-space-rows">
+    <div class="pg-space-row"><div class="pg-space-name">g0</div><div class="pg-space-bar" style="width:2px"></div><div class="pg-space-px">0px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g1</div><div class="pg-space-bar" style="width:var(--spacing-g1)"></div><div class="pg-space-px">8px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g2</div><div class="pg-space-bar" style="width:var(--spacing-g2)"></div><div class="pg-space-px">16px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g3</div><div class="pg-space-bar" style="width:var(--spacing-g3)"></div><div class="pg-space-px">24px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g4</div><div class="pg-space-bar" style="width:var(--spacing-g4)"></div><div class="pg-space-px">32px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g5</div><div class="pg-space-bar" style="width:var(--spacing-g5)"></div><div class="pg-space-px">40px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g6</div><div class="pg-space-bar" style="width:var(--spacing-g6)"></div><div class="pg-space-px">48px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g7</div><div class="pg-space-bar" style="width:var(--spacing-g7)"></div><div class="pg-space-px">56px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g8</div><div class="pg-space-bar" style="width:var(--spacing-g8)"></div><div class="pg-space-px">64px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g9</div><div class="pg-space-bar" style="width:var(--spacing-g9)"></div><div class="pg-space-px">72px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g10</div><div class="pg-space-bar" style="width:var(--spacing-g10)"></div><div class="pg-space-px">80px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g11</div><div class="pg-space-bar" style="width:var(--spacing-g11)"></div><div class="pg-space-px">88px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g12</div><div class="pg-space-bar" style="width:var(--spacing-g12)"></div><div class="pg-space-px">96px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g13</div><div class="pg-space-bar" style="width:var(--spacing-g13)"></div><div class="pg-space-px">104px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g15</div><div class="pg-space-bar" style="width:var(--spacing-g15)"></div><div class="pg-space-px">120px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g16</div><div class="pg-space-bar" style="width:var(--spacing-g16)"></div><div class="pg-space-px">128px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g20</div><div class="pg-space-bar" style="width:var(--spacing-g20)"></div><div class="pg-space-px">160px</div></div>
+    <div class="pg-space-row"><div class="pg-space-name">g25</div><div class="pg-space-bar" style="width:var(--spacing-g25)"></div><div class="pg-space-px">200px</div></div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SHAPE
+     ================================================================ -->
+<section id="shape" class="pg-section">
+  <h2 class="pg-section-title">Shape</h2>
+
+  <h3 class="pg-subsection-title">Border Radius — Semantic Tier</h3>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -12px 0 24px;">
+    Formula: sh{h} = h &divide; 8 &nbsp;&mdash;&nbsp; radius is one-eighth of component height
+  </p>
+  <div class="pg-shape-row">
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xs); width: 32px; height: 32px;"></div>
+      <div class="pg-shape-meta">--shape-xs<br>sh32 · 4px<br>h32 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-s); width: 40px; height: 40px;"></div>
+      <div class="pg-shape-meta">--shape-s<br>sh40 · 5px<br>h40 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-m); width: 48px; height: 48px;"></div>
+      <div class="pg-shape-meta">--shape-m<br>sh48 · 6px<br>h48 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-l); width: 56px; height: 56px;"></div>
+      <div class="pg-shape-meta">--shape-l<br>sh56 · 7px<br>h56 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xl); width: 64px; height: 64px;"></div>
+      <div class="pg-shape-meta">--shape-xl<br>sh64 · 8px<br>h64 components</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-xxl); width: 72px; height: 72px;"></div>
+      <div class="pg-shape-meta">--shape-xxl<br>sh72 · 9px<br>h72 at scr-l</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-full); width: 72px; height: 32px;"></div>
+      <div class="pg-shape-meta">--shape-full<br>sh-full · pill<br>badges, chips</div>
+    </div>
+    <div class="pg-shape-item">
+      <div class="pg-shape-box" style="border-radius: var(--shape-control); width: 16px; height: 16px;"></div>
+      <div class="pg-shape-meta">--shape-control<br>sh16 · 2px<br>h16 controls</div>
+    </div>
+  </div>
+
+  <h3 class="pg-subsection-title">Shadows</h3>
+  <div class="pg-shadow-row">
+    <div class="pg-shadow-item">
+      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level1)"></div>
+      <div class="pg-shadow-meta">--shadow-level1</div>
+    </div>
+    <div class="pg-shadow-item">
+      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level2)"></div>
+      <div class="pg-shadow-meta">--shadow-level2</div>
+    </div>
+    <div class="pg-shadow-item">
+      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level3)"></div>
+      <div class="pg-shadow-meta">--shadow-level3</div>
+    </div>
+    <div class="pg-shadow-item">
+      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level4)"></div>
+      <div class="pg-shadow-meta">--shadow-level4</div>
+    </div>
+    <div class="pg-shadow-item">
+      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level5)"></div>
+      <div class="pg-shadow-meta">--shadow-level5</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     COMPONENTS
+     ================================================================ -->
+<section id="components" class="pg-section">
+  <h2 class="pg-section-title">Components</h2>
+
+  <!-- ---- Buttons ---- -->
+  <h3 class="pg-subsection-title">Buttons</h3>
+
+  <div class="pg-comp-label">Primary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-primary">XS</button>
+    <button class="btn btn-s btn-primary">Small</button>
+    <button class="btn btn-m btn-primary">Medium</button>
+    <button class="btn btn-l btn-primary">Large</button>
+    <button class="btn btn-xl btn-primary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-primary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-primary" disabled>XS</button>
+    <button class="btn btn-s btn-primary" disabled>Small</button>
+    <button class="btn btn-m btn-primary" disabled>Medium</button>
+    <button class="btn btn-l btn-primary" disabled>Large</button>
+    <button class="btn btn-xl btn-primary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Secondary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-secondary">XS</button>
+    <button class="btn btn-s btn-secondary">Small</button>
+    <button class="btn btn-m btn-secondary">Medium</button>
+    <button class="btn btn-l btn-secondary">Large</button>
+    <button class="btn btn-xl btn-secondary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-secondary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-secondary" disabled>XS</button>
+    <button class="btn btn-s btn-secondary" disabled>Small</button>
+    <button class="btn btn-m btn-secondary" disabled>Medium</button>
+    <button class="btn btn-l btn-secondary" disabled>Large</button>
+    <button class="btn btn-xl btn-secondary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Tertiary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-tertiary">XS</button>
+    <button class="btn btn-s btn-tertiary">Small</button>
+    <button class="btn btn-m btn-tertiary">Medium</button>
+    <button class="btn btn-l btn-tertiary">Large</button>
+    <button class="btn btn-xl btn-tertiary">Extra Large</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-{xs|s|m|l|xl} .btn-tertiary</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-xs btn-tertiary" disabled>XS</button>
+    <button class="btn btn-s btn-tertiary" disabled>Small</button>
+    <button class="btn btn-m btn-tertiary" disabled>Medium</button>
+    <button class="btn btn-l btn-tertiary" disabled>Large</button>
+    <button class="btn btn-xl btn-tertiary" disabled>Extra Large</button>
+  </div>
+  <div class="pg-comp-note">disabled state</div>
+
+  <div class="pg-comp-label">Tight — borderless, expands on hover</div>
+  <div class="pg-comp-row">
+    <button class="btn btn-m btn-tight btn-primary">Tight Primary</button>
+    <button class="btn btn-m btn-tight btn-secondary">Tight Secondary</button>
+    <button class="btn btn-m btn-tight btn-tertiary">Tight Tertiary</button>
+  </div>
+  <div class="pg-comp-note">.btn .btn-m .btn-tight .btn-{variant}</div>
+
+  <!-- ---- Icon Buttons ---- -->
+  <h3 class="pg-subsection-title">Icon Buttons</h3>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -12px 0 20px;">SVG placeholder icon used. Replace with your icon library.</p>
+
+  <div class="pg-comp-label">Primary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-primary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-primary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-primary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-primary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-primary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-primary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-primary &nbsp;· last = disabled</div>
+
+  <div class="pg-comp-label">Secondary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-secondary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-secondary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-secondary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-secondary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-secondary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-secondary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-secondary</div>
+
+  <div class="pg-comp-label">Tertiary — rounded</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-xs btn-icon-tertiary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-s btn-icon-tertiary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-tertiary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-l btn-icon-tertiary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-xl btn-icon-tertiary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-m btn-icon-tertiary" disabled><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-{xs|s|m|l|xl} .btn-icon-tertiary</div>
+
+  <div class="pg-comp-label">Square variant (.btn-icon-sq) — one per size</div>
+  <div class="pg-comp-row">
+    <button class="btn-icon btn-icon-sq btn-icon-xs btn-icon-primary"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-s btn-icon-secondary"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-m btn-icon-tertiary"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-l btn-icon-primary"><svg width="22" height="22" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+    <button class="btn-icon btn-icon-sq btn-icon-xl btn-icon-secondary"><svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="10" cy="10" r="7"/></svg></button>
+  </div>
+  <div class="pg-comp-note">.btn-icon .btn-icon-sq .btn-icon-{xs|s|m|l|xl} .btn-icon-{variant}</div>
+
+  <!-- ---- Form Inputs ---- -->
+  <h3 class="pg-subsection-title">Form Inputs</h3>
+
+  <div class="pg-comp-label">Sizes — default state</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <input class="input input-s" type="text" placeholder="Small input">
+      <div class="pg-form-note">.input .input-s</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m" type="text" placeholder="Medium input">
+      <div class="pg-form-note">.input .input-m</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-l" type="text" placeholder="Large input">
+      <div class="pg-form-note">.input .input-l</div>
+    </div>
+  </div>
+
+  <div class="pg-comp-label" style="margin-top: 24px">States</div>
+  <div class="pg-form-cols">
+    <div class="pg-form-col">
+      <input class="input input-m input-error" type="text" value="Invalid value">
+      <div class="input-error-msg">This field has an error</div>
+      <div class="pg-form-note">.input-error + .input-error-msg</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m input-success" type="text" value="Valid value">
+      <div class="pg-form-note">.input-success</div>
+    </div>
+    <div class="pg-form-col">
+      <input class="input input-m" type="text" placeholder="Disabled input" disabled>
+      <div class="pg-form-note">disabled</div>
+    </div>
+  </div>
+
+  <!-- ---- Controls ---- -->
+  <h3 class="pg-subsection-title">Controls</h3>
+  <div class="pg-controls">
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Checkbox</div>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox"> Unchecked</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" checked> Checked</label>
+      <label class="pg-control-item"><input class="checkbox js-indeterminate" type="checkbox"> Indeterminate</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" disabled> Disabled</label>
+      <label class="pg-control-item"><input class="checkbox" type="checkbox" checked disabled> Disabled checked</label>
+      <div class="pg-form-note">.checkbox</div>
+    </div>
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Radio</div>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio"> Unselected</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio" checked> Selected</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio-d" disabled> Disabled</label>
+      <label class="pg-control-item"><input class="radio" type="radio" name="pg-radio-d" checked disabled> Disabled selected</label>
+      <div class="pg-form-note">.radio</div>
+    </div>
+
+    <div class="pg-control-group">
+      <div class="pg-control-heading">Toggle</div>
+      <label class="pg-control-item"><input class="toggle" type="checkbox"> Off</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" checked> On</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" disabled> Disabled off</label>
+      <label class="pg-control-item"><input class="toggle" type="checkbox" checked disabled> Disabled on</label>
+      <div class="pg-form-note">.toggle</div>
+    </div>
+
+  </div>
+
+  <!-- ---- Badges ---- -->
+  <h3 class="pg-subsection-title">Badges</h3>
+  <div class="pg-comp-row">
+    <span class="badge badge-primary">Primary</span>
+    <span class="badge badge-success">Success</span>
+    <span class="badge badge-error">Error</span>
+    <span class="badge badge-alert">Alert</span>
+    <span class="badge badge-neutral">Neutral</span>
+  </div>
+  <div class="pg-comp-note">.badge .badge-{primary|success|error|alert|neutral}</div>
+
+  <!-- ---- Chips ---- -->
+  <h3 class="pg-subsection-title">Chips</h3>
+  <div class="pg-comp-row">
+    <button class="chip">Default</button>
+    <button class="chip selected">Selected</button>
+    <button class="chip" disabled>Disabled</button>
+    <button class="chip selected">
+      With dismiss
+      <span class="chip-dismiss" role="button" aria-label="Remove" tabindex="0">&times;</span>
+    </button>
+  </div>
+  <div class="pg-comp-note">.chip &nbsp;· .chip.selected &nbsp;· .chip[disabled] &nbsp;· .chip.selected + .chip-dismiss</div>
+
+</section>
+
+
+<script>
+  /* =====================================================================
+     PLAYGROUND EDITOR — live palette + semantic token editing
+     ===================================================================== */
+
+  // ── Local palette state ───────────────────────────────────────────────
+  let localPalette = {};  // { p10: '0 25 68', ... } — full flat copy
+  let paletteMode  = 'patch'; // 'patch' = diff only | 'full' = rewrite all
+
+  // ── Palette var options for <select> dropdowns (rebuilt dynamically) ──
+  let PALETTE_OPTS = [
+    { group: 'Primary',   vars: ['p10','p20','p30','p40','p50','p60','p70','p80','p90','p100'] },
+    { group: 'Secondary', vars: ['s10','s20','s30','s40','s50','s60','s70','s80','s90','s100'] },
+    { group: 'Neutral',   vars: ['n10','n20','n30','n35','n40','n50','n60','n65','n70','n80','n90','n100'] },
+    { group: 'Meaning',   vars: ['r30','r70','y30','y70','g30','g70'] },
+  ];
+
+  function numSuffix(name) { return parseInt(name.match(/\d+$/)[0], 10); }
+
+  function rebuildPaletteOpts() {
+    const byPrefix = (pfx) =>
+      Object.keys(localPalette)
+        .filter(k => k.startsWith(pfx) && /^\d+$/.test(k.slice(pfx.length)))
+        .sort((a, b) => numSuffix(a) - numSuffix(b));
+    PALETTE_OPTS = [
+      { group: 'Primary',   vars: byPrefix('p') },
+      { group: 'Secondary', vars: byPrefix('s') },
+      { group: 'Neutral',   vars: byPrefix('n') },
+      { group: 'Meaning',   vars: [...byPrefix('r'), ...byPrefix('y'), ...byPrefix('g')] },
+    ];
+  }
+
+  function buildSelectOptions(selectedVar) {
+    return PALETTE_OPTS.map(g => {
+      const opts = g.vars.map(v =>
+        `<option value="${v}"${v === selectedVar ? ' selected' : ''}>${v}</option>`
+      ).join('');
+      return `<optgroup label="${g.group}">${opts}</optgroup>`;
+    }).join('');
+  }
+
+  // ── Palette swatch rendering ──────────────────────────────────────────
+  function makeSwatch(name, val) {
+    return `<div class="pg-swatch" data-var="--${name}">` +
+      `<div class="pg-swatch-color" style="background:rgb(${val})"></div>` +
+      `<div class="pg-swatch-name">${name}</div>` +
+      `<div class="pg-swatch-edit">` +
+        `<span class="pg-swatch-val">${val}</span>` +
+        `<button class="pg-swatch-pencil" title="Edit">&#9998;</button>` +
+        `<input class="pg-swatch-input" type="text" spellcheck="false">` +
+      `</div>` +
+      `<button class="pg-swatch-delete" data-name="${name}" title="Delete">&times;</button>` +
+    `</div>`;
+  }
+
+  function makeAddTile(prefix) {
+    const isMeaning = prefix === 'meaning';
+    const prefixSel = isMeaning
+      ? `<select class="pg-add-prefix-sel"><option value="r">r</option><option value="y">y</option><option value="g">g</option></select>`
+      : '';
+    const placeholder = isMeaning ? 'r30' : `${prefix}50`;
+    return `<div class="pg-add-tile" data-add-prefix="${prefix}">+ Add</div>` +
+      `<div class="pg-add-form" data-form-prefix="${prefix}">` +
+        prefixSel +
+        `<input class="pg-add-name" type="text" placeholder="${placeholder}" spellcheck="false">` +
+        `<input class="pg-add-rgb"  type="text" placeholder="R G B" spellcheck="false">` +
+        `<div class="pg-add-form-btns">` +
+          `<button class="pg-add-confirm">&#10003;</button>` +
+          `<button class="pg-add-cancel">&#10007;</button>` +
+        `</div>` +
+      `</div>`;
+  }
+
+  function renderGroup(containerId, prefix) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const keys = Object.keys(localPalette)
+      .filter(k => k.startsWith(prefix) && /^\d+$/.test(k.slice(prefix.length)))
+      .sort((a, b) => numSuffix(a) - numSuffix(b));
+    el.innerHTML = keys.map(k => makeSwatch(k, localPalette[k])).join('') + makeAddTile(prefix);
+  }
+
+  function renderMeaningGroup() {
+    const el = document.getElementById('palette-meaning');
+    if (!el) return;
+    const byP = (pfx) => Object.keys(localPalette)
+      .filter(k => k.startsWith(pfx) && /^\d+$/.test(k.slice(pfx.length)))
+      .sort((a, b) => numSuffix(a) - numSuffix(b));
+    const keys = [...byP('r'), ...byP('y'), ...byP('g')];
+    el.innerHTML = keys.map(k => makeSwatch(k, localPalette[k])).join('') + makeAddTile('meaning');
+  }
+
+  function renderPaletteGroups() {
+    renderGroup('palette-p', 'p');
+    renderGroup('palette-s', 's');
+    renderGroup('palette-n', 'n');
+    renderMeaningGroup();
+    rebuildPaletteOpts();
+    initDropdowns();
+  }
+
+  // ── Dirty state ──────────────────────────────────────────────────────
+  const dirtyPalette   = new Map(); // patch-mode only: varName → rgb
+  const dirtySemanticL = new Map();
+  const dirtySemanticD = new Map();
+
+  function updateSaveBar() {
+    const palCount = paletteMode === 'full' ? 1 : dirtyPalette.size;
+    const total    = palCount + dirtySemanticL.size + dirtySemanticD.size;
+    const statusEl = document.getElementById('save-status');
+    const saveBtn  = document.getElementById('save-btn');
+    if (total === 0) {
+      statusEl.className   = 'pg-save-status';
+      statusEl.textContent = 'No unsaved changes';
+      saveBtn.disabled     = true;
+    } else {
+      statusEl.className   = 'pg-save-status has-changes';
+      statusEl.textContent = `${total} unsaved change${total > 1 ? 's' : ''}`;
+      saveBtn.disabled     = false;
+    }
+  }
+
+  function markDirty(swatchEl) { swatchEl.classList.add('dirty'); }
+  function clearAllDirty() {
+    document.querySelectorAll('.pg-swatch.dirty').forEach(el => el.classList.remove('dirty'));
+  }
+
+  // ── Semantic config from server ───────────────────────────────────────
+  let semanticConfig = { light: {}, dark: {} };
+
+  async function loadConfig() {
+    try {
+      const r = await fetch('/config');
+      semanticConfig = await r.json();
+    } catch (e) {
+      // server not running — dropdowns default to first option
+    }
+    initDropdowns();
+  }
+
+  function isDark() { return document.body.classList.contains('dark'); }
+
+  function initDropdowns() {
+    const mode = isDark() ? 'dark' : 'light';
+    const map  = semanticConfig[mode] || {};
+    document.querySelectorAll('.pg-swatch-select').forEach(sel => {
+      const varName    = sel.dataset.var;
+      const bareKey    = varName.replace(/^--/, '');
+      const currentVal = map[bareKey] || map[varName] || '';
+      sel.innerHTML    = buildSelectOptions(currentVal);
+    });
+  }
+
+  // ── Pencil edit helpers ───────────────────────────────────────────────
+  function openPencil(btn) {
+    const swatch  = btn.closest('.pg-swatch');
+    const valSpan = swatch.querySelector('.pg-swatch-val');
+    const input   = swatch.querySelector('.pg-swatch-input');
+    valSpan.style.display = 'none';
+    btn.style.display     = 'none';
+    input.value           = valSpan.textContent.trim();
+    input.style.display   = '';
+    input.focus();
+    input.select();
+  }
+
+  function commitPencil(input) {
+    const swatch  = input.closest('.pg-swatch');
+    if (!swatch) return;
+    const varName = swatch.dataset.var;
+    const bareKey = varName.replace(/^--/, '');
+    const valSpan = swatch.querySelector('.pg-swatch-val');
+    const pencil  = swatch.querySelector('.pg-swatch-pencil');
+    const raw     = input.value.trim().replace(/\s+/g, ' ');
+    const valid   = /^\d{1,3} \d{1,3} \d{1,3}$/.test(raw);
+    if (!valid) { input.classList.add('invalid'); return; }
+    input.classList.remove('invalid');
+    document.documentElement.style.setProperty(varName, raw);
+    swatch.querySelector('.pg-swatch-color').style.background = `rgb(${raw})`;
+    valSpan.textContent = raw;
+    localPalette[bareKey] = raw;
+    if (paletteMode !== 'full') dirtyPalette.set(bareKey, raw);
+    markDirty(swatch);
+    updateSaveBar();
+    input.style.display   = 'none';
+    valSpan.style.display = '';
+    pencil.style.display  = '';
+  }
+
+  function cancelPencil(input) {
+    const swatch  = input.closest('.pg-swatch');
+    if (!swatch) return;
+    const valSpan = swatch.querySelector('.pg-swatch-val');
+    const pencil  = swatch.querySelector('.pg-swatch-pencil');
+    input.classList.remove('invalid');
+    input.style.display   = 'none';
+    valSpan.style.display = '';
+    pencil.style.display  = '';
+  }
+
+  // ── Add / Delete handlers ─────────────────────────────────────────────
+  function handleDelete(varName) {
+    if (!localPalette[varName]) return;
+    delete localPalette[varName];
+    document.documentElement.style.removeProperty('--' + varName);
+    paletteMode = 'full';
+    updateSaveBar();
+    const prefix = varName.match(/^[a-z]+/)[0];
+    if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
+    else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
+    else if (prefix === 's') { renderGroup('palette-s', 's'); }
+    else if (prefix === 'n') { renderGroup('palette-n', 'n'); }
+    rebuildPaletteOpts();
+    initDropdowns();
+  }
+
+  function openAddForm(tile) {
+    tile.style.display = 'none';
+    const form = tile.nextElementSibling;
+    form.style.display = 'flex';
+    const nameInput = form.querySelector('.pg-add-name');
+    nameInput.value = '';
+    nameInput.classList.remove('invalid');
+    form.querySelector('.pg-add-rgb').value = '';
+    form.querySelector('.pg-add-rgb').classList.remove('invalid');
+    nameInput.focus();
+  }
+
+  function cancelAdd(form) {
+    form.style.display = 'none';
+    form.previousElementSibling.style.display = '';
+  }
+
+  function handleAdd(form) {
+    const formPrefix = form.dataset.formPrefix;
+    const prefixSel  = form.querySelector('.pg-add-prefix-sel');
+    const prefix     = prefixSel ? prefixSel.value : formPrefix;
+    const nameInput  = form.querySelector('.pg-add-name');
+    const rgbInput   = form.querySelector('.pg-add-rgb');
+    const name = nameInput.value.trim().toLowerCase();
+    const rgb  = rgbInput.value.trim().replace(/\s+/g, ' ');
+    const nameOk = new RegExp(`^${prefix}\\d+$`).test(name) && !localPalette[name];
+    nameInput.classList.toggle('invalid', !nameOk);
+    const rgbOk = /^\d{1,3} \d{1,3} \d{1,3}$/.test(rgb);
+    rgbInput.classList.toggle('invalid', !rgbOk);
+    if (!nameOk || !rgbOk) return;
+    localPalette[name] = rgb;
+    document.documentElement.style.setProperty('--' + name, rgb);
+    paletteMode = 'full';
+    updateSaveBar();
+    if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
+    else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
+    else if (prefix === 's') { renderGroup('palette-s', 's'); }
+    else if (prefix === 'n') { renderGroup('palette-n', 'n'); }
+    rebuildPaletteOpts();
+    initDropdowns();
+  }
+
+  // ── Event delegation — palette row actions ────────────────────────────
+  document.addEventListener('click', e => {
+    if (e.target.matches('.pg-swatch-pencil'))      { openPencil(e.target); }
+    else if (e.target.matches('.pg-swatch-delete')) { handleDelete(e.target.dataset.name); }
+    else if (e.target.matches('.pg-add-tile'))      { openAddForm(e.target); }
+    else if (e.target.matches('.pg-add-confirm'))   { handleAdd(e.target.closest('.pg-add-form')); }
+    else if (e.target.matches('.pg-add-cancel'))    { cancelAdd(e.target.closest('.pg-add-form')); }
+  });
+  document.addEventListener('focusout', e => {
+    if (e.target.matches('.pg-swatch-input')) { commitPencil(e.target); }
+  });
+  document.addEventListener('keydown', e => {
+    if (!e.target.matches('.pg-swatch-input')) return;
+    if (e.key === 'Enter')  { e.preventDefault(); commitPencil(e.target); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelPencil(e.target); }
+  });
+
+  // ── Semantic select (dropdown) ────────────────────────────────────────
+  function initSemanticSelects() {
+    document.querySelectorAll('.pg-swatch-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        const swatch   = sel.closest('.pg-swatch');
+        const varName  = sel.dataset.var;    // e.g. "--brand-main"
+        const chosen   = sel.value;          // e.g. "p30"
+        // Apply live
+        document.documentElement.style.setProperty(varName, `var(--${chosen})`);
+        // Track dirty
+        const bareKey = varName.replace(/^--/, '');
+        if (isDark()) {
+          dirtySemanticD.set(bareKey, chosen);
+        } else {
+          dirtySemanticL.set(bareKey, chosen);
+        }
+        markDirty(swatch);
+        updateSaveBar();
+      });
+    });
+  }
+
+  // ── Save ──────────────────────────────────────────────────────────────
+  async function save() {
+    const statusEl = document.getElementById('save-status');
+    const saveBtn  = document.getElementById('save-btn');
+    statusEl.className   = 'pg-save-status building';
+    statusEl.textContent = 'Building…';
+    saveBtn.disabled     = true;
+
+    let palettePayload;
+    if (paletteMode === 'full') {
+      palettePayload = { mode: 'full', vars: localPalette };
+    } else if (dirtyPalette.size > 0) {
+      palettePayload = { mode: 'patch', changes: Object.fromEntries(dirtyPalette) };
+    } else {
+      palettePayload = {};
+    }
+
+    const payload = {
+      palette:       palettePayload,
+      semanticLight: Object.fromEntries(dirtySemanticL),
+      semanticDark:  Object.fromEntries(dirtySemanticD),
+    };
+
+    try {
+      const r = await fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error(await r.text());
+      statusEl.className   = 'pg-save-status building';
+      statusEl.textContent = 'Building…';
+    } catch (e) {
+      statusEl.className   = 'pg-save-status error';
+      statusEl.textContent = 'Error: ' + e.message;
+      saveBtn.disabled     = false;
+    }
+  }
+
+  document.getElementById('save-btn').addEventListener('click', save);
+
+  // ── SSE hot-reload ────────────────────────────────────────────────────
+  function connectSSE() {
+    const es = new EventSource('/events');
+    es.addEventListener('message', e => {
+      if (e.data === 'rebuild-done') {
+        dirtyPalette.clear();
+        dirtySemanticL.clear();
+        dirtySemanticD.clear();
+        paletteMode = 'patch';
+        clearAllDirty();
+        const statusEl = document.getElementById('save-status');
+        statusEl.className   = 'pg-save-status saved';
+        statusEl.textContent = 'Saved — reloading…';
+        setTimeout(() => window.location.reload(), 400);
+      }
+      if (e.data === 'rebuild-error') {
+        const statusEl = document.getElementById('save-status');
+        statusEl.className   = 'pg-save-status error';
+        statusEl.textContent = 'Build error — check terminal';
+        document.getElementById('save-btn').disabled = false;
+      }
+    });
+    es.onerror = () => { setTimeout(connectSSE, 3000); };
+  }
+
+  // ── Dark mode toggle ──────────────────────────────────────────────────
+  const darkBtn = document.getElementById('darkToggle');
+  darkBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    darkBtn.textContent = isDark() ? '\u2600 Light' : '\u263E Dark';
+    initDropdowns();
+  });
+
+  // ── Indeterminate checkboxes ──────────────────────────────────────────
+  document.querySelectorAll('.js-indeterminate').forEach(el => { el.indeterminate = true; });
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  async function loadPalette() {
+    try {
+      const r    = await fetch('/palette');
+      const data = await r.json(); // { p: [{name,val},...], s:[...], ... }
+      localPalette = {};
+      for (const items of Object.values(data)) {
+        for (const { name, val } of items) {
+          localPalette[name] = val;
+          document.documentElement.style.setProperty('--' + name, val);
+        }
+      }
+    } catch (e) {
+      // server not running — palette section stays empty
+    }
+    renderPaletteGroups();
+    await loadConfig();
+  }
+
+  initSemanticSelects();
+  loadPalette();
+  connectSSE();
+</script>
+</body>
+</html>

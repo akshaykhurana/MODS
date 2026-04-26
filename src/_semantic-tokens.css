@@ -15,10 +15,7 @@
      Replace palette steps per project. Lighter = higher contrast on brand bg.
      ========================================================================== */
 
-  --brand-main:     var(--p50);
-  --brand-lighter:  var(--p30);
-  --brand-accent-1: var(--s50);
-  --brand-accent-2: var(--s30);
+  --brand-main: var(--p50);
 
 
   /* ==========================================================================
@@ -47,18 +44,18 @@
      ========================================================================== */
 
   /* On-surface text (dark on light in light mode) */
-  --text-high:   var(--n100);
-  --text-medium: var(--n100);
-  --text-low:    var(--n100);
   --text-max:    var(--n100); /* fully opaque — no alpha var */
+  --text-high:   var(--n90);
+  --text-medium: var(--n90);
+  --text-low:    var(--n90);
   --text-accent: var(--p50);
 
   /* On-invert-surface text (light on dark in light mode) */
+  --text-invert-max:    var(--n10);
   --text-invert-high:   var(--n10);
   --text-invert-medium: var(--n10);
   --text-invert-low:    var(--n10);
-  --text-invert-max:    var(--n10);
-  --text-invert-accent: var(--p30);
+  --text-invert-accent: var(--p20);
 
   /* Alpha scale — MD emphasis, same in both modes */
   --text-alpha-high:   0.87;
@@ -73,14 +70,14 @@
      --border-focus uses brand colour at full opacity (no alpha var).
      ========================================================================== */
 
-  --border-high:   var(--n100);
-  --border-medium: var(--n100);
-  --border-low:    var(--n100);
+  --border-high:   var(--n90);
+  --border-medium: var(--n90);
+  --border-low:    var(--n90);
   --border-focus:  var(--p50); /* fully opaque, no alpha */
 
   /* Alpha scale — MD emphasis, same in both modes */
-  --border-alpha-high:   0.38;
-  --border-alpha-medium: 0.24;
+  --border-alpha-high:   0.87;
+  --border-alpha-medium: 0.38;
   --border-alpha-low:    0.12;
 
 
@@ -91,17 +88,18 @@
      neutral = non-brand interactive elements (e.g. neutral icon buttons)
      ========================================================================== */
 
-  --action-primary-default:  var(--p50);
-  --action-primary-hover:    var(--p60);
-  --action-primary-focus:    var(--p70);
-  --action-primary-disabled: var(--n40);
+  --action-primary-default:  var(--p40); /* base state */
+  --action-primary-hover:    var(--p30); /* lighter — hover */
+  --action-primary-focus:    var(--p20); /* lighter still — focus */
+  --action-primary-disabled: var(--n30); /* neutral, no outline */
 
-  --action-secondary-hover:  var(--p20);
-  --action-secondary-focus:  var(--p30);
+  --action-secondary-default: var(--p90); /* near-transparent brand tint on light bg */
+  --action-secondary-hover:   var(--p80);
+  --action-secondary-focus:   var(--p70);
 
-  --action-neutral-default:  var(--n50);
-  --action-neutral-hover:    var(--n40);
-  --action-neutral-focus:    var(--n30);
+  --action-neutral-default:   var(--n70);
+  --action-neutral-disabled:  var(--n50);
+  --action-neutral-filled:    var(--n40);
 
 
   /* ==========================================================================
@@ -164,11 +162,8 @@
   --surfaces-l5:     var(--n40);
   --surfaces-invert: var(--n10);
 
-  /* Brand — use lighter primary tones for contrast on dark surfaces */
-  --brand-main:     var(--p30);
-  --brand-lighter:  var(--p20);
-  --brand-accent-1: var(--s30);
-  --brand-accent-2: var(--s20);
+  /* Brand — use lighter primary tone for contrast on dark surfaces */
+  --brand-main: var(--p30);
 
   /* Text — flip to light channels (alphas stay the same) */
   --text-high:   var(--n10);
@@ -191,17 +186,18 @@
   --border-focus:  var(--p30);
 
   /* Actions — shift to lighter primary tones for legibility on dark surfaces */
-  --action-primary-default:  var(--p30);
-  --action-primary-hover:    var(--p20);
-  --action-primary-focus:    var(--p10);
-  --action-primary-disabled: var(--n70);
+  --action-primary-default:  var(--p30); /* base state (lighter than light mode) */
+  --action-primary-hover:    var(--p20); /* lighter — hover */
+  --action-primary-focus:    var(--p10); /* lighter still — focus */
+  --action-primary-disabled: var(--n70); /* neutral, darker in dark mode */
 
-  --action-secondary-hover:  var(--p80);
-  --action-secondary-focus:  var(--p70);
+  --action-secondary-default: var(--p10); /* barely-there brand tint on dark bg */
+  --action-secondary-hover:   var(--p20);
+  --action-secondary-focus:   var(--p30);
 
-  --action-neutral-default:  var(--n60);
-  --action-neutral-hover:    var(--n70);
-  --action-neutral-focus:    var(--n80);
+  --action-neutral-default:   var(--n60);
+  --action-neutral-disabled:  var(--n70);
+  --action-neutral-filled:    var(--n80);
 
   /* Meaning — use 70 tones (lighter, readable on dark surfaces) */
   --meaning-error:   var(--r70);
