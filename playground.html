@@ -16,7 +16,7 @@
     body {
       margin: 0;
       background-color: rgb(var(--surfaces-base));
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       font-family: var(--font-body);
       font-size: 14px;
       line-height: 1.5;
@@ -34,21 +34,21 @@
       padding: 0 32px;
       height: 56px;
       background-color: rgb(var(--surfaces-l4) / var(--surfaces-alpha));
-      border-bottom: 1px solid rgb(var(--border-high) / var(--border-alpha-medium));
+      border-bottom: 1px solid rgb(var(--border-color) / var(--border-alpha-medium));
     }
     .pg-nav-title {
       font-weight: 700;
       font-size: 13px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
     }
     .pg-nav-links {
       display: flex;
       gap: 2px;
     }
     .pg-nav-links a {
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
@@ -57,39 +57,39 @@
       transition: background 150ms, color 150ms;
     }
     .pg-nav-links a:hover {
-      background: rgb(var(--text-high) / 0.08);
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      background: rgb(var(--text-color) / 0.08);
+      color: rgb(var(--text-color) / var(--text-alpha-high));
     }
     .pg-dark-toggle {
       font-size: 12px;
       font-weight: 600;
       padding: 6px 16px;
       border-radius: 20px;
-      border: 1px solid rgb(var(--border-high) / var(--border-alpha-medium));
+      border: 1px solid rgb(var(--border-color) / var(--border-alpha-medium));
       background: transparent;
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       cursor: pointer;
       transition: background 150ms;
       letter-spacing: 0.5px;
     }
     .pg-dark-toggle:hover {
-      background: rgb(var(--text-high) / 0.08);
+      background: rgb(var(--text-color) / 0.08);
     }
 
     /* --- Section layout --- */
     .pg-section {
-      padding: 88px 48px;
+      padding: var(--spacing-g16) 48px;
       max-width: 1440px;
       margin: 0 auto;
     }
     .pg-section + .pg-section {
-      border-top: 1px solid rgb(var(--border-high) / 0.08);
+      border-top: 1px solid rgb(var(--border-color) / 0.08);
     }
     .pg-section-title {
       font-size: 26px;
       font-weight: 700;
       margin: 0 0 36px;
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       letter-spacing: -0.5px;
     }
     .pg-subsection-title {
@@ -98,9 +98,9 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       margin: 40px 0 16px;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       padding-top: 24px;
-      border-top: 1px solid rgb(var(--border-high) / 0.06);
+      border-top: 1px solid rgb(var(--border-color) / 0.06);
     }
     .pg-subsection-title:first-of-type {
       margin-top: 0;
@@ -112,7 +112,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: rgb(var(--text-low) / var(--text-alpha-low));
+      color: rgb(var(--text-color) / var(--text-alpha-low));
       margin: 20px 0 8px;
     }
     .pg-group-label:first-of-type {
@@ -154,14 +154,14 @@
     .pg-add-tile {
       width: 56px;
       min-height: 60px;
-      border: 1.5px dashed rgb(var(--border-high) / 0.20);
+      border: 1.5px dashed rgb(var(--border-color) / 0.20);
       border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
-      color: rgb(var(--text-low) / var(--text-alpha-low));
+      color: rgb(var(--text-color) / var(--text-alpha-low));
       flex-shrink: 0;
       transition: border-color 120ms, color 120ms;
     }
@@ -187,7 +187,7 @@
       border-radius: 3px;
       border: 1px solid rgb(var(--border-focus));
       background: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       outline: none;
       box-sizing: border-box;
     }
@@ -205,31 +205,31 @@
     }
     .pg-add-confirm {
       background: rgb(var(--action-primary-default));
-      color: rgb(var(--text-invert-max));
+      color: rgb(var(--text-invert-color));
     }
     .pg-add-cancel {
       background: rgb(var(--surfaces-l3) / var(--surfaces-alpha));
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
     }
     .pg-swatch-color {
       width: 84px;
       height: 60px;
       border-radius: 6px;
-      border: 1px solid rgb(var(--border-high) / 0.08);
+      border: 1px solid rgb(var(--border-color) / 0.08);
       margin-bottom: 6px;
       overflow: hidden;
     }
     .pg-swatch-name {
       font-size: 11px;
       font-weight: 700;
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       line-height: 1.4;
       word-break: break-word;
     }
     .pg-swatch-sub {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       line-height: 1.4;
       word-break: break-all;
     }
@@ -270,7 +270,7 @@
     .pg-text-token-meta {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
     }
 
     /* Invert surface panel */
@@ -281,7 +281,7 @@
       margin-top: 8px;
     }
     .pg-invert-panel .pg-text-token-meta {
-      color: rgb(var(--text-invert-low) / 0.55);
+      color: rgb(var(--text-invert-color) / 0.55);
     }
 
     /* Border token demos */
@@ -306,20 +306,20 @@
     .pg-border-meta {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
     }
 
     /* --- Typography rows --- */
     .pg-type-row {
       padding: 14px 0;
-      border-bottom: 1px solid rgb(var(--border-high) / 0.06);
+      border-bottom: 1px solid rgb(var(--border-color) / 0.06);
     }
     .pg-type-row:last-child { border-bottom: none; }
     .pg-type-sample { margin-bottom: 5px; }
     .pg-type-meta {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       line-height: 1.7;
     }
 
@@ -338,7 +338,7 @@
       font-weight: 600;
       width: 36px;
       flex-shrink: 0;
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
     }
     .pg-space-bar {
       height: 10px;
@@ -350,7 +350,7 @@
     .pg-space-px {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       white-space: nowrap;
     }
 
@@ -375,7 +375,7 @@
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
       text-align: center;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       line-height: 1.6;
     }
 
@@ -397,13 +397,28 @@
       height: 88px;
       border-radius: 8px;
       background-color: rgb(var(--surfaces-base));
-      border: 1px solid rgb(var(--border-high) / 0.06);
+      border: 1px solid rgb(var(--border-color) / 0.06);
     }
     .pg-shadow-meta {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       text-align: center;
+    }
+
+    /* Elevation combined swatches — fill + shadow on same element, no checkerboard */
+    .pg-elev-swatch {
+      width: 120px;
+    }
+    .pg-elev-swatch .pg-swatch-color {
+      width: 120px;
+      height: 104px;
+      border: 1px solid transparent;
+      overflow: visible;
+      border-radius: 8px;
+    }
+    body.dark .pg-elev-swatch .pg-swatch-color {
+      border-color: rgb(var(--border-color) / var(--border-alpha-low));
     }
 
     /* --- Components layout --- */
@@ -413,7 +428,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: rgb(var(--text-low) / var(--text-alpha-low));
+      color: rgb(var(--text-color) / var(--text-alpha-low));
       margin: 20px 0 10px;
     }
     .pg-comp-label:first-child { margin-top: 0; }
@@ -427,7 +442,7 @@
     .pg-comp-note {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       margin-bottom: 16px;
     }
 
@@ -449,7 +464,7 @@
     .pg-form-note {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
     }
 
     /* Controls */
@@ -468,7 +483,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: rgb(var(--text-low) / var(--text-alpha-low));
+      color: rgb(var(--text-color) / var(--text-alpha-low));
       margin-bottom: 2px;
     }
     .pg-control-item {
@@ -476,7 +491,7 @@
       align-items: center;
       gap: 10px;
       font-size: 12px;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
     }
 
     /* ---- Palette editor ---- */
@@ -489,13 +504,13 @@
       gap: 16px;
       padding: 10px 48px;
       background: rgb(var(--surfaces-l3) / var(--surfaces-alpha));
-      border-bottom: 1px solid rgb(var(--border-high) / 0.08);
+      border-bottom: 1px solid rgb(var(--border-color) / 0.08);
       backdrop-filter: blur(8px);
     }
     .pg-save-status {
       font-size: 11px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       flex: 1;
     }
     .pg-save-status.has-changes { color: rgb(var(--meaning-alert)); }
@@ -509,7 +524,7 @@
       border-radius: 20px;
       border: none;
       background: rgb(var(--action-primary-default));
-      color: rgb(var(--text-invert-max));
+      color: rgb(var(--text-invert-color));
       cursor: pointer;
       transition: background 150ms, opacity 150ms;
       letter-spacing: 0.3px;
@@ -527,7 +542,7 @@
     .pg-swatch-val {
       font-size: 10px;
       font-family: ui-monospace, 'SF Mono', monospace;
-      color: rgb(var(--text-medium) / var(--text-alpha-medium));
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
       flex: 1;
       min-width: 0;
       overflow: hidden;
@@ -542,10 +557,10 @@
       font-size: 11px;
       padding: 0 2px;
       line-height: 1;
-      color: rgb(var(--text-low) / var(--text-alpha-low));
+      color: rgb(var(--text-color) / var(--text-alpha-low));
       transition: color 120ms;
     }
-    .pg-swatch-pencil:hover { color: rgb(var(--text-high) / var(--text-alpha-high)); }
+    .pg-swatch-pencil:hover { color: rgb(var(--text-color) / var(--text-alpha-high)); }
     .pg-swatch-input {
       display: none;
       width: 100%;
@@ -555,11 +570,61 @@
       border-radius: 3px;
       border: 1px solid rgb(var(--border-focus));
       background: rgb(var(--surfaces-l1) / var(--surfaces-alpha));
-      color: rgb(var(--text-high) / var(--text-alpha-high));
+      color: rgb(var(--text-color) / var(--text-alpha-high));
       outline: none;
       box-sizing: border-box;
     }
     .pg-swatch-input.invalid { border-color: rgb(var(--meaning-error)); }
+
+    /* --- APCA contrast tables --- */
+    .pg-apca-wrap { overflow-x: auto; margin-bottom: 4px; }
+    .pg-apca-table {
+      border-collapse: separate;
+      border-spacing: 3px;
+      font-size: 10px;
+      font-family: ui-monospace, 'SF Mono', monospace;
+      white-space: nowrap;
+    }
+    .pg-apca-table th,
+    .pg-apca-table td { padding: 5px 10px; text-align: center; }
+    .pg-apca-table thead th {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
+    }
+    .pg-apca-row-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-align: left !important;
+      color: rgb(var(--text-color) / var(--text-alpha-medium));
+      padding-right: 20px !important;
+    }
+    .pg-apca-cell {
+      border-radius: 4px;
+      font-weight: 600;
+      min-width: 44px;
+      color: rgb(var(--text-color) / var(--text-alpha-high));
+    }
+    /* Two-dropdown light/dark pattern — .dark is on <body> */
+    body:not(.dark) .pg-swatch-select[data-mode="dark"],
+    body:not(.dark) #text-onsurface-select-dark,
+    body:not(.dark) #text-accent-select-dark { display: none; }
+    body.dark .pg-swatch-select[data-mode="light"],
+    body.dark #text-onsurface-select-light,
+    body.dark #text-accent-select-light { display: none; }
+
+    /* Show only the relevant alpha group */
+    body:not(.dark) .pg-text-alpha-dark { display: none; }
+    body.dark       .pg-text-alpha-light { display: none; }
+    /* Border controls — show only the active mode's select + alpha group */
+    body:not(.dark) #border-focus-select-dark,
+    body:not(.dark) #border-base-select-dark { display: none; }
+    body.dark #border-focus-select-light,
+    body.dark #border-base-select-light { display: none; }
+    body:not(.dark) .pg-border-alpha-dark { display: none; }
+    body.dark       .pg-border-alpha-light { display: none; }
   </style>
 </head>
 <body>
@@ -570,6 +635,7 @@
     <a href="#text">Text</a>
     <a href="#spacing">Spacing</a>
     <a href="#shape">Shape</a>
+    <a href="#elevations">Elevations</a>
     <a href="#components">Components</a>
   </div>
   <button class="pg-dark-toggle" id="darkToggle">&#9790; Dark</button>
@@ -610,68 +676,136 @@
 
   <div class="pg-group-label">Brand</div>
   <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--brand-main"><div class="pg-swatch-color" style="background:rgb(var(--brand-main))"></div><div class="pg-swatch-name">main</div><select class="pg-swatch-select" data-var="--brand-main"></select></div>
-  </div>
-
-  <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
-    Surfaces — elevation stack
-    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-low)/var(--text-alpha-low))">Alpha (Opacity)</span>
-    <input id="surfaces-alpha-input" type="text" value="0.96" spellcheck="false"
-      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-  </div>
-  <div class="pg-swatch-row">
-    <div class="pg-swatch pg-checker" data-var="--surfaces-base"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-base))"></div></div><div class="pg-swatch-name">base</div><select class="pg-swatch-select" data-var="--surfaces-base"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l1"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l1) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l1</div><select class="pg-swatch-select" data-var="--surfaces-l1"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l2"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l2) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l2</div><select class="pg-swatch-select" data-var="--surfaces-l2"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l2a"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l2a) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l2a</div><select class="pg-swatch-select" data-var="--surfaces-l2a"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l3"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l3) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l3</div><select class="pg-swatch-select" data-var="--surfaces-l3"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l4"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l4) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l4</div><select class="pg-swatch-select" data-var="--surfaces-l4"></select></div>
-    <div class="pg-swatch pg-checker" data-var="--surfaces-l5"><div class="pg-swatch-color"><div class="pg-swatch-color-inner" style="background:rgb(var(--surfaces-l5) / var(--surfaces-alpha))"></div></div><div class="pg-swatch-name">l5</div><select class="pg-swatch-select" data-var="--surfaces-l5"></select></div>
-    <div class="pg-swatch" data-var="--surfaces-invert"><div class="pg-swatch-color" style="background:rgb(var(--surfaces-invert))"></div><div class="pg-swatch-name">invert</div><select class="pg-swatch-select" data-var="--surfaces-invert"></select></div>
+    <div class="pg-swatch" data-var="--brand-main"><div class="pg-swatch-color" style="background:rgb(var(--brand-main))"></div><div class="pg-swatch-name">main</div><select class="pg-swatch-select" data-var="--brand-main" data-mode="light"></select><select class="pg-swatch-select" data-var="--brand-main" data-mode="dark"></select></div>
   </div>
 
   <div class="pg-group-label">Actions — solid fills, no alpha</div>
   <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--action-primary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-default))"></div><div class="pg-swatch-name">primary-default</div><select class="pg-swatch-select" data-var="--action-primary-default"></select></div>
-    <div class="pg-swatch" data-var="--action-primary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-hover))"></div><div class="pg-swatch-name">primary-hover</div><select class="pg-swatch-select" data-var="--action-primary-hover"></select></div>
-    <div class="pg-swatch" data-var="--action-primary-focus"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-focus))"></div><div class="pg-swatch-name">primary-focus</div><select class="pg-swatch-select" data-var="--action-primary-focus"></select></div>
-    <div class="pg-swatch" data-var="--action-primary-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-disabled))"></div><div class="pg-swatch-name">primary-disabled</div><select class="pg-swatch-select" data-var="--action-primary-disabled"></select></div>
-    <div class="pg-swatch" data-var="--action-secondary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-default))"></div><div class="pg-swatch-name">secondary-default</div><select class="pg-swatch-select" data-var="--action-secondary-default"></select></div>
-    <div class="pg-swatch" data-var="--action-secondary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-hover))"></div><div class="pg-swatch-name">secondary-hover</div><select class="pg-swatch-select" data-var="--action-secondary-hover"></select></div>
-    <div class="pg-swatch" data-var="--action-secondary-focus"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-focus))"></div><div class="pg-swatch-name">secondary-focus</div><select class="pg-swatch-select" data-var="--action-secondary-focus"></select></div>
-    <div class="pg-swatch" data-var="--action-neutral-default"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-default))"></div><div class="pg-swatch-name">neutral-default</div><select class="pg-swatch-select" data-var="--action-neutral-default"></select></div>
-    <div class="pg-swatch" data-var="--action-neutral-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-disabled))"></div><div class="pg-swatch-name">neutral-disabled</div><select class="pg-swatch-select" data-var="--action-neutral-disabled"></select></div>
-    <div class="pg-swatch" data-var="--action-neutral-filled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-filled))"></div><div class="pg-swatch-name">neutral-filled</div><select class="pg-swatch-select" data-var="--action-neutral-filled"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-default))"></div><div class="pg-swatch-name">primary-default</div><select class="pg-swatch-select" data-var="--action-primary-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-hover))"></div><div class="pg-swatch-name">primary-hover</div><select class="pg-swatch-select" data-var="--action-primary-hover" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-hover" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-pressed"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-pressed))"></div><div class="pg-swatch-name">primary-pressed</div><select class="pg-swatch-select" data-var="--action-primary-pressed" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-pressed" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-primary-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-primary-disabled))"></div><div class="pg-swatch-name">primary-disabled</div><select class="pg-swatch-select" data-var="--action-primary-disabled" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-primary-disabled" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-default"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-default))"></div><div class="pg-swatch-name">secondary-default</div><select class="pg-swatch-select" data-var="--action-secondary-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-secondary-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-hover"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-hover))"></div><div class="pg-swatch-name">secondary-hover</div><select class="pg-swatch-select" data-var="--action-secondary-hover" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-secondary-hover" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-secondary-pressed"><div class="pg-swatch-color" style="background:rgb(var(--action-secondary-pressed))"></div><div class="pg-swatch-name">secondary-pressed</div><select class="pg-swatch-select" data-var="--action-secondary-pressed" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-secondary-pressed" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-default"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-default))"></div><div class="pg-swatch-name">neutral-default</div><select class="pg-swatch-select" data-var="--action-neutral-default" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-default" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-disabled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-disabled))"></div><div class="pg-swatch-name">neutral-disabled</div><select class="pg-swatch-select" data-var="--action-neutral-disabled" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-disabled" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--action-neutral-filled"><div class="pg-swatch-color" style="background:rgb(var(--action-neutral-filled))"></div><div class="pg-swatch-name">neutral-filled</div><select class="pg-swatch-select" data-var="--action-neutral-filled" data-mode="light"></select><select class="pg-swatch-select" data-var="--action-neutral-filled" data-mode="dark"></select></div>
   </div>
+
+  <div class="pg-group-label" style="margin-top: 24px">APCA contrast — action fills on surfaces (raw Lc)</div>
+  <div class="pg-apca-wrap"><div id="apca-action-table"></div></div>
 
   <div class="pg-group-label">Meaning — 30 tone in light, 70 tone in dark (swapped by .dark)</div>
   <div class="pg-swatch-row">
-    <div class="pg-swatch" data-var="--meaning-error"><div class="pg-swatch-color" style="background:rgb(var(--meaning-error))"></div><div class="pg-swatch-name">error</div><select class="pg-swatch-select" data-var="--meaning-error"></select></div>
-    <div class="pg-swatch" data-var="--meaning-alert"><div class="pg-swatch-color" style="background:rgb(var(--meaning-alert))"></div><div class="pg-swatch-name">alert</div><select class="pg-swatch-select" data-var="--meaning-alert"></select></div>
-    <div class="pg-swatch" data-var="--meaning-success"><div class="pg-swatch-color" style="background:rgb(var(--meaning-success))"></div><div class="pg-swatch-name">success</div><select class="pg-swatch-select" data-var="--meaning-success"></select></div>
+    <div class="pg-swatch" data-var="--meaning-error"><div class="pg-swatch-color" style="background:rgb(var(--meaning-error))"></div><div class="pg-swatch-name">error</div><select class="pg-swatch-select" data-var="--meaning-error" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-error" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--meaning-alert"><div class="pg-swatch-color" style="background:rgb(var(--meaning-alert))"></div><div class="pg-swatch-name">alert</div><select class="pg-swatch-select" data-var="--meaning-alert" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-alert" data-mode="dark"></select></div>
+    <div class="pg-swatch" data-var="--meaning-success"><div class="pg-swatch-color" style="background:rgb(var(--meaning-success))"></div><div class="pg-swatch-name">success</div><select class="pg-swatch-select" data-var="--meaning-success" data-mode="light"></select><select class="pg-swatch-select" data-var="--meaning-success" data-mode="dark"></select></div>
   </div>
 
-  <div class="pg-group-label">Text tokens — on surface · alpha pairs, rendered via .text-* utility classes</div>
+  <div class="pg-group-label">On-surface text — shared colour, separate light + dark opacity</div>
+  <div style="display:flex;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:28px;">
+
+    <!-- Accent column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;flex-shrink:0;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="text-accent-preview" style="background:rgb(var(--text-accent))"></div>
+        <div class="pg-swatch-name">accent colour</div>
+        <select id="text-accent-select-light" data-mode="light" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+        <select id="text-accent-select-dark" data-mode="dark" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+        <div class="pg-text-alpha-light" style="flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Alpha</span>
+          <input id="text-light-alpha-accent" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+        <div class="pg-text-alpha-dark" style="flex-direction:column;gap:3px;">
+          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Alpha</span>
+          <input id="text-dark-alpha-accent" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+    </div>
+
+    <!-- On-surface column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="text-onsurface-preview" style="background:rgb(var(--text-color))"></div>
+        <div class="pg-swatch-name">max · high · medium · low</div>
+        <select id="text-onsurface-select-light" data-mode="light" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+        <select id="text-onsurface-select-dark" data-mode="dark" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="pg-text-alpha-light">
+          <div class="pg-group-label" style="margin:0;">Light opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Max</span>
+              <input id="text-light-alpha-max" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+              <input id="text-light-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+              <input id="text-light-alpha-medium" type="text" value="0.60" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+              <input id="text-light-alpha-low" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+        <div class="pg-text-alpha-dark">
+          <div class="pg-group-label" style="margin:0;">Dark opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Max</span>
+              <input id="text-dark-alpha-max" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+              <input id="text-dark-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+              <input id="text-dark-alpha-medium" type="text" value="0.60" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+              <input id="text-dark-alpha-low" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 28px">APCA contrast — text tokens on surfaces (raw Lc)</div>
+  <div class="pg-apca-wrap"><div id="apca-text-table"></div></div>
+
+  <div class="pg-group-label" style="margin-top: 28px">Text tokens — on surface · alpha pairs, rendered via .text-* utility classes</div>
   <div class="pg-text-tokens">
     <div class="pg-text-token">
       <div class="pg-text-token-sample text-max">Text Max</div>
-      <div class="pg-text-token-meta">--text-max · alpha 1</div>
+      <div class="pg-text-token-meta" id="meta-text-max">--text-color · alpha 1 (max)</div>
     </div>
     <div class="pg-text-token">
       <div class="pg-text-token-sample text-high">Text High</div>
-      <div class="pg-text-token-meta">--text-high · alpha 0.87</div>
+      <div class="pg-text-token-meta" id="meta-text-high">--text-color · alpha 0.87 (high)</div>
     </div>
     <div class="pg-text-token">
       <div class="pg-text-token-sample text-medium">Text Medium</div>
-      <div class="pg-text-token-meta">--text-medium · alpha 0.60</div>
+      <div class="pg-text-token-meta" id="meta-text-medium">--text-color · alpha 0.60 (medium)</div>
     </div>
     <div class="pg-text-token">
       <div class="pg-text-token-sample text-low">Text Low</div>
-      <div class="pg-text-token-meta">--text-low · alpha 0.38</div>
+      <div class="pg-text-token-meta" id="meta-text-low">--text-color · alpha 0.38 (low)</div>
     </div>
     <div class="pg-text-token">
       <div class="pg-text-token-sample text-accent">Text Accent</div>
-      <div class="pg-text-token-meta">--text-accent · alpha 1</div>
+      <div class="pg-text-token-meta" id="meta-text-accent">--text-accent · alpha 1</div>
     </div>
   </div>
 
@@ -680,44 +814,132 @@
     <div class="pg-text-tokens">
       <div class="pg-text-token">
         <div class="pg-text-token-sample text-invert-max">Invert Max</div>
-        <div class="pg-text-token-meta">--text-invert-max · alpha 1</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-max">--text-invert-color · alpha 1 (max)</div>
       </div>
       <div class="pg-text-token">
         <div class="pg-text-token-sample text-invert-high">Invert High</div>
-        <div class="pg-text-token-meta">--text-invert-high · alpha 0.87</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-high">--text-invert-color · alpha 0.87 (high)</div>
       </div>
       <div class="pg-text-token">
         <div class="pg-text-token-sample text-invert-medium">Invert Medium</div>
-        <div class="pg-text-token-meta">--text-invert-medium · alpha 0.60</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-medium">--text-invert-color · alpha 0.60 (medium)</div>
       </div>
       <div class="pg-text-token">
         <div class="pg-text-token-sample text-invert-low">Invert Low</div>
-        <div class="pg-text-token-meta">--text-invert-low · alpha 0.38</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-low">--text-invert-color · alpha 0.38 (low)</div>
       </div>
       <div class="pg-text-token">
         <div class="pg-text-token-sample text-invert-accent">Invert Accent</div>
-        <div class="pg-text-token-meta">--text-invert-accent · alpha 1</div>
+        <div class="pg-text-token-meta" id="meta-text-invert-accent">--text-invert-accent · alpha 1</div>
       </div>
     </div>
   </div>
 
-  <div class="pg-group-label" style="margin-top: 20px">Border tokens — border-color via .border-* utility classes</div>
+  <div class="pg-group-label" style="margin-top: 28px">Border tokens — shared colour, separate light + dark opacity</div>
+  <div style="display:flex;align-items:flex-start;gap:40px;flex-wrap:wrap;margin-bottom:28px;">
+
+    <!-- Focus colour column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;flex-shrink:0;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="border-focus-preview" style="background:rgb(var(--border-focus))"></div>
+        <div class="pg-swatch-name">focus</div>
+        <select id="border-focus-select-light" data-mode="light" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+        <select id="border-focus-select-dark" data-mode="dark" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px;padding-top:4px;">
+        <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Focus alpha</span>
+        <input id="border-alpha-focus" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+      </div>
+    </div>
+
+    <!-- Base colour column -->
+    <div style="display:flex;align-items:flex-start;gap:16px;">
+      <div class="pg-swatch" style="flex-shrink:0;">
+        <div class="pg-swatch-color" id="border-base-preview" style="background:rgb(var(--border-color))"></div>
+        <div class="pg-swatch-name">high · medium · low</div>
+        <select id="border-base-select-light" data-mode="light" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+        <select id="border-base-select-dark" data-mode="dark" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="pg-border-alpha-light">
+          <div class="pg-group-label" style="margin:0;">Light opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+              <input id="border-light-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+              <input id="border-light-alpha-medium" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+              <input id="border-light-alpha-low" type="text" value="0.12" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+        <div class="pg-border-alpha-dark">
+          <div class="pg-group-label" style="margin:0;">Dark opacity</div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+              <input id="border-dark-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+              <input id="border-dark-alpha-medium" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+              <input id="border-dark-alpha-low" type="text" value="0.12" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pg-group-label">Width — mode-independent</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;">
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
+      <input id="border-width-high" type="text" value="2px" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
+      <input id="border-width-medium" type="text" value="1px" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
+      <input id="border-width-low" type="text" value="1px" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-color)/var(--text-alpha-low));letter-spacing:.5px;">Focus</span>
+      <input id="border-width-focus" type="text" value="2px" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    </div>
+  </div>
+
+  <div class="pg-group-label" style="margin-top: 28px">APCA contrast — border tokens on surfaces (raw Lc)</div>
+  <div class="pg-apca-wrap"><div id="apca-border-table"></div></div>
+
+  <div class="pg-group-label" style="margin-top: 16px">Border tokens — rendered via .border-* utility classes</div>
   <div class="pg-border-tokens">
     <div class="pg-border-token">
       <div class="pg-border-swatch border-high" style="border: 2px solid"></div>
-      <div class="pg-border-meta">--border-high · alpha 0.87</div>
+      <div class="pg-border-meta">--border-color · alpha 0.87 (high)</div>
     </div>
     <div class="pg-border-token">
       <div class="pg-border-swatch border-medium" style="border: 2px solid"></div>
-      <div class="pg-border-meta">--border-medium · alpha 0.38</div>
+      <div class="pg-border-meta">--border-color · alpha 0.38 (medium)</div>
     </div>
     <div class="pg-border-token">
       <div class="pg-border-swatch border-low" style="border: 2px solid"></div>
-      <div class="pg-border-meta">--border-low · alpha 0.12</div>
+      <div class="pg-border-meta">--border-color · alpha 0.12 (low)</div>
     </div>
     <div class="pg-border-token">
       <div class="pg-border-swatch border-focus" style="border: 2px solid"></div>
-      <div class="pg-border-meta">--border-focus · alpha 1</div>
+      <div class="pg-border-meta">--border-focus · alpha 1 (focus)</div>
     </div>
   </div>
 </section>
@@ -728,51 +950,6 @@
      ================================================================ -->
 <section id="text" class="pg-section">
   <h2 class="pg-section-title">Text</h2>
-
-  <h3 class="pg-subsection-title">Colour tokens</h3>
-
-  <div class="pg-group-label">On-surface text — shared colour, four opacity levels</div>
-  <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:28px;">
-    <div class="pg-swatch" style="flex-shrink:0;">
-      <div class="pg-swatch-color" id="text-onsurface-preview" style="background:rgb(var(--text-high))"></div>
-      <div class="pg-swatch-name">max · high · medium · low</div>
-      <select id="text-onsurface-select" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));box-sizing:border-box;"></select>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="pg-group-label" style="margin:0;">Opacity per level</div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;">
-        <div style="display:flex;flex-direction:column;gap:3px;">
-          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Max</span>
-          <input id="text-alpha-max" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px;">
-          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">High</span>
-          <input id="text-alpha-high" type="text" value="0.87" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px;">
-          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Medium</span>
-          <input id="text-alpha-medium" type="text" value="0.60" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-        </div>
-        <div style="display:flex;flex-direction:column;gap:3px;">
-          <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Low</span>
-          <input id="text-alpha-low" type="text" value="0.38" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="pg-group-label">Accent text</div>
-  <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:32px;">
-    <div class="pg-swatch" style="flex-shrink:0;">
-      <div class="pg-swatch-color" id="text-accent-preview" style="background:rgb(var(--text-accent))"></div>
-      <div class="pg-swatch-name">accent colour</div>
-      <select id="text-accent-select" style="font-size:10px;margin-top:4px;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));box-sizing:border-box;"></select>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:3px;">
-      <span style="font-size:10px;font-weight:700;color:rgb(var(--text-low)/var(--text-alpha-low));letter-spacing:.5px;">Alpha (Opacity)</span>
-      <input id="text-alpha-accent" type="text" value="1" spellcheck="false" style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-high)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-high)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
-    </div>
-  </div>
 
   <h3 class="pg-subsection-title">Display</h3>
   <div class="pg-type-row">
@@ -921,7 +1098,7 @@
      ================================================================ -->
 <section id="spacing" class="pg-section">
   <h2 class="pg-section-title">Spacing</h2>
-  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -20px 0 28px;">
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -20px 0 28px;">
     G-scale: gN = N &times; 8px &nbsp;|&nbsp; Half-steps add 4px (g0h=4, g1h=12, g2h=20 &hellip;) &nbsp;|&nbsp; Showing integer steps only
   </p>
   <div class="pg-space-rows">
@@ -954,7 +1131,7 @@
   <h2 class="pg-section-title">Shape</h2>
 
   <h3 class="pg-subsection-title">Border Radius — Semantic Tier</h3>
-  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -12px 0 24px;">
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -12px 0 24px;">
     Formula: sh{h} = h &divide; 8 &nbsp;&mdash;&nbsp; radius is one-eighth of component height
   </p>
   <div class="pg-shape-row">
@@ -992,27 +1169,100 @@
     </div>
   </div>
 
-  <h3 class="pg-subsection-title">Shadows</h3>
-  <div class="pg-shadow-row">
-    <div class="pg-shadow-item">
-      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level1)"></div>
-      <div class="pg-shadow-meta">--shadow-level1</div>
+</section>
+
+
+<!-- ================================================================
+     ELEVATIONS
+     ================================================================ -->
+<section id="elevations" class="pg-section">
+  <h2 class="pg-section-title">Elevations</h2>
+  <p style="font-size:12px;font-family:ui-monospace,'SF Mono',monospace;color:rgb(var(--text-color)/var(--text-alpha-medium));margin:-20px 0 32px;">
+    Elevations contain both shadows and fills in light mode and only fills in dark mode.
+  </p>
+
+  <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
+    Alphas
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low))">--surfaces-alpha</span>
+    <input id="surfaces-alpha-input" type="text" value="0.96" spellcheck="false"
+      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low));margin-left:12px;">--surfaces-blur</span>
+    <input id="surfaces-blur-input" type="text" value="12px" spellcheck="false"
+      style="width:54px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+  </div>
+
+  <div class="pg-group-label">Shadows</div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:32px;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low))">--shadow-color</span>
+    <select id="shadow-color-select"
+      style="font-size:10px;margin-top:0;width:84px;padding:2px 4px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));box-sizing:border-box;"></select>
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low));margin-left:12px;">Umbra</span>
+    <input id="shadow-alpha-umbra" type="text" value="0.08" spellcheck="false"
+      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low));">Penumbra</span>
+    <input id="shadow-alpha-penumbra" type="text" value="0.04" spellcheck="false"
+      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.5px;color:rgb(var(--text-color)/var(--text-alpha-low));">Ambient</span>
+    <input id="shadow-alpha-ambient" type="text" value="0.06" spellcheck="false"
+      style="width:46px;font-size:10px;font-family:ui-monospace,'SF Mono',monospace;padding:2px 5px;border-radius:3px;border:1px solid rgb(var(--border-color)/var(--border-alpha-medium));background:rgb(var(--surfaces-l1)/var(--surfaces-alpha));color:rgb(var(--text-color)/var(--text-alpha-high));outline:none;box-sizing:border-box;">
+  </div>
+
+  <div class="pg-swatch-row" style="padding-bottom:24px;gap:16px;">
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-base">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-base))"></div>
+      <div class="pg-swatch-name">base</div>
+      <div class="pg-swatch-sub">--surfaces-base</div>
+      <select class="pg-swatch-select" data-var="--surfaces-base" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-base" data-mode="dark"></select>
     </div>
-    <div class="pg-shadow-item">
-      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level2)"></div>
-      <div class="pg-shadow-meta">--shadow-level2</div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l1">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l1) / var(--surfaces-alpha));box-shadow:var(--shadow-level1)"></div>
+      <div class="pg-swatch-name">l1</div>
+      <div class="pg-swatch-sub">--surfaces-l1<br>--shadow-level1</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l1" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l1" data-mode="dark"></select>
     </div>
-    <div class="pg-shadow-item">
-      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level3)"></div>
-      <div class="pg-shadow-meta">--shadow-level3</div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l2">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l2) / var(--surfaces-alpha));box-shadow:var(--shadow-level2)"></div>
+      <div class="pg-swatch-name">l2</div>
+      <div class="pg-swatch-sub">--surfaces-l2<br>--shadow-level2</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l2" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l2" data-mode="dark"></select>
     </div>
-    <div class="pg-shadow-item">
-      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level4)"></div>
-      <div class="pg-shadow-meta">--shadow-level4</div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l2a">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l2a) / var(--surfaces-alpha));box-shadow:var(--shadow-level2)"></div>
+      <div class="pg-swatch-name">l2a</div>
+      <div class="pg-swatch-sub">--surfaces-l2a<br>--shadow-level2</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l2a" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l2a" data-mode="dark"></select>
     </div>
-    <div class="pg-shadow-item">
-      <div class="pg-shadow-box" style="box-shadow: var(--shadow-level5)"></div>
-      <div class="pg-shadow-meta">--shadow-level5</div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l3">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l3) / var(--surfaces-alpha));box-shadow:var(--shadow-level3)"></div>
+      <div class="pg-swatch-name">l3</div>
+      <div class="pg-swatch-sub">--surfaces-l3<br>--shadow-level3</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l3" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l3" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l4">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l4) / var(--surfaces-alpha));box-shadow:var(--shadow-level4)"></div>
+      <div class="pg-swatch-name">l4</div>
+      <div class="pg-swatch-sub">--surfaces-l4<br>--shadow-level4</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l4" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l4" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-l5">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l5) / var(--surfaces-alpha));box-shadow:var(--shadow-level5)"></div>
+      <div class="pg-swatch-name">l5</div>
+      <div class="pg-swatch-sub">--surfaces-l5<br>--shadow-level5</div>
+      <select class="pg-swatch-select" data-var="--surfaces-l5" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-l5" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch" data-var="--surfaces-invert">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-invert))"></div>
+      <div class="pg-swatch-name">invert</div>
+      <div class="pg-swatch-sub">--surfaces-invert</div>
+      <select class="pg-swatch-select" data-var="--surfaces-invert" data-mode="light"></select>
+      <select class="pg-swatch-select" data-var="--surfaces-invert" data-mode="dark"></select>
     </div>
   </div>
 </section>
@@ -1091,7 +1341,7 @@
 
   <!-- ---- Icon Buttons ---- -->
   <h3 class="pg-subsection-title">Icon Buttons</h3>
-  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-medium) / var(--text-alpha-medium)); margin: -12px 0 20px;">SVG placeholder icon used. Replace with your icon library.</p>
+  <p style="font-size:11px; font-family: ui-monospace, 'SF Mono', monospace; color: rgb(var(--text-color) / var(--text-alpha-medium)); margin: -12px 0 20px;">SVG placeholder icon used. Replace with your icon library.</p>
 
   <div class="pg-comp-label">Primary — rounded</div>
   <div class="pg-comp-row">
@@ -1244,8 +1494,8 @@
 
   // ── Palette var options for <select> dropdowns (rebuilt dynamically) ──
   let PALETTE_OPTS = [
-    { group: 'Primary',   vars: ['p10','p20','p30','p40','p50','p60','p70','p80','p90','p100'] },
-    { group: 'Secondary', vars: ['s10','s20','s30','s40','s50','s60','s70','s80','s90','s100'] },
+    { group: 'Primary',   vars: ['p0','p5','p10','p15','p20','p25','p30','p35','p40','p50','p60','p70','p80','p90','p95','p98','p99','p100'] },
+    { group: 'Secondary', vars: ['s0','s5','s10','s15','s20','s25','s30','s35','s40','s50','s60','s70','s80','s90','s95','s98','s99','s100'] },
     { group: 'Neutral',   vars: ['n10','n20','n30','n35','n40','n50','n60','n65','n70','n80','n90','n100'] },
     { group: 'Meaning',   vars: ['r30','r70','y30','y70','g30','g70'] },
   ];
@@ -1374,6 +1624,21 @@
         const inp = document.getElementById('surfaces-alpha-input');
         if (inp) inp.value = alpha;
       }
+      const blur = semanticConfig.rawValues && semanticConfig.rawValues['--surfaces-blur'];
+      if (blur) {
+        const inp = document.getElementById('surfaces-blur-input');
+        if (inp) inp.value = blur;
+      }
+      // Seed shadow colour dropdown
+      const shadowColor = semanticConfig.light && semanticConfig.light['--shadow-color'];
+      if (shadowColor) {
+        const sel = document.getElementById('shadow-color-select');
+        if (sel) sel.innerHTML = buildSelectOptions(shadowColor);
+      }
+      ['umbra', 'penumbra', 'ambient'].forEach(layer => {
+        const v = semanticConfig.rawValues && semanticConfig.rawValues[`--shadow-alpha-${layer}`];
+        if (v) { const i = document.getElementById(`shadow-alpha-${layer}`); if (i) i.value = v; }
+      });
     } catch (e) {
       // server not running — dropdowns default to first option
     }
@@ -1383,47 +1648,122 @@
   function isDark() { return document.body.classList.contains('dark'); }
 
   function initTextControls() {
-    const mode     = isDark() ? 'dark' : 'light';
-    const map      = semanticConfig[mode] || {};
+    const lightMap = semanticConfig.light    || {};
+    const darkMap  = semanticConfig.dark     || {};
     const raw      = semanticConfig.rawValues || {};
 
-    const osSel = document.getElementById('text-onsurface-select');
-    if (osSel) osSel.innerHTML = buildSelectOptions(map['text-high'] || '');
+    const osSelL = document.getElementById('text-onsurface-select-light');
+    const osSelD = document.getElementById('text-onsurface-select-dark');
+    if (osSelL) osSelL.innerHTML = buildSelectOptions(lightMap['--text-color'] || '');
+    if (osSelD) osSelD.innerHTML = buildSelectOptions(darkMap['--text-color']  || '');
 
     const osPreview = document.getElementById('text-onsurface-preview');
     if (osPreview) {
-      const step = map['text-high'];
-      osPreview.style.background = step ? `rgb(var(--${step}))` : `rgb(var(--text-high))`;
+      const activeSel = isDark() ? osSelD : osSelL;
+      const step = activeSel && activeSel.value;
+      osPreview.style.background = step ? `rgb(var(--${step}))` : `rgb(var(--text-color))`;
     }
 
     ['max', 'high', 'medium', 'low'].forEach(level => {
-      const inp = document.getElementById(`text-alpha-${level}`);
-      if (inp && raw[`--text-alpha-${level}`] !== undefined) inp.value = raw[`--text-alpha-${level}`];
+      ['light', 'dark'].forEach(mode => {
+        const inp = document.getElementById(`text-${mode}-alpha-${level}`);
+        if (inp && raw[`--text-${mode}-alpha-${level}`] !== undefined) inp.value = raw[`--text-${mode}-alpha-${level}`];
+      });
     });
 
-    const acSel = document.getElementById('text-accent-select');
-    if (acSel) acSel.innerHTML = buildSelectOptions(map['text-accent'] || '');
+    const acSelL = document.getElementById('text-accent-select-light');
+    const acSelD = document.getElementById('text-accent-select-dark');
+    if (acSelL) acSelL.innerHTML = buildSelectOptions(lightMap['--text-accent'] || '');
+    if (acSelD) acSelD.innerHTML = buildSelectOptions(darkMap['--text-accent']  || '');
 
     const acPreview = document.getElementById('text-accent-preview');
     if (acPreview) {
-      const step = map['text-accent'];
+      const activeSel = isDark() ? acSelD : acSelL;
+      const step = activeSel && activeSel.value;
       acPreview.style.background = step ? `rgb(var(--${step}))` : `rgb(var(--text-accent))`;
     }
 
-    const acAlpha = document.getElementById('text-alpha-accent');
-    if (acAlpha && raw['--text-alpha-accent'] !== undefined) acAlpha.value = raw['--text-alpha-accent'];
+    const acAlpha = document.getElementById('text-alpha-accent'); // legacy — unused
+    // Seed accent alpha inputs
+    ['light', 'dark'].forEach(mode => {
+      const inp = document.getElementById(`text-${mode}-alpha-accent`);
+      if (inp && raw[`--text-${mode}-alpha-accent`] !== undefined) inp.value = raw[`--text-${mode}-alpha-accent`];
+    });
+
+    // ── Token meta labels — show resolved palette step ──────────────────
+    const activeMap = isDark() ? darkMap : lightMap;
+    ['max', 'high', 'medium', 'low'].forEach(level => {
+      const el = document.getElementById(`meta-text-${level}`);
+      if (!el) return;
+      const modeKey = isDark() ? 'dark' : 'light';
+      const alpha = raw[`--text-${modeKey}-alpha-${level}`]
+                 || raw[`--text-alpha-${level}`]
+                 || (level === 'max' ? '1' : level === 'high' ? '0.87' : level === 'medium' ? '0.60' : '0.38');
+      el.textContent = `--text-color · alpha ${alpha} (${level})`;
+    });
+    const accentEl    = document.getElementById('meta-text-accent');
+    const accentStep  = activeMap['--text-accent'] || '';
+    const modeKey     = isDark() ? 'dark' : 'light';
+    const accentAlpha = raw[`--text-${modeKey}-alpha-accent`] || raw['--text-alpha-accent'] || '1';
+    if (accentEl) accentEl.textContent = `--text-accent${accentStep ? ' · ' + accentStep : ''} · alpha ${accentAlpha}`;
+
+    // ── Invert token meta labels ────────────────────────────────────────
+    const invertAlphas = { max: '1', high: '0.87', medium: '0.60', low: '0.38', accent: '1' };
+    ['max', 'high', 'medium', 'low'].forEach(level => {
+      const el = document.getElementById(`meta-text-invert-${level}`);
+      if (!el) return;
+      const alpha = invertAlphas[level];
+      el.textContent = `--text-invert-color · alpha ${alpha} (${level})`;
+    });
+    const invertAccentEl   = document.getElementById('meta-text-invert-accent');
+    const invertAccentStep = activeMap['--text-invert-accent'] || '';
+    if (invertAccentEl) invertAccentEl.textContent = `--text-invert-accent${invertAccentStep ? ' · ' + invertAccentStep : ''} · alpha 1`;
+  }
+
+  function initBorderControls() {
+    const lightMap = semanticConfig.light    || {};
+    const darkMap  = semanticConfig.dark     || {};
+    const raw      = semanticConfig.rawValues || {};
+
+    const focSelL  = document.getElementById('border-focus-select-light');
+    const focSelD  = document.getElementById('border-focus-select-dark');
+    const baseSelL = document.getElementById('border-base-select-light');
+    const baseSelD = document.getElementById('border-base-select-dark');
+    if (focSelL)  focSelL.innerHTML  = buildSelectOptions(lightMap['--border-focus']  || '');
+    if (focSelD)  focSelD.innerHTML  = buildSelectOptions(darkMap['--border-focus']   || '');
+    if (baseSelL) baseSelL.innerHTML = buildSelectOptions(lightMap['--border-color']  || '');
+    if (baseSelD) baseSelD.innerHTML = buildSelectOptions(darkMap['--border-color']   || '');
+
+    const focPreview  = document.getElementById('border-focus-preview');
+    const basePreview = document.getElementById('border-base-preview');
+    if (focPreview)  { const s = (isDark() ? focSelD  : focSelL)?.value;  if (s) focPreview.style.background  = `rgb(var(--${s}))`;  }
+    if (basePreview) { const s = (isDark() ? baseSelD : baseSelL)?.value; if (s) basePreview.style.background = `rgb(var(--${s}))`; }
+
+    ['high', 'medium', 'low'].forEach(level => {
+      ['light', 'dark'].forEach(mode => {
+        const inp = document.getElementById(`border-${mode}-alpha-${level}`);
+        if (inp && raw[`--border-${mode}-alpha-${level}`] !== undefined) inp.value = raw[`--border-${mode}-alpha-${level}`];
+      });
+    });
+    const focAlpha = document.getElementById('border-alpha-focus');
+    if (focAlpha && raw['--border-alpha-focus'] !== undefined) focAlpha.value = raw['--border-alpha-focus'];
+    ['high', 'medium', 'low', 'focus'].forEach(level => {
+      const inp = document.getElementById(`border-width-${level}`);
+      if (inp && raw[`--border-width-${level}`] !== undefined) inp.value = raw[`--border-width-${level}`];
+    });
   }
 
   function initDropdowns() {
-    const mode = isDark() ? 'dark' : 'light';
-    const map  = semanticConfig[mode] || {};
-    document.querySelectorAll('.pg-swatch-select').forEach(sel => {
-      const varName    = sel.dataset.var;
-      const bareKey    = varName.replace(/^--/, '');
-      const currentVal = map[bareKey] || map[varName] || '';
-      sel.innerHTML    = buildSelectOptions(currentVal);
+    const lightMap = semanticConfig.light || {};
+    const darkMap  = semanticConfig.dark  || {};
+    document.querySelectorAll('.pg-swatch-select[data-mode="light"]').forEach(sel => {
+      sel.innerHTML = buildSelectOptions(lightMap[sel.dataset.var] || '');
+    });
+    document.querySelectorAll('.pg-swatch-select[data-mode="dark"]').forEach(sel => {
+      sel.innerHTML = buildSelectOptions(darkMap[sel.dataset.var] || '');
     });
     initTextControls();
+    initBorderControls();
   }
 
   // ── Pencil edit helpers ───────────────────────────────────────────────
@@ -1457,6 +1797,7 @@
     if (paletteMode !== 'full') dirtyPalette.set(bareKey, raw);
     markDirty(swatch);
     updateSaveBar();
+    rebuildAPCA();
     input.style.display   = 'none';
     valSpan.style.display = '';
     pencil.style.display  = '';
@@ -1480,6 +1821,7 @@
     document.documentElement.style.removeProperty('--' + varName);
     paletteMode = 'full';
     updateSaveBar();
+    rebuildAPCA();
     const prefix = varName.match(/^[a-z]+/)[0];
     if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
     else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
@@ -1523,6 +1865,7 @@
     document.documentElement.style.setProperty('--' + name, rgb);
     paletteMode = 'full';
     updateSaveBar();
+    rebuildAPCA();
     if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
     else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
     else if (prefix === 's') { renderGroup('palette-s', 's'); }
@@ -1552,19 +1895,22 @@
   function initSemanticSelects() {
     document.querySelectorAll('.pg-swatch-select').forEach(sel => {
       sel.addEventListener('change', () => {
-        const swatch   = sel.closest('.pg-swatch');
-        const varName  = sel.dataset.var;    // e.g. "--brand-main"
-        const chosen   = sel.value;          // e.g. "p30"
-        // Apply live
-        document.documentElement.style.setProperty(varName, `var(--${chosen})`);
-        // Track dirty
+        const swatch  = sel.closest('.pg-swatch');
+        const varName = sel.dataset.var;
+        const mode    = sel.dataset.mode; // 'light' or 'dark'
+        const chosen  = sel.value;
+        // Apply live only when this select's mode is the active mode
+        if ((mode === 'dark') === isDark()) {
+          document.documentElement.style.setProperty(varName, `var(--${chosen})`);
+        }
         const bareKey = varName.replace(/^--/, '');
-        if (isDark()) {
+        if (mode === 'dark') {
           dirtySemanticD.set(bareKey, chosen);
         } else {
           dirtySemanticL.set(bareKey, chosen);
         }
         markDirty(swatch);
+        rebuildAPCA();
         updateSaveBar();
       });
     });
@@ -1648,6 +1994,7 @@
     document.body.classList.toggle('dark');
     const dark = isDark();
     darkBtn.textContent = dark ? '\u2600 Light' : '\u263E Dark';
+    rebuildAPCA();
     localStorage.setItem('pg-dark', dark ? '1' : '0');
     initDropdowns();
   });
@@ -1670,9 +2017,67 @@
     } catch (e) {
       // server not running — palette section stays empty
     }
+    rebuildAPCA();
     renderPaletteGroups();
     await loadConfig();
   }
+
+  // ── Shadow colour + alpha inputs ─────────────────────────────────────
+  (function () {
+    // Shadow colour — palette step dropdown (mode-independent)
+    const sel = document.getElementById('shadow-color-select');
+    if (sel) {
+      sel.addEventListener('change', () => {
+        const chosen = sel.value;
+        document.documentElement.style.setProperty('--shadow-color', `var(--${chosen})`);
+        dirtySemanticL.set('shadow-color', chosen);
+        updateSaveBar();
+      });
+    }
+
+    // Shadow alpha inputs — umbra, penumbra, ambient
+    ['umbra', 'penumbra', 'ambient'].forEach(layer => {
+      const inp = document.getElementById(`shadow-alpha-${layer}`);
+      if (!inp) return;
+      function commitShadowAlpha() {
+        const val = parseFloat(inp.value.trim());
+        if (isNaN(val) || val < 0 || val > 1) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+        inp.style.borderColor = '';
+        const v = String(Math.round(val * 100) / 100);
+        inp.value = v;
+        document.documentElement.style.setProperty(`--shadow-alpha-${layer}`, v);
+        dirtySemanticRaw.set(`--shadow-alpha-${layer}`, v);
+        updateSaveBar();
+      }
+      inp.addEventListener('change', commitShadowAlpha);
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commitShadowAlpha(); inp.blur(); }
+        if (e.key === 'Escape') { inp.blur(); }
+      });
+    });
+  })();
+
+  // ── Surfaces blur input ──────────────────────────────────────────────
+  (function () {
+    const inp = document.getElementById('surfaces-blur-input');
+    if (!inp) return;
+    function commitBlur() {
+      const raw = inp.value.trim();
+      if (!/^\d+(\.\d+)?(px|rem|em)$/.test(raw)) {
+        inp.style.borderColor = 'rgb(var(--meaning-error))';
+        return;
+      }
+      inp.style.borderColor = '';
+      document.documentElement.style.setProperty('--surfaces-blur', raw);
+      dirtySemanticRaw.set('--surfaces-blur', raw);
+      updateSaveBar();
+    }
+    inp.addEventListener('change', commitBlur);
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); commitBlur(); inp.blur(); }
+      if (e.key === 'Escape') { inp.blur(); }
+    });
+  })();
 
   // ── Surfaces alpha input ─────────────────────────────────────────────
   (function () {
@@ -1689,6 +2094,7 @@
       const clamped = Math.round(val * 100) / 100;
       inp.value = clamped;
       document.documentElement.style.setProperty('--surfaces-alpha', clamped);
+      rebuildAPCA();
       dirtySemanticRaw.set('--surfaces-alpha', String(clamped));
       updateSaveBar();
     }
@@ -1700,81 +2106,310 @@
   })();
 
   // ── Text colour / alpha controls ──────────────────────────────────────
-  const TEXT_ON_SURFACE_VARS = ['--text-max', '--text-high', '--text-medium', '--text-low'];
+  const TEXT_ON_SURFACE_VARS = ['--text-color'];
+  const TEXT_INVERT_VARS     = ['--text-invert-color'];
 
   (function wireTextControls() {
-    // Shared on-surface colour
-    const osSel = document.getElementById('text-onsurface-select');
-    if (osSel) {
-      osSel.addEventListener('change', () => {
-        const chosen = osSel.value;
+    // Shared on-surface colour (two selects — light + dark)
+    ['light', 'dark'].forEach(mode => {
+      const sel = document.getElementById(`text-onsurface-select-${mode}`);
+      if (!sel) return;
+      sel.addEventListener('change', () => {
+        const chosen = sel.value;
+        if ((mode === 'dark') === isDark()) {
+          TEXT_ON_SURFACE_VARS.forEach(v => document.documentElement.style.setProperty(v, `var(--${chosen})`));
+          const preview = document.getElementById('text-onsurface-preview');
+          if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+        }
         TEXT_ON_SURFACE_VARS.forEach(v => {
-          document.documentElement.style.setProperty(v, `var(--${chosen})`);
           const bareKey = v.replace(/^--/, '');
-          if (isDark()) dirtySemanticD.set(bareKey, chosen);
-          else          dirtySemanticL.set(bareKey, chosen);
+          if (mode === 'dark') dirtySemanticD.set(bareKey, chosen);
+          else                 dirtySemanticL.set(bareKey, chosen);
         });
-        const preview = document.getElementById('text-onsurface-preview');
-        if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+        // Mirror to opposite-mode invert: light dropdown → dark invert; dark dropdown → light invert
+        TEXT_INVERT_VARS.forEach(v => {
+          const bareKey = v.replace(/^--/, '');
+          if (mode === 'dark') dirtySemanticL.set(bareKey, chosen);
+          else                 dirtySemanticD.set(bareKey, chosen);
+        });
         updateSaveBar();
       });
-    }
+    });
 
-    // Per-level alpha inputs
-    ['max', 'high', 'medium', 'low'].forEach(level => {
-      const inp = document.getElementById(`text-alpha-${level}`);
+    // Per-level alpha inputs — separate light and dark
+    ['light', 'dark'].forEach(mode => {
+      ['max', 'high', 'medium', 'low'].forEach(level => {
+        const inp = document.getElementById(`text-${mode}-alpha-${level}`);
+        if (!inp) return;
+        function commit() {
+          const val = parseFloat(inp.value.trim());
+          if (isNaN(val) || val < 0 || val > 1) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+          inp.style.borderColor = '';
+          const v = String(Math.round(val * 100) / 100);
+          inp.value = v;
+          document.documentElement.style.setProperty(`--text-${mode}-alpha-${level}`, v);
+          dirtySemanticRaw.set(`--text-${mode}-alpha-${level}`, v);
+          rebuildAPCA();
+          updateSaveBar();
+        }
+        inp.addEventListener('change', commit);
+        inp.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); commit(); inp.blur(); }
+          if (e.key === 'Escape') { inp.blur(); }
+        });
+      });
+    });
+
+    // Accent colour (two selects — light + dark)
+    ['light', 'dark'].forEach(mode => {
+      const sel = document.getElementById(`text-accent-select-${mode}`);
+      if (!sel) return;
+      sel.addEventListener('change', () => {
+        const chosen = sel.value;
+        if ((mode === 'dark') === isDark()) {
+          document.documentElement.style.setProperty('--text-accent', `var(--${chosen})`);
+          const preview = document.getElementById('text-accent-preview');
+          if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+        }
+        if (mode === 'dark') dirtySemanticD.set('text-accent', chosen);
+        else                 dirtySemanticL.set('text-accent', chosen);
+        // Mirror to opposite-mode invert-accent
+        if (mode === 'dark') dirtySemanticL.set('text-invert-accent', chosen);
+        else                 dirtySemanticD.set('text-invert-accent', chosen);
+        updateSaveBar();
+      });
+    });
+
+    // Accent alpha — separate light and dark
+    ['light', 'dark'].forEach(mode => {
+      const inp = document.getElementById(`text-${mode}-alpha-accent`);
       if (!inp) return;
-      function commit() {
+      function commitAccent() {
         const val = parseFloat(inp.value.trim());
         if (isNaN(val) || val < 0 || val > 1) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
         inp.style.borderColor = '';
         const v = String(Math.round(val * 100) / 100);
         inp.value = v;
-        document.documentElement.style.setProperty(`--text-alpha-${level}`, v);
-        dirtySemanticRaw.set(`--text-alpha-${level}`, v);
+        document.documentElement.style.setProperty(`--text-${mode}-alpha-accent`, v);
+        dirtySemanticRaw.set(`--text-${mode}-alpha-accent`, v);
+        rebuildAPCA();
         updateSaveBar();
       }
-      inp.addEventListener('change', commit);
+      inp.addEventListener('change', commitAccent);
       inp.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); commit(); inp.blur(); }
+        if (e.key === 'Enter') { e.preventDefault(); commitAccent(); inp.blur(); }
         if (e.key === 'Escape') { inp.blur(); }
       });
     });
+  })();
 
-    // Accent colour
-    const acSel = document.getElementById('text-accent-select');
-    if (acSel) {
-      acSel.addEventListener('change', () => {
-        const chosen = acSel.value;
-        document.documentElement.style.setProperty('--text-accent', `var(--${chosen})`);
-        if (isDark()) dirtySemanticD.set('text-accent', chosen);
-        else          dirtySemanticL.set('text-accent', chosen);
-        const preview = document.getElementById('text-accent-preview');
-        if (preview) preview.style.background = `rgb(var(--${chosen}))`;
-        updateSaveBar();
+  // ── Border colour / alpha / width controls ────────────────────────────
+  (function wireBorderControls() {
+    ['focus', 'base'].forEach(token => {
+      const varName   = token === 'focus' ? '--border-focus' : '--border-color';
+      const previewId = token === 'focus' ? 'border-focus-preview' : 'border-base-preview';
+      ['light', 'dark'].forEach(mode => {
+        const sel = document.getElementById(`border-${token}-select-${mode}`);
+        if (!sel) return;
+        sel.addEventListener('change', () => {
+          const chosen = sel.value;
+          if ((mode === 'dark') === isDark()) {
+            document.documentElement.style.setProperty(varName, `var(--${chosen})`);
+            const preview = document.getElementById(previewId);
+            if (preview) preview.style.background = `rgb(var(--${chosen}))`;
+          }
+          const bareKey = varName.replace(/^--/, '');
+          if (mode === 'dark') dirtySemanticD.set(bareKey, chosen);
+          else                 dirtySemanticL.set(bareKey, chosen);
+          rebuildAPCA();
+          updateSaveBar();
+        });
       });
-    }
+    });
 
-    // Accent alpha
-    const acAlpha = document.getElementById('text-alpha-accent');
-    if (acAlpha) {
-      function commitAccent() {
-        const val = parseFloat(acAlpha.value.trim());
-        if (isNaN(val) || val < 0 || val > 1) { acAlpha.style.borderColor = 'rgb(var(--meaning-error))'; return; }
-        acAlpha.style.borderColor = '';
+    ['high', 'medium', 'low'].forEach(level => {
+      ['light', 'dark'].forEach(mode => {
+        const inp = document.getElementById(`border-${mode}-alpha-${level}`);
+        if (!inp) return;
+        function commit() {
+          const val = parseFloat(inp.value.trim());
+          if (isNaN(val) || val < 0 || val > 1) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+          inp.style.borderColor = '';
+          const v = String(Math.round(val * 100) / 100);
+          inp.value = v;
+          document.documentElement.style.setProperty(`--border-${mode}-alpha-${level}`, v);
+          if ((mode === 'dark') === isDark()) {
+            document.documentElement.style.setProperty(`--border-alpha-${level}`, v);
+          }
+          dirtySemanticRaw.set(`--border-${mode}-alpha-${level}`, v);
+          rebuildAPCA();
+          updateSaveBar();
+        }
+        inp.addEventListener('change', commit);
+        inp.addEventListener('keydown', e => {
+          if (e.key === 'Enter') { e.preventDefault(); commit(); inp.blur(); }
+          if (e.key === 'Escape') { inp.blur(); }
+        });
+      });
+    });
+
+    const focAlphaInp = document.getElementById('border-alpha-focus');
+    if (focAlphaInp) {
+      function commitFocusAlpha() {
+        const val = parseFloat(focAlphaInp.value.trim());
+        if (isNaN(val) || val < 0 || val > 1) { focAlphaInp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+        focAlphaInp.style.borderColor = '';
         const v = String(Math.round(val * 100) / 100);
-        acAlpha.value = v;
-        document.documentElement.style.setProperty('--text-alpha-accent', v);
-        dirtySemanticRaw.set('--text-alpha-accent', v);
+        focAlphaInp.value = v;
+        document.documentElement.style.setProperty('--border-alpha-focus', v);
+        dirtySemanticRaw.set('--border-alpha-focus', v);
         updateSaveBar();
       }
-      acAlpha.addEventListener('change', commitAccent);
-      acAlpha.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); commitAccent(); acAlpha.blur(); }
-        if (e.key === 'Escape') { acAlpha.blur(); }
+      focAlphaInp.addEventListener('change', commitFocusAlpha);
+      focAlphaInp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commitFocusAlpha(); focAlphaInp.blur(); }
+        if (e.key === 'Escape') { focAlphaInp.blur(); }
       });
     }
+
+    ['high', 'medium', 'low', 'focus'].forEach(level => {
+      const inp = document.getElementById(`border-width-${level}`);
+      if (!inp) return;
+      function commitWidth() {
+        const raw = inp.value.trim();
+        if (!/^\d+(\.\d+)?(px|rem|em)$/.test(raw)) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
+        inp.style.borderColor = '';
+        document.documentElement.style.setProperty(`--border-width-${level}`, raw);
+        dirtySemanticRaw.set(`--border-width-${level}`, raw);
+        updateSaveBar();
+      }
+      inp.addEventListener('change', commitWidth);
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commitWidth(); inp.blur(); }
+        if (e.key === 'Escape') { inp.blur(); }
+      });
+    });
   })();
+
+  // ── APCA contrast tables ──────────────────────────────────────────────
+  function apca_toLinear(c) {
+    c /= 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  }
+  function apca_Y(r, g, b) {
+    return 0.2126729 * apca_toLinear(r)
+         + 0.7151522 * apca_toLinear(g)
+         + 0.0721750 * apca_toLinear(b);
+  }
+  function apcaLc(txt, bg) {
+    const N = 0.022, E = 1.414;
+    let Yt = apca_Y(txt.r, txt.g, txt.b) + N;
+    let Yb = apca_Y(bg.r,  bg.g,  bg.b)  + N;
+    if (Yt < N) Yt += Math.pow(N - Yt, E);
+    if (Yb < N) Yb += Math.pow(N - Yb, E);
+    const Lc = Yb > Yt
+      ? 1.14 * (Math.pow(Yb, 0.56) - Math.pow(Yt, 0.57)) * 100
+      : 1.14 * (Math.pow(Yb, 0.65) - Math.pow(Yt, 0.62)) * 100;
+    return Math.abs(Lc) < 7.5 ? 0 : Lc;
+  }
+  function compositeRGB(fg, a, bg) {
+    return {
+      r: Math.round(a * fg.r + (1 - a) * bg.r),
+      g: Math.round(a * fg.g + (1 - a) * bg.g),
+      b: Math.round(a * fg.b + (1 - a) * bg.b),
+    };
+  }
+  function resolveToRGB(expr) {
+    const el = document.createElement('div');
+    el.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;width:0;height:0;';
+    el.style.color = expr;
+    document.body.appendChild(el);
+    const c = window.getComputedStyle(el).color;
+    el.remove();
+    const m = c.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    return m ? { r: +m[1], g: +m[2], b: +m[3] } : { r: 0, g: 0, b: 0 };
+  }
+  function getCSSAlpha(varName) {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(varName).trim()) || 0;
+  }
+
+  function buildAPCATable(containerId, rowTokens, colSurfaces) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    let html = '<table class="pg-apca-table"><thead><tr><th></th>';
+    colSurfaces.forEach(s => { html += `<th>${s.label}</th>`; });
+    html += '</tr></thead><tbody>';
+    rowTokens.forEach(tok => {
+      html += `<tr><td class="pg-apca-row-label">${tok.label}</td>`;
+      colSurfaces.forEach(surf => {
+        const effective = tok.alpha < 1
+          ? compositeRGB(tok.rgb, tok.alpha, surf.rgb)
+          : tok.rgb;
+        const lc      = apcaLc(effective, surf.rgb);
+        const display = lc === 0 ? '0' : (lc > 0 ? '+' : '') + Math.round(lc);
+        html += `<td class="pg-apca-cell">${display}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  function rebuildAPCA() {
+    const sAlpha  = getCSSAlpha('--surfaces-alpha') || 0.93;
+    const baseRGB = resolveToRGB('rgb(var(--surfaces-base))');
+
+    const surfaces = [
+      { label: 'base',   rgb: baseRGB },
+      { label: 'l1',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l1))'),  sAlpha, baseRGB) },
+      { label: 'l2',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2))'),  sAlpha, baseRGB) },
+      { label: 'l2a',    rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2a))'), sAlpha, baseRGB) },
+      { label: 'l3',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l3))'),  sAlpha, baseRGB) },
+      { label: 'l4',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l4))'),  sAlpha, baseRGB) },
+      { label: 'l5',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l5))'),  sAlpha, baseRGB) },
+    ];
+
+    const _am    = isDark() ? 'dark' : 'light';
+    const aMax  = getCSSAlpha(`--text-${_am}-alpha-max`)    || 1;
+    const aHigh = getCSSAlpha(`--text-${_am}-alpha-high`)   || 0.87;
+    const aMid  = getCSSAlpha(`--text-${_am}-alpha-medium`) || 0.60;
+    const aLow  = getCSSAlpha(`--text-${_am}-alpha-low`)    || 0.38;
+    const aAcc  = getCSSAlpha(`--text-${_am}-alpha-accent`) || 1;
+
+    const textTokens = [
+      { label: 'max',     rgb: resolveToRGB('rgb(var(--text-color))'),           alpha: aMax  },
+      { label: 'high',    rgb: resolveToRGB('rgb(var(--text-color))'),          alpha: aHigh },
+      { label: 'medium',  rgb: resolveToRGB('rgb(var(--text-color))'),        alpha: aMid  },
+      { label: 'low',     rgb: resolveToRGB('rgb(var(--text-color))'),           alpha: aLow  },
+      { label: 'accent',  rgb: resolveToRGB('rgb(var(--text-accent))'),        alpha: aAcc  },
+    ];
+
+    const actionTokens = [
+      { label: 'primary-default',  rgb: resolveToRGB('rgb(var(--action-primary-default))'),  alpha: 1 },
+      { label: 'primary-hover',    rgb: resolveToRGB('rgb(var(--action-primary-hover))'),    alpha: 1 },
+      { label: 'primary-pressed',  rgb: resolveToRGB('rgb(var(--action-primary-pressed))'),  alpha: 1 },
+      { label: 'primary-disabled', rgb: resolveToRGB('rgb(var(--action-primary-disabled))'), alpha: 1 },
+      { label: 'secondary-default',rgb: resolveToRGB('rgb(var(--action-secondary-default))'),alpha: 1 },
+      { label: 'secondary-hover',  rgb: resolveToRGB('rgb(var(--action-secondary-hover))'),  alpha: 1 },
+      { label: 'secondary-pressed',rgb: resolveToRGB('rgb(var(--action-secondary-pressed))'),alpha: 1 },
+    ];
+
+    const borderColor = resolveToRGB('rgb(var(--border-color))');
+    const aBHigh = getCSSAlpha('--border-alpha-high')   || 0.87;
+    const aBMid  = getCSSAlpha('--border-alpha-medium') || 0.38;
+    const aBLow  = getCSSAlpha('--border-alpha-low')    || 0.12;
+    const aBFoc  = getCSSAlpha('--border-alpha-focus')  || 1;
+    const borderTokens = [
+      { label: 'high',   rgb: borderColor,                                alpha: aBHigh },
+      { label: 'medium', rgb: borderColor,                                alpha: aBMid  },
+      { label: 'low',    rgb: borderColor,                                alpha: aBLow  },
+      { label: 'focus',  rgb: resolveToRGB('rgb(var(--border-focus))'),   alpha: aBFoc  },
+    ];
+
+    buildAPCATable('apca-text-table',   textTokens,   surfaces);
+    buildAPCATable('apca-action-table', actionTokens, surfaces);
+    buildAPCATable('apca-border-table', borderTokens, surfaces);
+  }
 
   initSemanticSelects();
   loadPalette();

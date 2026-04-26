@@ -1,0 +1,196 @@
+/* ==========================================================================
+   _base.css
+   Base variables — Raw values only. No var() references anywhere in this file.
+
+   Two sections:
+     1. PALETTE  — Raw RGB channels for all colour stops + chart colours.
+                   The server regenerates this block entirely on palette writes.
+     2. BASE VARS — Scalar tokens (alpha scales, widths, radii).
+                   The server patches individual lines on token saves.
+   ========================================================================== */
+
+
+/* ===== PALETTE ===== */
+
+:root {
+
+  /* ---- Primary palette (p) — replace from Figma ---- */
+  --p0: 0 0 0;
+  --p5: 0 11 47;
+  --p10: 0 25 68;
+  --p15: 0 35 88;
+  --p20: 0 45 109;
+  --p25: 20 57 121;
+  --p30: 35 69 133;
+  --p35: 48 80 145;
+  --p40: 61 93 158;
+  --p50: 87 118 185;
+  --p60: 113 144 213;
+  --p70: 140 170 241;
+  --p80: 175 198 255;
+  --p90: 217 226 255;
+  --p95: 237 240 255;
+  --p98: 250 248 255;
+  --p99: 254 251 255;
+  --p100: 255 255 255;
+
+  /* ---- Secondary palette (s) — replace from Figma ---- */
+  --s0: 0 0 0;
+  --s5: 11 17 31;
+  --s7: 15 21 35;
+  --s9: 19 25 40;
+  --s10: 21 27 42;
+  --s11: 23 29 44;
+  --s13: 28 34 48;
+  --s15: 32 38 52;
+  --s20: 42 48 63;
+  --s25: 53 59 75;
+  --s30: 66 72 89;
+  --s35: 76 82 99;
+  --s40: 89 94 111;
+  --s50: 113 119 136;
+  --s60: 139 144 163;
+  --s70: 165 171 190;
+  --s80: 193 198 218;
+  --s90: 221 226 246;
+  --s95: 237 240 255;
+  --s98: 250 248 255;
+  --s99: 254 251 255;
+  --s100: 255 255 255;
+
+  /* ---- Neutral palette (n) — replace from Figma ---- */
+  --n0: 255 255 255;
+  --n10: 245 245 245;
+  --n20: 230 230 230;
+  --n30: 215 215 215;
+  --n35: 207 207 207;
+  --n40: 200 200 200;
+  --n50: 180 180 180;
+  --n60: 160 160 160;
+  --n65: 140 140 140;
+  --n70: 120 120 120;
+  --n80: 80 80 80;
+  --n90: 40 40 40;
+  --n100: 10 10 10;
+
+  /* ---- Meaning tones — two fixed tones per meaning, not full palettes ----
+     r = red/error, y = yellow/alert, g = green/success
+     30 = light mode tone, 70 = dark mode tone
+     Replace from Figma per project.
+     -------------------------------------------------------------------- */
+  --r30: 147 0 0;
+  --r70: 254 138 126;
+  --y30: 92 67 0;
+  --y70: 201 136 100;
+  --g30: 0 82 48;
+  --g70: 85 198 133;
+
+  /* ---- Shadow base — raw RGB channels for 3-layer shadow composition ---- */
+  --shadow-color: 20 10 51;
+
+  /* ---- Chart colours — replace from Figma per project ----
+     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
+     -------------------------------------------------------- */
+  --chart-1: 255 99  132;
+  --chart-2: 255 159 64;
+  --chart-3: 205 220 57;
+  --chart-4: 75  192 192;
+  --chart-5: 54  162 235;
+  --chart-6: 153 102 255;
+  --chart-7: 255 206 86;
+  --chart-8: 231 233 237;
+  --chart-9: 100 181 246;
+  --chart-alpha: 0.81;
+
+}
+
+
+/* ===== BASE VARS ===== */
+
+:root {
+
+  /* ==========================================================================
+     SURFACES — scalars
+     --surfaces-alpha is applied at @theme inline level for translucent surfaces.
+     --surfaces-blur is used for backdrop-filter on floating surfaces.
+     ========================================================================== */
+
+  --surfaces-alpha: 0.96;
+  --surfaces-blur:  12px;
+
+
+  /* ==========================================================================
+     SHADOWS — per-layer alpha scale
+     umbra    = direct-light shadow (darkest, concentrated)
+     penumbra = outer region of the direct-light shadow
+     ambient  = diffuse top-light shadow (widest, lightest)
+     Shadow colour step is set via dropdown in _semantic-tokens.css.
+     ========================================================================== */
+
+  --shadow-alpha-umbra:    0.09;
+  --shadow-alpha-penumbra: 0.03;
+  --shadow-alpha-ambient:  0.06;
+
+
+  /* ==========================================================================
+     TEXT ALPHA — emphasis scale (MD-derived)
+     Light and dark sets tuned independently; aliases in _semantic-tokens.css
+     automatically switch between them when .dark is toggled.
+     ========================================================================== */
+
+  /* Light mode */
+  --text-light-alpha-max:    1;
+  --text-light-alpha-high:   0.89;
+  --text-light-alpha-medium: 0.60;
+  --text-light-alpha-low:    0.38;
+  --text-light-alpha-accent: 0.85;
+
+  /* Dark mode */
+  --text-dark-alpha-max:    1;
+  --text-dark-alpha-high:   0.96;
+  --text-dark-alpha-medium: 0.77;
+  --text-dark-alpha-low:    0.59;
+  --text-dark-alpha-accent: 0.95;
+
+
+  /* ==========================================================================
+     BORDERS — alpha + width scales
+     Mode-independent: same values apply in both light and dark.
+     ========================================================================== */
+
+  /* Alpha scale — light mode */
+  --border-light-alpha-high:   0.87;
+  --border-light-alpha-medium: 0.38;
+  --border-light-alpha-low:    0.12;
+  /* Alpha scale — dark mode */
+  --border-dark-alpha-high:   0.87;
+  --border-dark-alpha-medium: 0.38;
+  --border-dark-alpha-low:    0.12;
+  /* Focus alpha — mode-independent */
+  --border-alpha-focus: 1;
+
+  /* Width scale — override per project */
+  --border-width-low:    1px;
+  --border-width-medium: 1px;
+  --border-width-high:   2px;
+  --border-width-focus:  2px;
+
+
+  /* ==========================================================================
+     SHAPE — raw radius scale
+     Formula: sh{h} = h ÷ 8 (radius = one-eighth of component height).
+     Semantic role aliases (--shape-xs etc.) live in _semantic-tokens.css.
+     ========================================================================== */
+
+  --sh8:     1px;
+  --sh16:    2px;
+  --sh24:    3px;
+  --sh32:    4px;
+  --sh40:    5px;
+  --sh48:    6px;
+  --sh56:    7px;
+  --sh64:    8px;
+  --sh72:    9px;
+  --sh-full: 9999px;
+
+}

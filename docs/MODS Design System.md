@@ -1,6 +1,6 @@
 # MODS Design System
 
-MODS is a Tailwind v4 CSS-first design system starter. Every project built on MODS begins with this repo and overrides the CSS variables for its own brand. The architecture is consistent across all token types: a two-tier model where Tier 1 is the raw scale vocabulary and Tier 2 is the semantic application layer.
+MODS is a Tailwind v4 CSS-first design system starter. Every project built on MODS begins with this repo and overrides the CSS variables for its own brand. The architecture is consistent across all token types: a two-tier model where **Base variables** are the raw scale vocabulary and the **Semantic layer** is the application layer.
 
 ---
 
@@ -8,17 +8,17 @@ MODS is a Tailwind v4 CSS-first design system starter. Every project built on MO
 
 The same pattern governs every part of the system.
 
-| | Tier 1 — Raw Scale | Tier 2 — Semantic Layer |
+| | Base variables — Raw Scale | Semantic Layer |
 |---|---|---|
-| **Colour** | `p10`–`p100`, `n10`–`n100` | `--brand-main`, `--text-high`, `--surfaces-l2` |
+| **Colour** | `p10`–`p100`, `s10`–`s100`, `n10`–`n100` | `--brand-main`, `--text-color`, `--surfaces-base` |
 | **Typography size** | `f1`–`f15` | `.h1`, `.body-m`, `.label-m` |
-| **Typography leading** | `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15` | baked into Tier 2 component classes |
+| **Typography leading** | `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15` | baked into Semantic component classes |
 | **Elevation** | `level0`–`level5`, `shadow-level1`–`shadow-level5` | component classes (to be defined per project) |
 | **Spacing** | `g0`–`g25` + half-steps | `p-g3`, `gap-g2`, `.gap-default` |
 | **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xs`–`--shape-xxl`, `--shape-full`, `--shape-control` |
 
-Tier 1 lives in `src/_theme.css` and `src/_base-palette.css`.  
-Tier 2 lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.css` (everything else).
+Base variables live in `src/_theme.css`, `src/_base-palette.css`, and `src/_base-vars.css`.  
+The Semantic layer lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.css` (everything else).
 
 ---
 
@@ -27,11 +27,12 @@ Tier 2 lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.
 ```
 src/
   style.css               ← Entry point. @import "tailwindcss" + all partials.
-  _theme.css              ← @theme block: all Tier 1 design tokens
+  _theme.css              ← @theme block: all Base design tokens
   _base-palette.css       ← :root CSS vars: p10–p100, s10–s100, n10–n100
+  _base-vars.css          ← :root CSS vars: alphas, border widths, shape raw scale
   _semantic-tokens.css    ← :root CSS vars: brand, surfaces, actions, text, borders, shadows
   _fonts.css              ← Google Fonts import + font role CSS variables
-  _components.css         ← @layer components: all Tier 2 utility classes
+  _components.css         ← @layer components: all Semantic utility classes
 dist/
   style.css               ← Compiled output (gitignored per project)
 docs/
@@ -44,7 +45,7 @@ docs/
 
 ## Colour System
 
-### Tier 1 — Base Palettes
+### Base variables — Palettes
 
 Three full palettes in the starter, each with 10 steps. Stored as raw RGB channel values (no `rgb()` wrapper) so alpha can be applied at point of use via `rgb(var(--p40) / 0.87)`.
 
@@ -93,11 +94,11 @@ Additional accent palettes (`a10`–`a100`, `b10`–`b100` etc.) can be added pe
 }
 ```
 
-### Tier 2 — Semantic Tokens
+### Semantic tokens
 
 Semantic tokens map base palette steps to named roles. These are what Tailwind utilities reference.
 
-Each token that carries an alpha value is split into two Tier 1 variables: a colour var (raw RGB channels) and an alpha var. They are composed at point of use:
+Each token that carries an alpha value uses a separate colour var (raw RGB channels) and an alpha var, composed at point of use:
 
 ```css
 color: rgb(var(--text-high) / var(--text-alpha-high));
@@ -107,179 +108,236 @@ color: rgb(var(--text-high) / var(--text-alpha-high));
 
 The alpha values follow the Material Design emphasis scale and are rarely overridden per project because the MD contrast system maintains readability when swapping hues.
 
-#### Alpha Tier 1 tokens
+#### Base alpha variables
 
 ```css
-/* Defined in _semantic-tokens.css alongside their colour vars */
+/* Defined in _base-vars.css */
 
-/* Text alphas */
---text-alpha-high:           0.87;
---text-alpha-medium:         0.60;
---text-alpha-low:            0.38;
---text-alpha-accent:         1;
---text-alpha-invert-high:    0.87;
---text-alpha-invert-medium:  0.60;
---text-alpha-invert-low:     0.38;
---text-alpha-invert-accent:  1;
+/* Text alphas — light and dark tuned independently; aliases switch in .dark {} */
+--text-light-alpha-max:    1;
+--text-light-alpha-high:   0.89;
+--text-light-alpha-medium: 0.60;
+--text-light-alpha-low:    0.38;
+--text-light-alpha-accent: 0.85;
 
-/* Border alphas */
---border-alpha-high:         0.87;
---border-alpha-medium:       0.38;
---border-alpha-low:          0.12;
---border-alpha-focus:        1;
+--text-dark-alpha-max:    1;
+--text-dark-alpha-high:   0.96;
+--text-dark-alpha-medium: 0.77;
+--text-dark-alpha-low:    0.59;
+--text-dark-alpha-accent: 0.95;
+
+/* Active aliases live in _semantic-tokens.css — switch between light/dark in .dark {} */
+--text-alpha-max:    var(--text-light-alpha-max);
+--text-alpha-high:   var(--text-light-alpha-high);
+--text-alpha-medium: var(--text-light-alpha-medium);
+--text-alpha-low:    var(--text-light-alpha-low);
+--text-alpha-accent: var(--text-light-alpha-accent);
+
+/* Border alphas — mode-independent, defined in _base-vars.css */
+--border-alpha-high:   0.87;
+--border-alpha-medium: 0.38;
+--border-alpha-low:    0.12;
+--border-alpha-focus:  1;
 
 /* Action alphas — actions are always solid fills, no alpha vars needed */
 ```
 
 #### Colour semantic tokens
 
+All mode-switching tokens follow **Pattern 1**:
+1. Named base vars `--{cat}-light-{prop}` / `--{cat}-dark-{prop}` in `:root` hold the raw palette step.
+2. Active aliases `--{cat}-{prop}` point to the light set by default.
+3. `.dark {}` re-points aliases to the dark set — `.dark {}` is never written programmatically.
+
 ```css
 /* src/_semantic-tokens.css */
 :root {
 
   /* ---- Brand ---- */
-  --brand-lighter:      var(--p10);
-  --brand-main:         var(--p50);
-  --brand-accent-1:     var(--s50);
-  --brand-accent-2:     var(--s40);
+  --brand-main: var(--p30);  /* mode-independent — same step in both modes */
 
   /* ---- Surfaces ---- */
-  /* Elevation stack — see Elevation section */
-  /* Base is always 100% opacity. All other surfaces are 96% to mimic glass. */
-  --surfaces-base:      var(--n10);  /* 100% opacity */
-  --surfaces-l1:        var(--n20);  /* 96% — apply as: rgb(var(--surfaces-l1) / 0.96) */
-  --surfaces-l2:        var(--n30);  /* 96% */
-  --surfaces-l2a:       var(--n35);  /* 96% — alternate card, same elevation as l2 */
-  --surfaces-l3:        var(--n40);  /* 96% */
-  --surfaces-l4:        var(--n50);  /* 96% */
-  --surfaces-l5:        var(--n60);  /* 96% */
-  --surfaces-invert:    var(--n90);  /* 100% — inverted surface */
-  --surfaces-alpha:     0.96;        /* shared opacity for all elevated surfaces */
-  /* Accented surfaces are not part of the starter — defined per project */
+  /* Base — light mode */
+  --surfaces-light-base:   var(--s98);
+  --surfaces-light-l1:     var(--s99);
+  --surfaces-light-l2:     var(--s100);
+  --surfaces-light-l2a:    var(--s100);
+  --surfaces-light-l3:     var(--s100);
+  --surfaces-light-l4:     var(--s100);
+  --surfaces-light-l5:     var(--s100);
+  --surfaces-light-invert: var(--s5);
+
+  /* Base — dark mode */
+  --surfaces-dark-base:   var(--s5);
+  --surfaces-dark-l1:     var(--s5);
+  --surfaces-dark-l2:     var(--s7);
+  --surfaces-dark-l2a:    var(--s9);
+  --surfaces-dark-l3:     var(--s11);
+  --surfaces-dark-l4:     var(--s13);
+  --surfaces-dark-l5:     var(--s15);
+  --surfaces-dark-invert: var(--s98);
+
+  /* Active aliases */
+  --surfaces-base:   var(--surfaces-light-base);
+  --surfaces-l1:     var(--surfaces-light-l1);
+  --surfaces-l2:     var(--surfaces-light-l2);
+  --surfaces-l2a:    var(--surfaces-light-l2a);  /* alternate l2 — slightly more contrast */
+  --surfaces-l3:     var(--surfaces-light-l3);
+  --surfaces-l4:     var(--surfaces-light-l4);
+  --surfaces-l5:     var(--surfaces-light-l5);
+  --surfaces-invert: var(--surfaces-light-invert);
+  --shadow-color:    var(--p30);  /* set via dropdown — light mode only; no shadows in dark mode */
+  /* --surfaces-alpha (0.96) and --surfaces-blur (12px) live in _base-vars.css */
 
   /* ---- Text ---- */
-  /* max: absolute full-opacity — for icons and highest-contrast UI only */
-  --text-max:           var(--n100);
+  /* Single colour alias per context + a shared alpha scale applied at point of use:
+       color: rgb(var(--text-color) / var(--text-alpha-high)); */
 
-  /* high: default for headings and high-emphasis text — 87% */
-  --text-high:          var(--n90);
-  --text-alpha-high:    0.87;
+  /* Base — light mode */
+  --text-light-color:         var(--s10);
+  --text-light-accent:        var(--p35);
+  --text-light-invert-color:  var(--s95);
+  --text-light-invert-accent: var(--p80);
 
-  /* medium: default for body copy — 60% */
-  --text-medium:        var(--n90);
-  --text-alpha-medium:  0.60;
+  /* Base — dark mode */
+  --text-dark-color:         var(--s95);
+  --text-dark-accent:        var(--p80);
+  --text-dark-invert-color:  var(--s10);
+  --text-dark-invert-accent: var(--p35);
 
-  /* low: disabled text and placeholders — 38% */
-  --text-low:           var(--n90);
-  --text-alpha-low:     0.38;
+  /* Active aliases */
+  --text-color:         var(--text-light-color);
+  --text-accent:        var(--text-light-accent);
+  --text-invert-color:  var(--text-light-invert-color);
+  --text-invert-accent: var(--text-light-invert-accent);
 
-  /* accent: links and highlighted text — full opacity */
-  --text-accent:        var(--p50);
-  --text-alpha-accent:  1;
-
-  /* invert: same hierarchy for use on opposite-coloured surfaces */
-  --text-invert-max:           var(--n10);
-  --text-invert-high:          var(--n10);
-  --text-alpha-invert-high:    0.87;
-  --text-invert-medium:        var(--n10);
-  --text-alpha-invert-medium:  0.60;
-  --text-invert-low:           var(--n10);
-  --text-alpha-invert-low:     0.38;
-  --text-invert-accent:        var(--p20);
-  --text-alpha-invert-accent:  1;
+  /* Alpha aliases — raw values in _base-vars.css; switch in .dark {} */
+  --text-alpha-max:    var(--text-light-alpha-max);
+  --text-alpha-high:   var(--text-light-alpha-high);
+  --text-alpha-medium: var(--text-light-alpha-medium);
+  --text-alpha-low:    var(--text-light-alpha-low);
+  --text-alpha-accent: var(--text-light-alpha-accent);
 
   /* ---- Borders ---- */
-  --border-high:         var(--n90);
-  --border-alpha-high:   0.87;
+  /* Base — light mode */
+  --border-light-color: var(--n90);
+  --border-light-focus: var(--p50);
 
-  --border-medium:       var(--n90);
-  --border-alpha-medium: 0.38;
+  /* Base — dark mode */
+  --border-dark-color: var(--n10);
+  --border-dark-focus: var(--p30);
 
-  --border-low:          var(--n90);
-  --border-alpha-low:    0.12;
-
-  /* focus: used on focused inputs and selected states — full opacity brand colour */
-  --border-focus:        var(--p50);
-  --border-alpha-focus:  1;
+  /* Active aliases */
+  --border-color: var(--border-light-color);
+  --border-focus: var(--border-light-focus);
+  /* Alpha + width scales live in _base-vars.css */
 
   /* ---- Actions ---- */
-  /* Used on buttons, checkboxes, input fields, progress bars, dropdowns —
-     any time a user needs to interact with a UI element.
-     All action colours are solid fills — no opacity. Hover and focus step
-     progressively lighter from the default. Exact step mapping TBD per project. */
+  /* All action colours are solid fills — no opacity.
+     primary = brand-coloured interactive elements
+     secondary = subtle background for hover/pressed states
+     neutral = non-brand elements (toggles, unselected tabs) */
 
-  /* Primary: solid filled interactive colour */
-  --action-primary-default:   var(--p40);  /* base state */
-  --action-primary-hover:     var(--p30);  /* lighter — hover */
-  --action-primary-focus:     var(--p20);  /* lighter still — focus */
-  --action-primary-disabled:  var(--n30);  /* neutral, no outline */
+  /* Base — light mode */
+  --action-light-primary-default:   var(--p40);
+  --action-light-primary-hover:     var(--p50);
+  --action-light-primary-disabled:  var(--s70);
+  --action-light-secondary-default: var(--p80);
+  --action-light-secondary-hover:   var(--p90);
+  --action-light-secondary-pressed: var(--p80);
+  --action-light-neutral-default:   var(--n70);
+  --action-light-neutral-disabled:  var(--n50);
+  --action-light-neutral-filled:    var(--n40);
 
-  /* Secondary: solid fill for secondary action states */
-  --action-secondary-default: var(--p90);  /* near-transparent brand tone on light bg */
-  --action-secondary-hover:   var(--p80);
-  --action-secondary-focus:   var(--p70);
+  /* Base — dark mode */
+  --action-dark-primary-default:   var(--p80);
+  --action-dark-primary-hover:     var(--p70);
+  --action-dark-primary-disabled:  var(--s30);
+  --action-dark-secondary-default: var(--p40);
+  --action-dark-secondary-hover:   var(--p30);
+  --action-dark-secondary-pressed: var(--p50);
+  --action-dark-neutral-default:   var(--n60);
+  --action-dark-neutral-disabled:  var(--n70);
+  --action-dark-neutral-filled:    var(--n80);
 
-  /* Neutral: solid fill for inactive/unselected UI (toggles, unselected tabs etc.) */
-  --action-neutral-default:   var(--n70);
-  --action-neutral-disabled:  var(--n50);
-  --action-neutral-filled:    var(--n40);
+  /* Active aliases */
+  --action-primary-default:   var(--action-light-primary-default);
+  --action-primary-hover:     var(--action-light-primary-hover);
+  --action-primary-pressed:   var(--p60);                            /* mode-independent */
+  --action-primary-disabled:  var(--action-light-primary-disabled);
+  --action-secondary-default: var(--action-light-secondary-default);
+  --action-secondary-hover:   var(--action-light-secondary-hover);
+  --action-secondary-pressed: var(--action-light-secondary-pressed);
+  --action-neutral-default:   var(--action-light-neutral-default);
+  --action-neutral-disabled:  var(--action-light-neutral-disabled);
+  --action-neutral-filled:    var(--action-light-neutral-filled);
 
-  /* ---- Meaning colours ---- */
-  /* Two fixed tones per meaning: light-mode (30) and dark-mode (70).
-     The semantic token resolves to the correct tone via the theme CSS var swap.
-     Used on icons and typography — not background fills. */
-  --meaning-error:    var(--r30);  /* swaps to var(--r70) in dark mode */
-  --meaning-alert:    var(--y30);  /* swaps to var(--y70) in dark mode */
-  --meaning-success:  var(--g30);  /* swaps to var(--g70) in dark mode */
+  /* ---- Meaning ---- */
+  /* Base — light mode */
+  --meaning-light-error:   var(--r30);
+  --meaning-light-alert:   var(--y30);
+  --meaning-light-success: var(--g30);
+
+  /* Base — dark mode */
+  --meaning-dark-error:   var(--r70);
+  --meaning-dark-alert:   var(--y70);
+  --meaning-dark-success: var(--g70);
+
+  /* Active aliases */
+  --meaning-error:   var(--meaning-light-error);
+  --meaning-alert:   var(--meaning-light-alert);
+  --meaning-success: var(--meaning-light-success);
 
   /* ---- Information Visualisation ---- */
-  /* 9 chart colours used consistently across all data visualisation.
-     Each resolves to a light-mode value here; dark-mode theme swaps the underlying vars.
-     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
+  /* 9 chart colours. Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
      Replace from Figma per project. */
-  --chart-1:  255 99  132; /* placeholder */
-  --chart-2:  255 159 64;
-  --chart-3:  205 220 57;
-  --chart-4:  75  192 192;
-  --chart-5:  54  162 235;
-  --chart-6:  153 102 255;
-  --chart-7:  255 206 86;
-  --chart-8:  231 233 237;
-  --chart-9:  100 181 246;
-  --chart-alpha: 0.81;  /* applied at point of use: rgb(var(--chart-1) / var(--chart-alpha)) */
+  --chart-1:     255 99  132;
+  --chart-2:     255 159 64;
+  --chart-3:     205 220 57;
+  --chart-4:     75  192 192;
+  --chart-5:     54  162 235;
+  --chart-6:     153 102 255;
+  --chart-7:     255 206 86;
+  --chart-8:     231 233 237;
+  --chart-9:     100 181 246;
+  --chart-alpha: 0.81;
 }
 ```
 
 #### Text token usage summary
 
-| Token | Alpha var | Usage |
-|---|---|---|
-| `text-max` | none (always 1) | Icons, highest-contrast UI |
-| `text-high` | `--text-alpha-high` (0.87) | Headings, high-emphasis text |
-| `text-medium` | `--text-alpha-medium` (0.60) | Body copy |
-| `text-low` | `--text-alpha-low` (0.38) | Disabled, placeholders |
-| `text-accent` | `--text-alpha-accent` (1) | Links, highlighted text |
-| `text-invert-*` | mirrors above | On inverted / opposite-colour surfaces |
+Text uses a single colour alias per context (`--text-color`, `--text-accent`, `--text-invert-color`, `--text-invert-accent`) combined with a shared alpha scale: `rgb(var(--text-color) / var(--text-alpha-high))`.
+
+| Emphasis | Colour var | Alpha var | Light | Dark |
+|---|---|---|---|---|
+| Max (icons, highest contrast) | `--text-color` | `--text-alpha-max` | 1.0 | 1.0 |
+| High (headings) | `--text-color` | `--text-alpha-high` | 0.89 | 0.96 |
+| Medium (body copy) | `--text-color` | `--text-alpha-medium` | 0.60 | 0.77 |
+| Low (disabled, placeholders) | `--text-color` | `--text-alpha-low` | 0.38 | 0.59 |
+| Accent (links, highlights) | `--text-accent` | `--text-alpha-accent` | 0.85 | 0.95 |
+| On inverted surfaces | `--text-invert-color` / `--text-invert-accent` | same alpha scale | — | — |
 
 #### Border token usage summary
 
-| Token | Alpha var | Usage |
-|---|---|---|
-| `border-high` | `--border-alpha-high` (0.87) | Strong dividers, selected borders |
-| `border-medium` | `--border-alpha-medium` (0.38) | Default input borders, card outlines |
-| `border-low` | `--border-alpha-low` (0.12) | Subtle dividers |
-| `border-focus` | `--border-alpha-focus` (1) | Focused inputs, active selection |
+Borders use a single colour alias `--border-color` (mode-adaptive) combined with a per-role alpha. Focus uses `--border-focus`, a separate brand colour.
+
+| Emphasis | Colour var | Alpha var | Alpha |
+|---|---|---|---|
+| Strong dividers, selected borders | `--border-color` | `--border-alpha-high` | 0.87 |
+| Default input borders, card outlines | `--border-color` | `--border-alpha-medium` | 0.38 |
+| Subtle dividers | `--border-color` | `--border-alpha-low` | 0.12 |
+| Focused inputs, active selection | `--border-focus` | `--border-alpha-focus` | 1.0 |
 
 Usage in Tailwind: `bg-brand-main`, `text-high`, `border-medium`, `bg-level2`, `bg-meaning-success`.
 
 #### Action token usage summary
 
-All action colours are **solid fills — no opacity**. Hover and focus step progressively lighter from the default. This ensures elements behind them cannot bleed through.
+All action colours are **solid fills — no opacity**. Hover and pressed states step progressively from the default. This ensures elements behind them cannot bleed through.
 
 | Token | States | Usage |
 |---|---|---|
-| `action-primary-*` | default / hover / focus / disabled | Buttons, checkboxes, dropdowns, progress bars |
-| `action-secondary-*` | default / hover / focus | Secondary button fills, ghost button active states |
+| `action-primary-*` | default / hover / pressed / disabled | Buttons, checkboxes, dropdowns, progress bars |
+| `action-secondary-*` | default / hover / pressed | Secondary button fills, ghost button active states |
 | `action-neutral-*` | default / disabled / filled | Inactive toggles, unselected tabs, neutral state fills |
 
 #### Meaning token usage summary
@@ -304,7 +362,7 @@ All 9 values are project-specific — replace from Figma. The `--chart-alpha: 0.
 
 ## Typography System
 
-### Tier 1 — Size Scale: `f1`–`f15`
+### Base variables — Size Scale: `f1`–`f15`
 
 Sizes are generated using the **minor third musical interval (6:5 = 1.2×)**, each step snapped to the nearest multiple of 1.5px. Base is 9px.
 
@@ -354,7 +412,7 @@ $$f_n = \text{round}(9 \times 1.2^{(n-1)} \div 1.5) \times 1.5$$
 
 These are size-only tokens. No line height is baked in. The old named scale (`xl`, `base`, `lg`, `6xl` etc.) is removed entirely.
 
-### Tier 1 — Leading Scales
+### Base variables — Leading Scales
 
 Leading tokens are separate from size and applied independently. Three scales for three text roles:
 
@@ -400,7 +458,7 @@ Leading tokens are separate from size and applied independently. Three scales fo
 
 ### How the two-tier system works together
 
-The f-scale and the leading scales are independent Tier 1 vocabularies. They are combined at Tier 2 — either explicitly in HTML, or baked into component classes.
+The f-scale and the leading scales are independent Base vocabularies. They are combined at the Semantic layer — either explicitly in HTML, or baked into component classes.
 
 **The pairing rule:** the number in the leading token always matches the number in the size token. `f7` pairs with `lb7`, `lt7`, or `ld7` — whichever leading scale fits the role. You never mix numbers across a pair.
 
@@ -462,7 +520,7 @@ Each text role has its own font family CSS variable, all defaulting to Roboto.
 
 `--font-display` and `--font-heading` default to the same value and are typically a display or brand typeface. `--font-title` defaults to the same but is intentionally separate — card titles and section titles often follow the body typeface on projects where the display font would be too heavy at smaller sizes.
 
-### Tier 2 — Typography component classes
+### Semantic — Typography component classes
 
 Component classes live in `src/_components.css`. Each class bakes in a font family, font weight, size token, and leading token. Responsive sizes change at three breakpoints only: `tab-s` (768px), `scr-s` (1280px), and `scr-l` (1920px). `tab-l` and `scr-m` do not introduce new sizes — they inherit from the step below.
 
@@ -519,7 +577,9 @@ Display, heading, title, and label classes have no variants — no bold, no ital
 
 ## Elevation System
 
-Elevation is expressed by **both** a surface colour token and a shadow token together. In light mode, both apply. In dark mode, surfaces resolve to tinted values and no shadows are applied.
+Elevation is expressed by **both** a surface colour token and a shadow token together. In light mode, both apply. In dark mode, surfaces resolve to tinted values, no shadows are applied, and `border-low` (`--border-color` at `--border-alpha-low`, 12%) is used on all elevated elements to delineate them.
+
+The `level*` utility classes (`level0`–`level5`, `level2a`, `level-invert`) handle this automatically — they set the fill and apply `border-low` in `.dark {}` with no extra markup needed. Use these instead of the raw `bg-level*` Tailwind utilities.
 
 ### Surface levels
 
@@ -538,11 +598,15 @@ Elevation is expressed by **both** a surface colour token and a shadow token tog
 
 Shadows are **3-layer composites** modelling two light sources: one directly above the element, one coming from the side.
 
-- **Ambient** — soft, wide shadow thrown by the top light source
-- **Umbra** — the darkest concentrated shadow caused by the sideways light source  
-- **Penumbra** — the softer outer shadow also caused by the sideways light source
+- **Umbra** (`--shadow-alpha-umbra`, default `0.09`) — the darkest, most concentrated shadow cast by the direct (sideways) light source. Closest to the object, tightest blur.
+- **Penumbra** (`--shadow-alpha-penumbra`, default `0.03`) — the softer outer shadow also caused by the direct light source, where the light is only partially blocked.
+- **Ambient** (`--shadow-alpha-ambient`, default `0.06`) — the wide, diffuse shadow from the overhead ambient light. Highest blur radius, wraps the whole object softly.
 
-This is why each `shadow-level*` token is a list of 3 `box-shadow` values. The shadow base colour is a CSS variable `--shadow-color` (raw RGB channels), applied at each layer's alpha using `rgb(var(--shadow-color) / alpha)`.
+Layer order within each `shadow-level*` token: **umbra first, ambient second, penumbra third**.
+
+All three layers share the same colour: `--shadow-color` (default `p30`, raw RGB channels from `_base-palette.css`). Only the geometry (offsets and blur) and the per-layer alphas differ. This means you can change the shadow tint globally by editing `--shadow-color` in one place, and tune darkness per-layer via the three alpha vars.
+
+> **Dark mode**: shadows are not rendered in dark mode. Elevation is communicated entirely through surface lightness. The `shadow-level*` tokens are defined but their visual effect is suppressed — do not apply them in dark mode.
 
 | Token | Paired surface |
 |---|---|
@@ -558,6 +622,7 @@ The `level*` token names stay the same in dark mode. The CSS variables they refe
 
 - **Surfaces**: progressively lighter opacities of white layered on the dark base — each higher level gets slightly more white, pushing elements visually closer to the screen
 - **Shadows**: not rendered in dark mode — elevation is communicated entirely through surface lightness
+- **Borders**: `border-low` (`--border-color` / `--border-alpha-low` = 12%) applied as a default border on all elevated elements. This is the primary way surfaces are visually separated from each other in dark mode.
 - **Actions, text, borders, meaning**: same token names, different palette step values resolved via CSS vars
 
 Switching theme is achieved entirely by swapping the CSS variable values in a `.dark` class or `prefers-color-scheme: dark` media query — no Tailwind class changes are needed in markup.
@@ -674,19 +739,19 @@ Formula: `sh{h} = h ÷ 8` — corner radius is exactly one-eighth of the compone
 
 ## Shape System
 
-Corner radius is a brand expression token — the same component reads as sharp at 2px, approachable at 16px, and playful at full. MODS applies the same two-tier model as colour and typography: Tier 1 is the numeric border radius vocabulary, Tier 2 maps each component height to a semantic shape token that projects override to set their brand's corner style.
+Corner radius is a brand expression token — the same component reads as sharp at 2px, approachable at 16px, and playful at full. MODS applies the same two-tier model as colour and typography: Base variables are the numeric border radius vocabulary, the Semantic layer maps each component height to a shape token that projects override to set their brand's corner style.
 
-### Tier 1 — Shape scale
+### Base variables — Shape scale
 
 Defined in `src/_theme.css`. The `sh{h}` tokens are the raw vocabulary — see [Shape Scale](#shape-scale) for the full scale. Each token encodes the component height it is designed for; the value is exactly one-eighth of that height.
 
-### Tier 2 — Semantic shape tokens
+### Semantic shape tokens
 
-Each shape token corresponds to a component height tier. When a project overrides the shape system, it sets the Tier 2 vars only — component classes and markup are unaffected.
+Each shape token corresponds to a component height tier. When a project overrides the shape system, it sets the semantic vars only — component classes and markup are unaffected.
 
 At `scr-l`, a component steps up one height tier and one shape tier simultaneously.
 
-| Shape token | Tier 1 token | Radius | Component height | Sample components |
+| Shape token | Base token | Radius | Component height | Sample components |
 |---|---|---|---|---|
 | `--shape-xs` | `sh32` | 4px | 32px | `.btn-xs`, `.btn-icon-xs`, `.input-s`, `.chip` |
 | `--shape-s` | `sh40` | 5px | 40px | `.btn-s`, `.btn-icon-s`, `.input-m` |
@@ -728,7 +793,7 @@ Component classes reference `var(--shape-*)` for `border-radius` rather than a n
 
 ### Overriding for brand
 
-Override the Tier 1 `sh{h}` vars. All Tier 2 shape tokens and all component classes cascade automatically — no other changes needed.
+Override the base `sh{h}` vars. All semantic shape tokens and all component classes cascade automatically — no other changes needed.
 
 ```css
 /* Example: sharper brand — compress all rounding */

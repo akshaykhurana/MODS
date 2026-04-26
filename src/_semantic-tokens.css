@@ -1,11 +1,12 @@
 /* ==========================================================================
    _semantic-tokens.css
    Tier 2 — Semantic tokens. Map raw palette steps to named roles.
-   All values are raw RGB channels (no rgb() wrapper) so alpha can be
-   applied at point of use: rgb(var(--text-high) / var(--text-alpha-high))
+   Contains only var() references — no raw values.
+   Raw values live in _base-vars.css; palette steps in _base-palette.css.
 
    Light mode in :root {}. Dark mode overrides in .dark {}.
-   Alpha vars are on the MD emphasis scale and are NOT overridden in dark mode.
+   All mode-switching tokens follow Pattern 1: named base vars (--{cat}-light-{prop} /
+   --{cat}-dark-{prop}) in :root, with active aliases (--{cat}-{prop}) that re-point in .dark {}.
    ========================================================================== */
 
 :root {
@@ -15,7 +16,7 @@
      Replace palette steps per project. Lighter = higher contrast on brand bg.
      ========================================================================== */
 
-  --brand-main: var(--p30);
+  --brand-main: var(--p60);
 
 
   /* ==========================================================================
@@ -25,16 +26,37 @@
      --surfaces-invert is always fully opaque.
      ========================================================================== */
 
-  --surfaces-base:   var(--n10);
-  --surfaces-l1:     var(--n20);
-  --surfaces-l2:     var(--n30);
-  --surfaces-l2a:    var(--n35); /* alternate l2 — slightly more contrast */
-  --surfaces-l3:     var(--n40);
-  --surfaces-l4:     var(--n50);
-  --surfaces-l5:     var(--n60);
-  --surfaces-invert: var(--n90);
-  --surfaces-alpha:  0.93;
+  /* Base — light mode */
+  --surfaces-light-base:   var(--s98);
+  --surfaces-light-l1:     var(--s99);
+  --surfaces-light-l2:     var(--s100);
+  --surfaces-light-l2a:    var(--s100);
+  --surfaces-light-l3:     var(--s100);
+  --surfaces-light-l4:     var(--s100);
+  --surfaces-light-l5:     var(--s100);
+  --surfaces-light-invert: var(--s5);
 
+  /* Base — dark mode */
+  --surfaces-dark-base:   var(--s5);
+  --surfaces-dark-l1:     var(--s5);
+  --surfaces-dark-l2:     var(--s7);
+  --surfaces-dark-l2a:    var(--s9);
+  --surfaces-dark-l3:     var(--s11);
+  --surfaces-dark-l4:     var(--s13);
+  --surfaces-dark-l5:     var(--s15);
+  --surfaces-dark-invert: var(--s98);
+
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --surfaces-base:   var(--surfaces-light-base);
+  --surfaces-l1:     var(--surfaces-light-l1);
+  --surfaces-l2:     var(--surfaces-light-l2);
+  --surfaces-l2a:    var(--surfaces-light-l2a);   /* alternate l2 — slightly more contrast */
+  --surfaces-l3:     var(--surfaces-light-l3);
+  --surfaces-l4:     var(--surfaces-light-l4);
+  --surfaces-l5:     var(--surfaces-light-l5);
+  --surfaces-invert: var(--surfaces-light-invert);
+  /* Shadow colour — palette step, set via dropdown. Alphas live in _base-vars.css. */
+  --shadow-color: var(--p30);
 
   /* ==========================================================================
      TEXT
@@ -43,49 +65,54 @@
      Alpha follows the MD emphasis scale. Not overridden in dark mode.
      ========================================================================== */
 
-  /* On-surface text (dark on light in light mode) */
-  --text-max:    var(--n100); /* fully opaque — no alpha var */
-  --text-high:   var(--n90);
-  --text-medium: var(--n90);
-  --text-low:    var(--n90);
-  --text-accent: var(--p50);
+  /* Base — light mode */
+  --text-light-color:         var(--s10);
+  --text-light-accent:        var(--p35);
+  --text-light-invert-color:  var(--s95);
+  --text-light-invert-accent: var(--p80);
 
-  /* On-invert-surface text (light on dark in light mode) */
-  --text-invert-max:    var(--n10);
-  --text-invert-high:   var(--n10);
-  --text-invert-medium: var(--n10);
-  --text-invert-low:    var(--n10);
-  --text-invert-accent: var(--p20);
+  /* Base — dark mode */
+  --text-dark-color:         var(--s95);
+  --text-dark-accent:        var(--p80);
+  --text-dark-invert-color:  var(--s10);
+  --text-dark-invert-accent: var(--p35);
 
-  /* Alpha scale — MD emphasis, same in both modes */
-  --text-alpha-high:   0.87;
-  --text-alpha-medium: 0.60;
-  --text-alpha-low:    0.38;
-  --text-alpha-max:    1;
-  --text-alpha-accent: 1;
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --text-color:         var(--text-light-color);         /* on-surface text */
+  --text-accent:        var(--text-light-accent);        /* on-surface accent */
+  --text-invert-color:  var(--text-light-invert-color);  /* on-invert-surface text */
+  --text-invert-accent: var(--text-light-invert-accent); /* on-invert-surface accent */
+
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --text-alpha-max:    var(--text-light-alpha-max);
+  --text-alpha-high:   var(--text-light-alpha-high);
+  --text-alpha-medium: var(--text-light-alpha-medium);
+  --text-alpha-low:    var(--text-light-alpha-low);
+  --text-alpha-accent: var(--text-light-alpha-accent);
 
 
   /* ==========================================================================
      BORDERS
-     Same split pattern as text: colour + alpha composed at point of use.
-     --border-focus uses brand colour at full opacity (no alpha var).
+     Same split pattern as text: single colour var + per-role alphas composed
+     at point of use. --border-focus is a separate brand colour (like
+     --text-accent) with its own alpha. Width scale is also token-driven.
      ========================================================================== */
 
-  --border-high:   var(--n90);
-  --border-medium: var(--n90);
-  --border-low:    var(--n90);
-  --border-focus:  var(--p50); /* fully opaque, no alpha */
+  /* Base — light mode */
+  --border-light-color: var(--n90);
+  --border-light-focus: var(--p50);
 
-  /* Alpha scale — MD emphasis, same in both modes */
-  --border-alpha-high:   0.87;
-  --border-alpha-medium: 0.38;
-  --border-alpha-low:    0.12;
+  /* Base — dark mode */
+  --border-dark-color: var(--n10);
+  --border-dark-focus: var(--p30);
 
-  /* Width scale — override per project */
-  --border-width-low:    1px;
-  --border-width-medium: 1px;
-  --border-width-high:   2px;
-  --border-width-focus:  2px;
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --border-color: var(--border-light-color);
+  --border-focus: var(--border-light-focus);
+  --border-alpha-high:   var(--border-light-alpha-high);
+  --border-alpha-medium: var(--border-light-alpha-medium);
+  --border-alpha-low:    var(--border-light-alpha-low);
+  /* Focus alpha and width scales live in _base-vars.css */
 
 
   /* ==========================================================================
@@ -95,18 +122,39 @@
      neutral = non-brand interactive elements (e.g. neutral icon buttons)
      ========================================================================== */
 
-  --action-primary-default:  var(--p30); /* base state */
-  --action-primary-hover:    var(--p40); /* lighter — hover */
-  --action-primary-focus:    var(--p50); /* lighter still — focus */
-  --action-primary-disabled: var(--n30); /* neutral, no outline */
+  /* Base — light mode */
+  --action-light-primary-default:   var(--p40);
+  --action-light-primary-hover:     var(--p50);
+  --action-light-primary-disabled:  var(--s70);
+  --action-light-secondary-default: var(--p80);
+  --action-light-secondary-hover:   var(--p90);
+  --action-light-secondary-pressed: var(--p80);
+  --action-light-neutral-default:   var(--n70);
+  --action-light-neutral-disabled:  var(--n50);
+  --action-light-neutral-filled:    var(--n40);
 
-  --action-secondary-default: var(--p90); /* near-transparent brand tint on light bg */
-  --action-secondary-hover:   var(--p80);
-  --action-secondary-focus:   var(--p70);
+  /* Base — dark mode */
+  --action-dark-primary-default:   var(--p80);
+  --action-dark-primary-hover:     var(--p70);
+  --action-dark-primary-disabled:  var(--s30);
+  --action-dark-secondary-default: var(--p40);
+  --action-dark-secondary-hover:   var(--p30);
+  --action-dark-secondary-pressed: var(--p50);
+  --action-dark-neutral-default:   var(--n60);
+  --action-dark-neutral-disabled:  var(--n70);
+  --action-dark-neutral-filled:    var(--n80);
 
-  --action-neutral-default:   var(--n70);
-  --action-neutral-disabled:  var(--n50);
-  --action-neutral-filled:    var(--n40);
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --action-primary-default:   var(--action-light-primary-default);   /* base state */
+  --action-primary-hover:     var(--action-light-primary-hover);     /* lighter — hover */
+  --action-primary-pressed:   var(--p60);                            /* mode-independent */
+  --action-primary-disabled:  var(--action-light-primary-disabled);  /* neutral, no outline */
+  --action-secondary-default: var(--action-light-secondary-default); /* near-transparent brand tint on light bg */
+  --action-secondary-hover:   var(--action-light-secondary-hover);
+  --action-secondary-pressed: var(--action-light-secondary-pressed);
+  --action-neutral-default:   var(--action-light-neutral-default);
+  --action-neutral-disabled:  var(--action-light-neutral-disabled);
+  --action-neutral-filled:    var(--action-light-neutral-filled);
 
 
   /* ==========================================================================
@@ -115,29 +163,26 @@
      Dark mode uses 70 tone (lighter, readable on dark surface).
      ========================================================================== */
 
-  --meaning-error:   var(--r30);
-  --meaning-alert:   var(--y30);
-  --meaning-success: var(--g30);
+  /* Base — light mode */
+  --meaning-light-error:   var(--r30);
+  --meaning-light-alert:   var(--y30);
+  --meaning-light-success: var(--g30);
+
+  /* Base — dark mode */
+  --meaning-dark-error:   var(--r70);
+  --meaning-dark-alert:   var(--y70);
+  --meaning-dark-success: var(--g70);
+
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --meaning-error:   var(--meaning-light-error);
+  --meaning-alert:   var(--meaning-light-alert);
+  --meaning-success: var(--meaning-light-success);
 
 
   /* ==========================================================================
-     SHAPE — raw scale (Tier 1) + semantic tier (Tier 2)
-     Raw formula: sh{h} = h ÷ 8 — radius is one-eighth of component height.
-     Tier 1 raw vars are used to build Tier 2 semantic vars below.
+     SHAPE — semantic tier (raw scale lives in _base-vars.css)
      shape-control is for small controls (checkbox, radio) which are 16px tall.
      ========================================================================== */
-
-  /* Tier 1 — raw scale */
-  --sh8:    1px;
-  --sh16:   2px;
-  --sh24:   3px;
-  --sh32:   4px;
-  --sh40:   5px;
-  --sh48:   6px;
-  --sh56:   7px;
-  --sh64:   8px;
-  --sh72:   9px;
-  --sh-full: 9999px;
 
   /* Tier 2 — semantic */
   --shape-xs:      var(--sh32);  /* 4px — xs components (h32) */
@@ -154,61 +199,55 @@
 
 /* ==========================================================================
    DARK MODE — .dark {} class toggle
-   Only override vars that change in dark mode. Alpha vars are unchanged.
+   Only override vars that change in dark mode.
    ========================================================================== */
 
 .dark {
 
-  /* Surfaces — invert the ramp (lightest step = invert, darkest = base) */
-  --surfaces-base:   var(--s5);
-  --surfaces-l1:     var(--s7);
-  --surfaces-l2:     var(--n70);
-  --surfaces-l2a:    var(--n65); /* dark mode midpoint between l2 and l3 */
-  --surfaces-l3:     var(--n60);
-  --surfaces-l4:     var(--n50);
-  --surfaces-l5:     var(--n40);
-  --surfaces-invert: var(--n10);
+  /* Surfaces — re-point aliases to dark base set */
+  --surfaces-base:   var(--surfaces-dark-base);
+  --surfaces-l1:     var(--surfaces-dark-l1);
+  --surfaces-l2:     var(--surfaces-dark-l2);
+  --surfaces-l2a:    var(--surfaces-dark-l2a);
+  --surfaces-l3:     var(--surfaces-dark-l3);
+  --surfaces-l4:     var(--surfaces-dark-l4);
+  --surfaces-l5:     var(--surfaces-dark-l5);
+  --surfaces-invert: var(--surfaces-dark-invert);
 
-  /* Brand — use lighter primary tone for contrast on dark surfaces */
-  --brand-main: var(--p30);
+  /* Text — re-point aliases to dark base set */
+  --text-color:         var(--text-dark-color);
+  --text-accent:        var(--text-dark-accent);
+  --text-invert-color:  var(--text-dark-invert-color);
+  --text-invert-accent: var(--text-dark-invert-accent);
 
-  /* Text — flip to light channels (alphas stay the same) */
-  --text-high:   var(--n10);
-  --text-medium: var(--n10);
-  --text-low:    var(--n10);
-  --text-max:    var(--n10);
-  --text-accent: var(--p30);
+  /* Borders — re-point aliases to dark base set */
+  --border-color: var(--border-dark-color);
+  --border-focus: var(--border-dark-focus);
+  --border-alpha-high:   var(--border-dark-alpha-high);
+  --border-alpha-medium: var(--border-dark-alpha-medium);
+  --border-alpha-low:    var(--border-dark-alpha-low);
 
-  /* Invert text — flip to dark channels */
-  --text-invert-high:   var(--n100);
-  --text-invert-medium: var(--n100);
-  --text-invert-low:    var(--n100);
-  --text-invert-max:    var(--n100);
-  --text-invert-accent: var(--p50);
+  /* Actions — re-point aliases to dark base set */
+  --action-primary-default:   var(--action-dark-primary-default);
+  --action-primary-hover:     var(--action-dark-primary-hover);
+  --action-primary-disabled:  var(--action-dark-primary-disabled);
+  --action-secondary-default: var(--action-dark-secondary-default);
+  --action-secondary-hover:   var(--action-dark-secondary-hover);
+  --action-secondary-pressed: var(--action-dark-secondary-pressed);
+  --action-neutral-default:   var(--action-dark-neutral-default);
+  --action-neutral-disabled:  var(--action-dark-neutral-disabled);
+  --action-neutral-filled:    var(--action-dark-neutral-filled);
 
-  /* Borders — flip to light channels */
-  --border-high:   var(--n10);
-  --border-medium: var(--n10);
-  --border-low:    var(--n10);
-  --border-focus:  var(--p30);
+  /* Meaning — re-point aliases to dark base set */
+  --meaning-error:   var(--meaning-dark-error);
+  --meaning-alert:   var(--meaning-dark-alert);
+  --meaning-success: var(--meaning-dark-success);
 
-  /* Actions — shift to lighter primary tones for legibility on dark surfaces */
-  --action-primary-default:  var(--p70); /* base state (lighter than light mode) */
-  --action-primary-hover:    var(--p80); /* lighter — hover */
-  --action-primary-focus:    var(--p90); /* lighter still — focus */
-  --action-primary-disabled: var(--n70); /* neutral, darker in dark mode */
-
-  --action-secondary-default: var(--p10); /* barely-there brand tint on dark bg */
-  --action-secondary-hover:   var(--p20);
-  --action-secondary-focus:   var(--p30);
-
-  --action-neutral-default:   var(--n60);
-  --action-neutral-disabled:  var(--n70);
-  --action-neutral-filled:    var(--n80);
-
-  /* Meaning — use 70 tones (lighter, readable on dark surfaces) */
-  --meaning-error:   var(--r70);
-  --meaning-alert:   var(--y70);
-  --meaning-success: var(--g70);
+  /* Text alpha — re-point aliases to dark base set */
+  --text-alpha-max:    var(--text-dark-alpha-max);
+  --text-alpha-high:   var(--text-dark-alpha-high);
+  --text-alpha-medium: var(--text-dark-alpha-medium);
+  --text-alpha-low:    var(--text-dark-alpha-low);
+  --text-alpha-accent: var(--text-dark-alpha-accent);
 
 }

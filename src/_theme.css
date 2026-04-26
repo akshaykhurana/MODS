@@ -1,6 +1,6 @@
 /* ==========================================================================
    _theme.css
-   Tailwind v4 @theme blocks — all Tier 1 design tokens.
+   Tailwind v4 @theme blocks — all Base design tokens.
    Pure-numeric tokens go in @theme {} (statically resolved by v4).
    Tokens referencing CSS vars go in @theme inline {} (Chunk 5).
    ========================================================================== */
@@ -153,32 +153,6 @@
      shadow-level1 → level1 surface, shadow-level2 → level2/level2a etc.
      ========================================================================== */
 
-  --shadow-level1:
-    0px 4px 10px 0px rgba(15, 18, 2, 0.09),
-    0px 1px 20px 0px rgba(15, 18, 2, 0.06),
-    0px 2px  8px 0px rgba(15, 18, 2, 0.12);
-
-  --shadow-level2:
-    0px 4px 10px 0px rgba(20, 10, 51, 0.05),
-    0px 1px 20px 0px rgba(20, 10, 51, 0.03),
-    0px 2px  8px 0px rgba(20, 10, 51, 0.07);
-
-  --shadow-level3:
-    0px  6px 20px 0px rgba(20, 10, 51, 0.05),
-    0px  1px 36px 0px rgba(20, 10, 51, 0.03),
-    0px  3px 10px 0px rgba(20, 10, 51, 0.07);
-
-  --shadow-level4:
-    0px  8px 20px 0px rgba(20, 10, 51, 0.05),
-    0px  3px 28px 0px rgba(20, 10, 51, 0.03),
-    0px  5px 10px 0px rgba(20, 10, 51, 0.07);
-
-  --shadow-level5:
-    0px 16px 48px 0px rgba(20, 10, 51, 0.05),
-    0px  6px 60px 0px rgba(20, 10, 51, 0.03),
-    0px  8px 20px 0px rgba(20, 10, 51, 0.07);
-
-
   /* ==========================================================================
      FONT FAMILIES
      All roles default to Roboto. Override per-project in _fonts.css.
@@ -225,13 +199,13 @@
   /* ACTIONS — fully opaque, no alpha */
   --color-action-primary-default:  rgb(var(--action-primary-default));
   --color-action-primary-hover:    rgb(var(--action-primary-hover));
-  --color-action-primary-focus:    rgb(var(--action-primary-focus));
+  --color-action-primary-pressed:  rgb(var(--action-primary-pressed));
   --color-action-primary-disabled: rgb(var(--action-primary-disabled));
   --color-action-secondary-hover:  rgb(var(--action-secondary-hover));
-  --color-action-secondary-focus:  rgb(var(--action-secondary-focus));
+  --color-action-secondary-pressed:rgb(var(--action-secondary-pressed));
   --color-action-neutral-default:  rgb(var(--action-neutral-default));
   --color-action-neutral-hover:    rgb(var(--action-neutral-hover));
-  --color-action-neutral-focus:    rgb(var(--action-neutral-focus));
+  --color-action-neutral-pressed:  rgb(var(--action-neutral-pressed));
 
   /* MEANING — fully opaque */
   --color-meaning-error:   rgb(var(--meaning-error));
@@ -248,5 +222,33 @@
   --color-chart-7: rgb(var(--chart-7) / var(--chart-alpha));
   --color-chart-8: rgb(var(--chart-8) / var(--chart-alpha));
   --color-chart-9: rgb(var(--chart-9) / var(--chart-alpha));
+
+  /* SHADOWS — 3-layer composites: umbra, penumbra, ambient.
+     All levels share the same --shadow-color and per-layer alpha vars.
+     Geometry (offsets, blur) scales with level; colour and alphas are global. */
+  --shadow-level1:
+    0px  3px  4px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
+    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
+    0px  2px  2px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+
+  --shadow-level2:
+    0px  4px  6px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
+    0px  3px 16px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
+    0px  2px  4px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+
+  --shadow-level3:
+    0px  5px 10px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
+    0px  1px 28px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
+    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+
+  --shadow-level4:
+    0px  8px 16px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
+    0px  2px 44px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
+    0px  3px 12px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+
+  --shadow-level5:
+    0px 14px 28px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
+    0px  4px 64px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
+    0px  6px 20px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
 
 }

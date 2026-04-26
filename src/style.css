@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @import "./_fonts.css";
-@import "./_base-palette.css";
+@import "./_base.css";
 @import "./_semantic-tokens.css";
 @import "./_theme.css";
 @import "./_components.css";

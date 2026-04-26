@@ -12,8 +12,9 @@ const { exec } = require('child_process');
 
 const PORT      = 3001;
 const ROOT      = __dirname;
-const PALETTE   = path.join(ROOT, 'src', '_base-palette.css');
+const PALETTE   = path.join(ROOT, 'src', '_base.css');
 const SEMANTIC  = path.join(ROOT, 'src', '_semantic-tokens.css');
+const BASE_VARS = path.join(ROOT, 'src', '_base.css');
 const DIST_CSS  = path.join(ROOT, 'dist', 'style.css');
 
 // SSE clients
@@ -39,6 +40,8 @@ fs.watch(path.join(ROOT, 'dist'), (_, filename) => {
 
 // ---- Config endpoint — parse current semantic token mappings ----
 // Returns { light: { "--brand-main": "p50", ... }, dark: { "--brand-main": "p30", ... } }
+// For Pattern 1 tokens, alias chains are resolved one level so dropdowns get the actual palette step:
+//   --text-color → text-light-color → s10  returns s10 (not text-light-color).
 function parseSemanticConfig() {
   const content = fs.readFileSync(SEMANTIC, 'utf8');
   // Match the actual selector line (starts at beginning of line), not comments
@@ -50,7 +53,6 @@ function parseSemanticConfig() {
   function extractMappings(block) {
     const result = {};
     // Match lines like:  --foo-bar: var(--p40);
-    const re = /--[\w-]+:\s*var\(--([\w-]+)\)/g;
     const lineRe = /(--[\w-]+):\s*var\(--([\w-]+)\)/g;
     let m;
     while ((m = lineRe.exec(block)) !== null) {
@@ -59,14 +61,30 @@ function parseSemanticConfig() {
     return result;
   }
 
+  // Follow one level of alias chains so dropdowns receive the actual palette step.
+  // --text-color → text-light-color (alias) → s10 (base var) → returns s10.
+  function resolveAliases(map, rootAll) {
+    const resolved = {};
+    for (const [key, val] of Object.entries(map)) {
+      const baseKey = '--' + val;
+      resolved[key] = (rootAll[baseKey] !== undefined) ? rootAll[baseKey] : val;
+    }
+    return resolved;
+  }
+
+  const rootAll = extractMappings(rootPart);
+  const darkAll = extractMappings(darkPart);
+
   return {
-    light: extractMappings(rootPart),
-    dark:  extractMappings(darkPart),
+    light: resolveAliases(rootAll, rootAll),
+    dark:  resolveAliases(darkAll, rootAll),
     rawValues: (() => {
       const result = {};
-      const re = /(--[\w-]+):\s*([\d.]+)\s*;/g;
+      const baseVarsContent = fs.readFileSync(BASE_VARS, 'utf8');
+      // Captures both plain numerics (0.87) and px values (2px).
+      const re = /(--[\w-]+):\s*([\d.]+(?:px)?)\s*;/g;
       let m;
-      while ((m = re.exec(rootPart)) !== null) {
+      while ((m = re.exec(baseVarsContent)) !== null) {
         result[m[1]] = m[2];
       }
       return result;
@@ -87,7 +105,7 @@ function replaceVarInFile(content, varName, newValue) {
   });
 }
 
-// Write palette changes to _base-palette.css
+// Write palette changes to _base.css
 function savePalette(changes) {
   let content = fs.readFileSync(PALETTE, 'utf8');
   for (const [varName, value] of Object.entries(changes)) {
@@ -96,7 +114,7 @@ function savePalette(changes) {
   fs.writeFileSync(PALETTE, content, 'utf8');
 }
 
-// Parse all editable palette vars from _base-palette.css
+// Parse all editable palette vars from _base.css
 // Returns a flat object: { p10: '0 25 68', p20: '0 45 109', ... }
 function parsePalette() {
   const content = fs.readFileSync(PALETTE, 'utf8');
@@ -109,14 +127,16 @@ function parsePalette() {
   return result;
 }
 
-// Full rewrite of _base-palette.css from a flat vars object.
-// shadow-color and chart-* are preserved from the existing file.
+// Full rewrite of the palette block in _base.css from a flat vars object.
+// Everything from '/* ===== BASE VARS' onwards is preserved unchanged.
+// chart-* vars are preserved from the existing file.
 function writePaletteFull(newVars) {
   const content = fs.readFileSync(PALETTE, 'utf8');
 
-  // Preserve shadow-color
-  const shadowMatch = content.match(/--shadow-color:\s*([^;]+);/);
-  const shadowVal = shadowMatch ? shadowMatch[1].trim() : '20 10 51';
+  // Preserve the BASE VARS section (second :root block) intact
+  const baseVarsMark = '/* ===== BASE VARS ===== */';
+  const baseVarsIdx  = content.indexOf(baseVarsMark);
+  const baseVarsTail = baseVarsIdx !== -1 ? '\n' + content.slice(baseVarsIdx) : '';
 
   // Preserve chart vars
   const chartVals = {};
@@ -141,11 +161,18 @@ function writePaletteFull(newVars) {
 
   const lines = [
     '/* ==========================================================================',
-    '   _base-palette.css',
-    '   Tier 1 — Raw palette vars. All values are raw RGB channels (no rgb() wrapper)',
-    '   so alpha can be applied at point of use: rgb(var(--p40) / 0.87)',
-    '   Replace all placeholder values from Figma per project.',
+    '   _base.css',
+    '   Base variables — Raw values only. No var() references anywhere in this file.',
+    '',
+    '   Two sections:',
+    '     1. PALETTE  — Raw RGB channels for all colour stops + chart colours.',
+    '                   The server regenerates this block entirely on palette writes.',
+    '     2. BASE VARS — Scalar tokens (alpha scales, widths, radii).',
+    '                   The server patches individual lines on token saves.',
     '   ========================================================================== */',
+    '',
+    '',
+    '/* ===== PALETTE ===== */',
     '',
     ':root {',
     '',
@@ -168,45 +195,62 @@ function writePaletteFull(newVars) {
     ...groups.g.map(V),
     '',
     '  /* ---- Shadow base — raw RGB channels for 3-layer shadow composition ---- */',
-    `  --shadow-color: ${shadowVal};`,
+    '  --shadow-color: ' + (chartVals['shadow-color'] || '20 10 51') + ';',
     '',
     '  /* ---- Chart colours — replace from Figma per project ----',
     '     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))',
     '     -------------------------------------------------------- */',
   ];
 
+  // shadow-color is not a chart var — strip it if accidentally captured
   const chartOrder = ['chart-1','chart-2','chart-3','chart-4','chart-5','chart-6','chart-7','chart-8','chart-9','chart-alpha'];
   for (const k of chartOrder) {
     if (chartVals[k] !== undefined) lines.push(`  --${k}: ${chartVals[k]};`);
   }
   lines.push('', '}', '');
 
-  fs.writeFileSync(PALETTE, lines.join('\n'), 'utf8');
+  fs.writeFileSync(PALETTE, lines.join('\n') + baseVarsTail, 'utf8');
 }
 
-// Write raw (non-var) semantic token changes to _semantic-tokens.css
+// Write raw (non-var) base variable changes to _base-vars.css.
+// This is the ONLY file that contains raw values; _semantic-tokens.css is never written by this path.
 function saveSemanticRaw(rawChanges) {
-  let content = fs.readFileSync(SEMANTIC, 'utf8');
+  let content = fs.readFileSync(BASE_VARS, 'utf8');
   for (const [varName, value] of Object.entries(rawChanges)) {
     content = replaceVarInFile(content, varName, value);
   }
-  fs.writeFileSync(SEMANTIC, content, 'utf8');
+  fs.writeFileSync(BASE_VARS, content, 'utf8');
 }
 
-// Write semantic token changes to _semantic-tokens.css
-// light changes go into :root, dark changes go into .dark {}
+// For Pattern 1 tokens, resolve the alias var name to its base var counterpart before writing.
+// 'text-color' (light) → 'text-light-color'  |  'action-primary-default' (dark) → 'action-dark-primary-default'
+// Falls back to the original name if no base var exists (e.g. 'brand-main' has no light/dark split).
+function toBaseVarName(varName, mode, content) {
+  const m = varName.match(/^([\w]+)-(.+)$/);
+  if (!m) return varName;
+  const [, cat, rest] = m;
+  const baseVar = `${cat}-${mode}-${rest}`;
+  const escaped = baseVar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`--${escaped}:`).test(content) ? baseVar : varName;
+}
+
+// Write semantic token changes to _semantic-tokens.css.
+// Both light and dark changes are written to :root (all base vars live there).
+// .dark {} is frozen — it contains only alias re-pointings and is never modified.
 function saveSemantic(lightChanges, darkChanges) {
   let content = fs.readFileSync(SEMANTIC, 'utf8');
   const darkSplit = content.match(/^\.dark\s*\{/m);
   const darkIdx = darkSplit ? darkSplit.index : -1;
   let rootPart = darkIdx !== -1 ? content.slice(0, darkIdx) : content;
-  let darkPart = darkIdx !== -1 ? content.slice(darkIdx) : '';
+  const darkPart = darkIdx !== -1 ? content.slice(darkIdx) : ''; // frozen — alias re-pointings only
 
   for (const [varName, value] of Object.entries(lightChanges || {})) {
-    rootPart = replaceVarInFile(rootPart, varName, `var(--${value})`);
+    const target = toBaseVarName(varName, 'light', rootPart);
+    rootPart = replaceVarInFile(rootPart, target, `var(--${value})`);
   }
   for (const [varName, value] of Object.entries(darkChanges || {})) {
-    darkPart = replaceVarInFile(darkPart, varName, `var(--${value})`);
+    const target = toBaseVarName(varName, 'dark', rootPart);
+    rootPart = replaceVarInFile(rootPart, target, `var(--${value})`);
   }
   fs.writeFileSync(SEMANTIC, rootPart + darkPart, 'utf8');
 }
