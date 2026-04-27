@@ -113,11 +113,15 @@
   /* ==========================================================================
      SURFACES — scalars
      --surfaces-alpha is applied at @theme inline level for translucent surfaces.
-     --surfaces-blur is used for backdrop-filter on floating surfaces.
+     --surfaces-blur-l* is used for backdrop-filter on each floating surface level.
      ========================================================================== */
 
-  --surfaces-alpha: 0.96;
-  --surfaces-blur:  12px;
+  --surfaces-alpha:   0.96;
+  --surfaces-blur-l1: 0px;
+  --surfaces-blur-l2: 0px;
+  --surfaces-blur-l3: 0px;
+  --surfaces-blur-l4: 0px;
+  --surfaces-blur-l5: 0px;
 
 
   /* ==========================================================================

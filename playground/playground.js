@@ -209,11 +209,10 @@ async function loadConfig() {
       const inp = document.getElementById('surfaces-alpha-input');
       if (inp) inp.value = alpha;
     }
-    const blur = semanticConfig.rawValues && semanticConfig.rawValues['--surfaces-blur'];
-    if (blur) {
-      const inp = document.getElementById('surfaces-blur-input');
-      if (inp) inp.value = blur;
-    }
+    ['l1', 'l2', 'l3', 'l4', 'l5'].forEach(level => {
+      const v = semanticConfig.rawValues && semanticConfig.rawValues[`--surfaces-blur-${level}`];
+      if (v) { const i = document.getElementById(`surfaces-blur-${level}`); if (i) i.value = v; }
+    });
     // Seed shadow colour dropdown
     const shadowColor = semanticConfig.light && semanticConfig.light['--shadow-color'];
     if (shadowColor) {
@@ -642,19 +641,16 @@ async function loadPalette() {
   });
 })();
 
-// ── Surfaces blur input ──────────────────────────────────────────────
-(function () {
-  const inp = document.getElementById('surfaces-blur-input');
+// ── Surfaces blur inputs (per level) ────────────────────────────────
+['l1', 'l2', 'l3', 'l4', 'l5'].forEach(level => {
+  const inp = document.getElementById(`surfaces-blur-${level}`);
   if (!inp) return;
   function commitBlur() {
     const raw = inp.value.trim();
-    if (!/^\d+(\.\d+)?(px|rem|em)$/.test(raw)) {
-      inp.style.borderColor = 'rgb(var(--meaning-error))';
-      return;
-    }
+    if (!/^\d+(\.\d+)?(px|rem|em)$/.test(raw)) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
     inp.style.borderColor = '';
-    document.documentElement.style.setProperty('--surfaces-blur', raw);
-    dirtySemanticRaw.set('--surfaces-blur', raw);
+    document.documentElement.style.setProperty(`--surfaces-blur-${level}`, raw);
+    dirtySemanticRaw.set(`--surfaces-blur-${level}`, raw);
     updateSaveBar();
   }
   inp.addEventListener('change', commitBlur);
@@ -662,7 +658,7 @@ async function loadPalette() {
     if (e.key === 'Enter') { e.preventDefault(); commitBlur(); inp.blur(); }
     if (e.key === 'Escape') { inp.blur(); }
   });
-})();
+});
 
 // ── Surfaces alpha input ─────────────────────────────────────────────
 new TokenInput(document.getElementById('surfaces-alpha-input'), '--surfaces-alpha');
