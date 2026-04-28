@@ -12,13 +12,13 @@
      Generates: mob-p:, mob-l:, tab-s:, tab-l:, scr-s:, scr-m:, scr-l: variants
      ========================================================================== */
 
-  --breakpoint-mob-p: 250px;  /* All phones portrait   */
-  --breakpoint-mob-l: 480px;  /* All phones landscape  */
-  --breakpoint-tab-s: 768px;  /* iPads                 */
-  --breakpoint-tab-l: 992px;  /* iPad Pro              */
-  --breakpoint-scr-s: 1280px; /* Desktop small         */
-  --breakpoint-scr-m: 1440px; /* MacBooks              */
-  --breakpoint-scr-l: 1920px; /* Desktop large         */
+  --breakpoint-mob-p: 250px;  /* All phones portrait        */
+  --breakpoint-mob-l: 480px;  /* All phones landscape       */
+  --breakpoint-tab-s: 768px;  /* iPads                      */
+  --breakpoint-tab-l: 992px;  /* iPad Pro                   */
+  --breakpoint-scr-s: 1280px; /* Desktop small              */
+  --breakpoint-scr-m: 1440px; /* Desktops Medium, Macbooks  */
+  --breakpoint-scr-l: 1920px; /* Desktop large              */
 
 
   /* ==========================================================================
@@ -37,7 +37,7 @@
   --spacing-g3h:  28px;
   --spacing-g4:   32px;
   --spacing-g4h:  36px;
-  --spacing-g5:   40px; /* NOTE: 30px was a bug in the old config — correct value is 40px */
+  --spacing-g5:   40px;
   --spacing-g5h:  44px;
   --spacing-g6:   48px;
   --spacing-g6h:  52px;
@@ -130,24 +130,6 @@
 
 
   /* ==========================================================================
-     BORDER RADIUS — sh-scale
-     Formula: sh{h} = h ÷ 8 (radius is one-eighth of component height)
-     Generates: rounded-sh32, rounded-sh48, rounded-sh-full etc.
-     ========================================================================== */
-
-  --radius-sh8:     1px;
-  --radius-sh16:    2px;
-  --radius-sh24:    3px;
-  --radius-sh32:    4px;
-  --radius-sh40:    5px;
-  --radius-sh48:    6px;
-  --radius-sh56:    7px;
-  --radius-sh64:    8px;
-  --radius-sh72:    9px;
-  --radius-sh-full: 9999px;
-
-
-  /* ==========================================================================
      SHADOWS — 3-layer composites (ambient + umbra + penumbra)
      Each level pairs with a surface level token.
      shadow-level1 → level1 surface, shadow-level2 → level2/level2a etc.
@@ -182,73 +164,85 @@
 @theme inline {
 
   /* BRAND */
-  --color-brand-main: rgb(var(--brand-main));
+  --color-brand-main: rgb(var(--brand-main-color));
 
   /* SURFACES
      --surfaces-alpha (0.96) is baked in — surfaces are always translucent by design.
      level-invert is fully opaque (no alpha) to guarantee legibility on dark backgrounds. */
-  --color-level0:       rgb(var(--surfaces-base)   / var(--surfaces-alpha));
-  --color-level1:       rgb(var(--surfaces-l1)     / var(--surfaces-alpha));
-  --color-level2:       rgb(var(--surfaces-l2)     / var(--surfaces-alpha));
-  --color-level2a:      rgb(var(--surfaces-l2a)    / var(--surfaces-alpha));
-  --color-level3:       rgb(var(--surfaces-l3)     / var(--surfaces-alpha));
-  --color-level4:       rgb(var(--surfaces-l4)     / var(--surfaces-alpha));
-  --color-level5:       rgb(var(--surfaces-l5)     / var(--surfaces-alpha));
-  --color-level-invert: rgb(var(--surfaces-invert));
+  --color-level0:       rgb(var(--surfaces-base-color)   / var(--surfaces-global-alpha));
+  --color-level1:       rgb(var(--surfaces-l1-color)     / var(--surfaces-global-alpha));
+  --color-level2:       rgb(var(--surfaces-l2-color)     / var(--surfaces-global-alpha));
+  --color-level2a:      rgb(var(--surfaces-l2a-color)    / var(--surfaces-global-alpha));
+  --color-level3:       rgb(var(--surfaces-l3-color)     / var(--surfaces-global-alpha));
+  --color-level4:       rgb(var(--surfaces-l4-color)     / var(--surfaces-global-alpha));
+  --color-level5:       rgb(var(--surfaces-l5-color)     / var(--surfaces-global-alpha));
+  --color-level-invert: rgb(var(--surfaces-invert-color));
 
   /* ACTIONS — fully opaque, no alpha */
-  --color-action-primary-default:  rgb(var(--action-primary-default));
-  --color-action-primary-hover:    rgb(var(--action-primary-hover));
-  --color-action-primary-pressed:  rgb(var(--action-primary-pressed));
-  --color-action-secondary-disabled: rgb(var(--action-secondary-disabled));
-  --color-action-secondary-hover:  rgb(var(--action-secondary-hover));
-  --color-action-secondary-pressed:rgb(var(--action-secondary-pressed));
-  --color-action-neutral-default:  rgb(var(--action-neutral-default));
-  --color-action-neutral-hover:    rgb(var(--action-neutral-hover));
-  --color-action-neutral-pressed:  rgb(var(--action-neutral-pressed));
+  --color-action-primary-default:    rgb(var(--action-primary-default-color));
+  --color-action-primary-overlay:    rgb(var(--action-primary-overlay-color));
+  --color-action-secondary-disabled: rgb(var(--action-secondary-disabled-color));
+  --color-action-secondary-default:  rgb(var(--action-secondary-default-color));
+  --color-action-secondary-overlay:  rgb(var(--action-secondary-overlay-color));
+  --color-action-neutral-default:    rgb(var(--action-neutral-default-color));
+  --color-action-neutral-disabled:   rgb(var(--action-neutral-disabled-color));
+  --color-action-neutral-filled:     rgb(var(--action-neutral-filled-color));
 
   /* MEANING — fully opaque */
-  --color-meaning-error:   rgb(var(--meaning-error));
-  --color-meaning-alert:   rgb(var(--meaning-alert));
-  --color-meaning-success: rgb(var(--meaning-success));
+  --color-meaning-error:   rgb(var(--meaning-error-color));
+  --color-meaning-alert:   rgb(var(--meaning-alert-color));
+  --color-meaning-success: rgb(var(--meaning-success-color));
 
-  /* CHARTS — --chart-alpha (0.81) baked in for consistent data visualisation opacity */
-  --color-chart-1: rgb(var(--chart-1) / var(--chart-alpha));
-  --color-chart-2: rgb(var(--chart-2) / var(--chart-alpha));
-  --color-chart-3: rgb(var(--chart-3) / var(--chart-alpha));
-  --color-chart-4: rgb(var(--chart-4) / var(--chart-alpha));
-  --color-chart-5: rgb(var(--chart-5) / var(--chart-alpha));
-  --color-chart-6: rgb(var(--chart-6) / var(--chart-alpha));
-  --color-chart-7: rgb(var(--chart-7) / var(--chart-alpha));
-  --color-chart-8: rgb(var(--chart-8) / var(--chart-alpha));
-  --color-chart-9: rgb(var(--chart-9) / var(--chart-alpha));
+  /* CHARTS — --chart-global-alpha (0.81) baked in for consistent data visualisation opacity */
+  --color-chart-1: rgb(var(--chart-1) / var(--chart-global-alpha));
+  --color-chart-2: rgb(var(--chart-2) / var(--chart-global-alpha));
+  --color-chart-3: rgb(var(--chart-3) / var(--chart-global-alpha));
+  --color-chart-4: rgb(var(--chart-4) / var(--chart-global-alpha));
+  --color-chart-5: rgb(var(--chart-5) / var(--chart-global-alpha));
+  --color-chart-6: rgb(var(--chart-6) / var(--chart-global-alpha));
+  --color-chart-7: rgb(var(--chart-7) / var(--chart-global-alpha));
+  --color-chart-8: rgb(var(--chart-8) / var(--chart-global-alpha));
+  --color-chart-9: rgb(var(--chart-9) / var(--chart-global-alpha));
 
   /* SHADOWS — 3-layer composites: umbra, penumbra, ambient.
      All levels share the same --shadow-color and per-layer alpha vars.
      Geometry (offsets, blur) scales with level; colour and alphas are global. */
   --shadow-level1:
-    0px  3px  4px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
-    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
-    0px  2px  2px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+    0px  3px  4px 0px rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px  2px  2px 0px rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
 
   --shadow-level2:
-    0px  4px  6px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
-    0px  3px 16px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
-    0px  2px  4px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+    0px  4px  6px 0px rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px  3px 16px 0px rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px  2px  4px 0px rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
 
   --shadow-level3:
-    0px  5px 10px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
-    0px  1px 28px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
-    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+    0px  5px 10px 0px rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px  1px 28px 0px rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px  2px  8px 0px rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
 
   --shadow-level4:
-    0px  8px 16px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
-    0px  2px 44px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
-    0px  3px 12px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+    0px  8px 16px 0px rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px  2px 44px 0px rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px  3px 12px 0px rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
 
   --shadow-level5:
-    0px 14px 28px 0px rgb(var(--shadow-color) / var(--shadow-alpha-umbra)),
-    0px  4px 64px 0px rgb(var(--shadow-color) / var(--shadow-alpha-ambient)),
-    0px  6px 20px 0px rgb(var(--shadow-color) / var(--shadow-alpha-penumbra));
+    0px 14px 28px 0px rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px  4px 64px 0px rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px  6px 20px 0px rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  /* BORDER RADIUS — derived from raw scale in _base.css; one source of truth.
+     Generates: rounded-sh32, rounded-sh48, rounded-sh-full etc. */
+  --radius-sh8:     var(--sh8);
+  --radius-sh16:    var(--sh16);
+  --radius-sh24:    var(--sh24);
+  --radius-sh32:    var(--sh32);
+  --radius-sh40:    var(--sh40);
+  --radius-sh48:    var(--sh48);
+  --radius-sh56:    var(--sh56);
+  --radius-sh64:    var(--sh64);
+  --radius-sh72:    var(--sh72);
+  --radius-sh-full: var(--sh-full);
 
 }

@@ -60,19 +60,19 @@
   --s100: 255 255 255;
 
   /* ---- Neutral palette (n) — replace from Figma ---- */
-  --n0: 255 255 255;
-  --n10: 245 245 245;
-  --n20: 230 230 230;
-  --n30: 215 215 215;
-  --n35: 207 207 207;
-  --n40: 200 200 200;
-  --n50: 180 180 180;
-  --n60: 160 160 160;
-  --n65: 140 140 140;
-  --n70: 120 120 120;
-  --n80: 80 80 80;
-  --n90: 40 40 40;
-  --n100: 10 10 10;
+  --n0:   10  10  10;
+  --n10:  40  40  40;
+  --n20:  80  80  80;
+  --n30:  120 120 120;
+  --n35:  140 140 140;
+  --n40:  160 160 160;
+  --n50:  180 180 180;
+  --n60:  200 200 200;
+  --n65:  207 207 207;
+  --n70:  215 215 215;
+  --n80:  230 230 230;
+  --n90:  245 245 245;
+  --n100: 255 255 255;
 
   /* ---- Meaning tones — two fixed tones per meaning, not full palettes ----
      r = red/error, y = yellow/alert, g = green/success
@@ -86,9 +86,6 @@
   --g30: 0 82 48;
   --g70: 85 198 133;
 
-  /* ---- Shadow base — raw RGB channels for 3-layer shadow composition ---- */
-  --shadow-color: 20 10 51;
-
   /* ---- Chart colours — replace from Figma per project ----
      Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
      -------------------------------------------------------- */
@@ -101,7 +98,7 @@
   --chart-7: 255 206 86;
   --chart-8: 231 233 237;
   --chart-9: 100 181 246;
-  --chart-alpha: 0.81;
+  --chart-global-alpha: 0.81;
 
 }
 
@@ -116,12 +113,12 @@
      --surfaces-blur-l* is used for backdrop-filter on each floating surface level.
      ========================================================================== */
 
-  --surfaces-alpha:   0.96;
-  --surfaces-blur-l1: 0px;
-  --surfaces-blur-l2: 0px;
-  --surfaces-blur-l3: 0px;
-  --surfaces-blur-l4: 0px;
-  --surfaces-blur-l5: 0px;
+  --surfaces-global-alpha:   0.96;
+  --surfaces-l1-global-blur: 0px;
+  --surfaces-l2-global-blur: 0px;
+  --surfaces-l3-global-blur: 0px;
+  --surfaces-l4-global-blur: 0px;
+  --surfaces-l5-global-blur: 0px;
 
 
   /* ==========================================================================
@@ -132,9 +129,9 @@
      Shadow colour step is set via dropdown in _semantic-tokens.css.
      ========================================================================== */
 
-  --shadow-alpha-umbra:    0.09;
-  --shadow-alpha-penumbra: 0.03;
-  --shadow-alpha-ambient:  0.06;
+  --shadow-umbra-global-alpha:    0.09;
+  --shadow-penumbra-global-alpha: 0.03;
+  --shadow-ambient-global-alpha:  0.06;
 
 
   /* ==========================================================================
@@ -144,24 +141,24 @@
      ========================================================================== */
 
   /* Light mode */
-  --text-light-alpha-high:    0.83;
-  --text-light-alpha-medium:   0.66;
-  --text-light-alpha-low: 0.51;
-  --text-light-alpha-disabled:    0.26;
-  --text-light-alpha-accent:        0.85;
-  --text-light-alpha-accent-high:   1;
-  --text-light-alpha-accent-medium: 0.82;
-  --text-light-alpha-accent-low:    0.63;
+  --text-high-light-alpha:     0.83;
+  --text-medium-light-alpha:   0.66;
+  --text-low-light-alpha:      0.51;
+  --text-disabled-light-alpha: 0.26;
+  --text-accent-light-alpha:        0.85;
+  --text-accent-high-light-alpha:   1;
+  --text-accent-medium-light-alpha: 0.82;
+  --text-accent-low-light-alpha:    0.63;
 
   /* Dark mode */
-  --text-dark-alpha-high:    0.96;
-  --text-dark-alpha-medium:   0.84;
-  --text-dark-alpha-low: 0.72;
-  --text-dark-alpha-disabled:    0.46;
-  --text-dark-alpha-accent:        0.95;
-  --text-dark-alpha-accent-high:   1;
-  --text-dark-alpha-accent-medium: 0.97;
-  --text-dark-alpha-accent-low:    0.89;
+  --text-high-dark-alpha:     0.96;
+  --text-medium-dark-alpha:   0.84;
+  --text-low-dark-alpha:      0.72;
+  --text-disabled-dark-alpha: 0.46;
+  --text-accent-dark-alpha:        0.95;
+  --text-accent-high-dark-alpha:   1;
+  --text-accent-medium-dark-alpha: 0.97;
+  --text-accent-low-dark-alpha:    0.89;
 
 
   /* ==========================================================================
@@ -169,8 +166,8 @@
      Applied as a brand-tinted layer on top of the base action colour.
      ========================================================================== */
 
-  --action-overlay-alpha-hover:   0.35;
-  --action-overlay-alpha-pressed: 0.45;
+  --action-overlay-hover-global-alpha:   0.35;
+  --action-overlay-pressed-global-alpha: 0.45;
 
   /* ==========================================================================
      BORDERS — alpha + width scales
@@ -178,19 +175,19 @@
      ========================================================================== */
 
   /* Alpha scale — light mode */
-  --border-light-alpha-high:   0.48;
-  --border-light-alpha-medium: 0.36;
-  --border-light-alpha-low:    0.25;
+  --border-high-light-alpha:   0.48;
+  --border-medium-light-alpha: 0.36;
+  --border-low-light-alpha:    0.25;
   /* Alpha scale — dark mode */
-  --border-dark-alpha-high:   0.62;
-  --border-dark-alpha-medium: 0.53;
-  --border-dark-alpha-low:    0.4;
+  --border-high-dark-alpha:   0.62;
+  --border-medium-dark-alpha: 0.53;
+  --border-low-dark-alpha:    0.4;
   /* Focus alpha — mode-independent */
-  --border-alpha-focus: 0.68;
+  --border-focus-global-alpha: 0.68;
 
   /* Width scale — override per project */
-  --border-width:        1px;
-  --border-width-focus:  2px;
+  --border-global-width:       1px;
+  --border-focus-global-width: 2px;
 
 
   /* ==========================================================================

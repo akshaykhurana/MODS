@@ -27,16 +27,15 @@ function broadcast(event) {
 }
 
 // Watch dist/style.css for external rebuilds (e.g. npm run build:css in another terminal)
-// suppressWatch is set true during server-triggered rebuilds so the exec callback's
-// broadcast('rebuild-done') is the only one that fires — not the fs.watch duplicate.
-let suppressWatch = false;
+// distMtime is updated inside the exec callback so when fs.watch fires afterwards
+// the mtime matches and no duplicate broadcast is sent.
 let distMtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : 0;
 fs.watch(path.join(ROOT, 'dist'), (_, filename) => {
   if (filename === 'style.css') {
     const mtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : 0;
     if (mtime !== distMtime) {
       distMtime = mtime;
-      if (!suppressWatch) broadcast('rebuild-done');
+      broadcast('rebuild-done');
     }
   }
 });
@@ -344,11 +343,10 @@ const server = http.createServer((req, res) => {
         if (Object.keys(semanticRaw).length)
           saveSemanticRaw(semanticRaw);
 
-        // Rebuild CSS — suppress the fs.watch listener so only the exec
-        // callback broadcasts rebuild-done, not both.
-        suppressWatch = true;
+        // Rebuild CSS — stamp distMtime before broadcasting so fs.watch
+        // sees no mtime change and stays silent (avoids double broadcast).
         exec('npm run build:css', { cwd: ROOT }, (err, stdout, stderr) => {
-          suppressWatch = false;
+          distMtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : distMtime;
           if (err) {
             console.error('Build error:', stderr);
             broadcast('rebuild-error');

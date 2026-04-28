@@ -10,15 +10,81 @@ The same pattern governs every part of the system.
 
 | | Base variables — Raw Scale | Semantic Layer |
 |---|---|---|
-| **Colour** | `p10`–`p100`, `s10`–`s100`, `n10`–`n100` | `--brand-main`, `--text-color`, `--surfaces-base` |
+| **Colour** | `p10`–`p100`, `s10`–`s100`, `n10`–`n100` | `--brand-main-color`, `--text-color`, `--surfaces-base-color` |
 | **Typography size** | `f1`–`f15` | `.h1`, `.body-m`, `.label-m` |
 | **Typography leading** | `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15` | baked into Semantic component classes |
 | **Elevation** | `level0`–`level5`, `shadow-level1`–`shadow-level5` | component classes (to be defined per project) |
 | **Spacing** | `g0`–`g25` + half-steps | `p-g3`, `gap-g2`, `.gap-default` |
 | **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xs`–`--shape-xxl`, `--shape-full`, `--shape-control` |
 
-Base variables live in `src/_theme.css`, `src/_base-palette.css`, and `src/_base-vars.css`.  
+Base variables live in `src/_theme.css` and `src/_base.css`.  
 The Semantic layer lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.css` (everything else).
+
+---
+
+## CSS Variable Naming Convention
+
+All CSS custom properties in MODS follow a strict 4-part naming rule:
+
+```
+--{category}-{type}-{mode}-{property}
+```
+
+| Part | Values | Notes |
+|---|---|---|
+| `category` | `surfaces`, `text`, `border`, `action`, `meaning`, `brand`, `shadow`, `chart` | Semantic domain |
+| `type` | `base`, `l1`–`l5`, `invert`, `high`, `medium`, `low`, `primary`, `error`, etc. | The specific role within the category |
+| `mode` | `light`, `dark`, `global` | `global` for mode-independent values (alphas, widths, blurs) |
+| `property` | `color`, `alpha`, `width`, `blur` | The CSS property type |
+
+**Active aliases** (used in components and utilities) omit `mode` — the mode is resolved at runtime by the `.dark {}` block:
+```
+--surfaces-base-color    ← active alias (no mode)
+--surfaces-base-light-color  ← base var (light)
+--surfaces-base-dark-color   ← base var (dark)
+```
+
+**Dimension vars** (alpha, width, blur) omit mode when mode-independent:
+```
+--border-global-width       ← single value, not mode-sensitive
+--border-focus-global-alpha ← focus alpha, same in all modes
+--text-high-light-alpha     ← per-mode emphasis alpha (base var)
+--text-high-alpha           ← active alias (no mode)
+```
+
+
+---
+
+## CSS Variable Naming Convention
+
+All CSS custom properties in MODS follow a strict 4-part naming rule:
+
+```
+--{category}-{type}-{mode}-{property}
+```
+
+| Part | Values | Notes |
+|---|---|---|
+| `category` | `surfaces`, `text`, `border`, `action`, `meaning`, `brand`, `shadow`, `chart` | Semantic domain |
+| `type` | `base`, `l1`–`l5`, `invert`, `high`, `medium`, `low`, `primary`, `error`, etc. | The specific role within the category |
+| `mode` | `light`, `dark`, `global` | `global` for mode-independent values (alphas, widths, blurs) |
+| `property` | `color`, `alpha`, `width`, `blur` | The CSS property type |
+
+**Active aliases** (used in components and utilities) omit `mode` — the mode is resolved at runtime by the `.dark {}` block:
+```
+--surfaces-base-color    ← active alias (no mode)
+--surfaces-base-light-color  ← base var (light)
+--surfaces-base-dark-color   ← base var (dark)
+```
+
+**Dimension vars** (alpha, width, blur) omit mode when mode-independent:
+```
+--border-global-width       ← single value, not mode-sensitive
+--border-focus-global-alpha ← focus alpha, same in all modes
+--text-high-light-alpha     ← per-mode emphasis alpha (base var)
+--text-high-alpha           ← active alias (no mode)
+```
+
 
 ---
 
@@ -28,8 +94,7 @@ The Semantic layer lives in `src/_semantic-tokens.css` (colour, shape) and `src/
 src/
   style.css               ← Entry point. @import "tailwindcss" + all partials.
   _theme.css              ← @theme block: all Base design tokens
-  _base-palette.css       ← :root CSS vars: p10–p100, s10–s100, n10–n100
-  _base-vars.css          ← :root CSS vars: alphas, border widths, shape raw scale
+  _base.css               ← :root CSS vars: raw palette steps, alpha scales, border widths, shape raw scale
   _semantic-tokens.css    ← :root CSS vars: brand, surfaces, actions, text, borders, shadows
   _fonts.css              ← Google Fonts import + font role CSS variables
   _components.css         ← @layer components: all Semantic utility classes
@@ -51,14 +116,14 @@ Three full palettes in the starter, each with 10 steps. Stored as raw RGB channe
 
 Steps run `10, 20, 30, 40, 50, 60, 70, 80, 90, 100` where 10 is lightest and 100 is darkest.
 
-> **Generate palettes using Google's official Material Theme Builder Figma plugin.** The plugin produces a full tonal palette in the HCT colour space for any source hue. The step numbers map directly — `p10` is tone 10 of the primary palette from the plugin, `p40` is tone 40, and so on. Copy the HEX values from the plugin, convert to RGB channels, and drop them into `_base-palette.css`. Do not use HSB or HSL to hand-pick the steps — those colour spaces are perceptually uneven and will produce mismatched contrast ratios across hues.
+> **Generate palettes using Google's official Material Theme Builder Figma plugin.** The plugin produces a full tonal palette in the HCT colour space for any source hue. The step numbers map directly — `p10` is tone 10 of the primary palette from the plugin, `p40` is tone 40, and so on. Copy the HEX values from the plugin, convert to RGB channels, and drop them into `_base.css`. Do not use HSB or HSL to hand-pick the steps — those colour spaces are perceptually uneven and will produce mismatched contrast ratios across hues.
 
 Additional accent palettes (`a10`–`a100`, `b10`–`b100` etc.) can be added per project but are not part of the starter.
 
 **Meaning colours** (error, alert, success) are not full 10-step palettes. They are two fixed values per meaning: a light-mode tone and a dark-mode tone, named by hue and step — `r30`/`r70`, `y30`/`y70`, `g30`/`g70`. The semantic token `--meaning-error` resolves to `r30` in light mode and `r70` in dark mode via the theme CSS variable swap.
 
 ```css
-/* src/_base-palette.css */
+/* src/_base.css */
 :root {
   /* Primary — replace from Figma */
   --p10: 240 240 240; /* placeholder */
@@ -101,7 +166,7 @@ Semantic tokens map base palette steps to named roles. These are what Tailwind u
 Each token that carries an alpha value uses a separate colour var (raw RGB channels) and an alpha var, composed at point of use:
 
 ```css
-color: rgb(var(--text-high) / var(--text-alpha-medium));
+color: rgb(var(--text-high) / var(--text-medium-alpha));
 ```
 
 `high`-level tokens are always fully opaque and have no alpha var.
@@ -111,33 +176,33 @@ The alpha values follow the Material Design emphasis scale and are rarely overri
 #### Base alpha variables
 
 ```css
-/* Defined in _base-vars.css */
+/* Defined in _base.css */
 
 /* Text alphas — light and dark tuned independently; aliases switch in .dark {} */
---text-light-alpha-high:     1;
---text-light-alpha-medium: 0.89;
---text-light-alpha-low:    0.60;
---text-light-alpha-disabled: 0.38;
---text-light-alpha-accent: 0.85;
+--text-high-light-alpha:     1;
+--text-medium-light-alpha: 0.89;
+--text-low-light-alpha:    0.60;
+--text-disabled-light-alpha: 0.38;
+--text-accent-light-alpha: 0.85;
 
---text-dark-alpha-high:     1;
---text-dark-alpha-medium: 0.96;
---text-dark-alpha-low:    0.77;
---text-dark-alpha-disabled: 0.59;
---text-dark-alpha-accent: 0.95;
+--text-high-dark-alpha:     1;
+--text-medium-dark-alpha: 0.96;
+--text-low-dark-alpha:    0.77;
+--text-disabled-dark-alpha: 0.59;
+--text-accent-dark-alpha: 0.95;
 
 /* Active aliases live in _semantic-tokens.css — switch between light/dark in .dark {} */
---text-alpha-high:     var(--text-light-alpha-high);
---text-alpha-medium:   var(--text-light-alpha-medium);
---text-alpha-low:      var(--text-light-alpha-low);
---text-alpha-disabled: var(--text-light-alpha-disabled);
---text-alpha-accent:   var(--text-light-alpha-accent);
+--text-high-alpha:     var(--text-light-alpha-high);
+--text-medium-alpha:   var(--text-light-alpha-medium);
+--text-low-alpha:      var(--text-light-alpha-low);
+--text-disabled-alpha: var(--text-light-alpha-disabled);
+--text-accent-alpha:   var(--text-light-alpha-accent);
 
-/* Border alphas — mode-independent, defined in _base-vars.css */
---border-alpha-high:   0.87;
---border-alpha-medium: 0.38;
---border-alpha-low:    0.12;
---border-alpha-focus:  1;
+/* Border alphas — mode-independent, defined in _base.css */
+--border-high-alpha:   0.87;
+--border-medium-alpha: 0.38;
+--border-low-alpha:    0.12;
+--border-focus-global-alpha:  1;
 
 /* Action alphas — actions are always solid fills, no alpha vars needed */
 ```
@@ -145,7 +210,7 @@ The alpha values follow the Material Design emphasis scale and are rarely overri
 #### Colour semantic tokens
 
 All mode-switching tokens follow **Pattern 1**:
-1. Named base vars `--{cat}-light-{prop}` / `--{cat}-dark-{prop}` in `:root` hold the raw palette step.
+1. Named base vars `--{cat}-{prop}-light-color` / `--{cat}-{prop}-dark-color` in `:root` hold the raw palette step.
 2. Active aliases `--{cat}-{prop}` point to the light set by default.
 3. `.dark {}` re-points aliases to the dark set — `.dark {}` is never written programmatically.
 
@@ -154,83 +219,83 @@ All mode-switching tokens follow **Pattern 1**:
 :root {
 
   /* ---- Brand ---- */
-  --brand-main: var(--p30);  /* mode-independent — same step in both modes */
+  --brand-main-color: var(--p30);  /* mode-independent — same step in both modes */
 
   /* ---- Surfaces ---- */
   /* Base — light mode */
-  --surfaces-light-base:   var(--s98);
-  --surfaces-light-l1:     var(--s99);
-  --surfaces-light-l2:     var(--s100);
-  --surfaces-light-l2a:    var(--s100);
-  --surfaces-light-l3:     var(--s100);
-  --surfaces-light-l4:     var(--s100);
-  --surfaces-light-l5:     var(--s100);
-  --surfaces-light-invert: var(--s5);
+  --surfaces-base-light-color:   var(--s98);
+  --surfaces-l1-light-color:     var(--s99);
+  --surfaces-l2-light-color:     var(--s100);
+  --surfaces-l2a-light-color:    var(--s100);
+  --surfaces-l3-light-color:     var(--s100);
+  --surfaces-l4-light-color:     var(--s100);
+  --surfaces-l5-light-color:     var(--s100);
+  --surfaces-invert-light-color: var(--s5);
 
   /* Base — dark mode */
-  --surfaces-dark-base:   var(--s5);
-  --surfaces-dark-l1:     var(--s5);
-  --surfaces-dark-l2:     var(--s7);
-  --surfaces-dark-l2a:    var(--s9);
-  --surfaces-dark-l3:     var(--s11);
-  --surfaces-dark-l4:     var(--s13);
-  --surfaces-dark-l5:     var(--s15);
-  --surfaces-dark-invert: var(--s98);
+  --surfaces-base-dark-color:   var(--s5);
+  --surfaces-l1-dark-color:     var(--s5);
+  --surfaces-l2-dark-color:     var(--s7);
+  --surfaces-l2a-dark-color:    var(--s9);
+  --surfaces-l3-dark-color:     var(--s11);
+  --surfaces-l4-dark-color:     var(--s13);
+  --surfaces-l5-dark-color:     var(--s15);
+  --surfaces-invert-dark-color: var(--s98);
 
   /* Active aliases */
-  --surfaces-base:   var(--surfaces-light-base);
-  --surfaces-l1:     var(--surfaces-light-l1);
-  --surfaces-l2:     var(--surfaces-light-l2);
-  --surfaces-l2a:    var(--surfaces-light-l2a);  /* alternate l2 — slightly more contrast */
-  --surfaces-l3:     var(--surfaces-light-l3);
-  --surfaces-l4:     var(--surfaces-light-l4);
-  --surfaces-l5:     var(--surfaces-light-l5);
-  --surfaces-invert: var(--surfaces-light-invert);
+  --surfaces-base-color:   var(--surfaces-light-base);
+  --surfaces-l1-color:     var(--surfaces-light-l1);
+  --surfaces-l2-color:     var(--surfaces-light-l2);
+  --surfaces-l2a-color:    var(--surfaces-light-l2a);  /* alternate l2 — slightly more contrast */
+  --surfaces-l3-color:     var(--surfaces-light-l3);
+  --surfaces-l4-color:     var(--surfaces-light-l4);
+  --surfaces-l5-color:     var(--surfaces-light-l5);
+  --surfaces-invert-color: var(--surfaces-light-invert);
   --shadow-color:    var(--p30);  /* set via dropdown — light mode only; no shadows in dark mode */
-  /* --surfaces-alpha (0.96) and --surfaces-blur (12px) live in _base-vars.css */
+  /* --surfaces-global-alpha (0.96) and --surfaces-blur (12px) live in _base.css */
 
   /* ---- Text ---- */
   /* Single colour alias per context + a shared alpha scale applied at point of use:
-       color: rgb(var(--text-color) / var(--text-alpha-medium)); */
+       color: rgb(var(--text-color) / var(--text-medium-alpha)); */
 
   /* Base — light mode */
   --text-light-color:         var(--s10);
-  --text-light-accent:        var(--p35);
-  --text-light-invert-color:  var(--s95);
-  --text-light-invert-accent: var(--p80);
+  --text-accent-light-color:        var(--p35);
+  --text-invert-light-color:  var(--s95);
+  --text-invert-accent-light-color: var(--p80);
 
   /* Base — dark mode */
   --text-dark-color:         var(--s95);
-  --text-dark-accent:        var(--p80);
-  --text-dark-invert-color:  var(--s10);
-  --text-dark-invert-accent: var(--p35);
+  --text-accent-dark-color:        var(--p80);
+  --text-invert-dark-color:  var(--s10);
+  --text-invert-accent-dark-color: var(--p35);
 
   /* Active aliases */
   --text-color:         var(--text-light-color);
-  --text-accent:        var(--text-light-accent);
+  --text-accent-color:        var(--text-light-accent);
   --text-invert-color:  var(--text-light-invert-color);
-  --text-invert-accent: var(--text-light-invert-accent);
+  --text-invert-accent-color: var(--text-light-invert-accent);
 
-  /* Alpha aliases — raw values in _base-vars.css; switch in .dark {} */
-  --text-alpha-high:     var(--text-light-alpha-high);
-  --text-alpha-medium:   var(--text-light-alpha-medium);
-  --text-alpha-low:      var(--text-light-alpha-low);
-  --text-alpha-disabled: var(--text-light-alpha-disabled);
-  --text-alpha-accent:   var(--text-light-alpha-accent);
+  /* Alpha aliases — raw values in _base.css; switch in .dark {} */
+  --text-high-alpha:     var(--text-light-alpha-high);
+  --text-medium-alpha:   var(--text-light-alpha-medium);
+  --text-low-alpha:      var(--text-light-alpha-low);
+  --text-disabled-alpha: var(--text-light-alpha-disabled);
+  --text-accent-alpha:   var(--text-light-alpha-accent);
 
   /* ---- Borders ---- */
   /* Base — light mode */
   --border-light-color: var(--n90);
-  --border-light-focus: var(--p50);
+  --border-focus-light-color: var(--p50);
 
   /* Base — dark mode */
   --border-dark-color: var(--n10);
-  --border-dark-focus: var(--p30);
+  --border-focus-dark-color: var(--p30);
 
   /* Active aliases */
   --border-color: var(--border-light-color);
-  --border-focus: var(--border-light-focus);
-  /* Alpha + width scales live in _base-vars.css */
+  --border-focus-color: var(--border-light-focus);
+  /* Alpha + width scales live in _base.css */
 
   /* ---- Actions ---- */
   /* All action colours are solid fills — no opacity.
@@ -239,67 +304,67 @@ All mode-switching tokens follow **Pattern 1**:
      neutral = non-brand elements (toggles, unselected tabs) */
 
   /* Base — light mode */
-  --action-light-primary-default:   var(--p40);
-  --action-light-primary-hover:     var(--p50);
-  --action-light-secondary-disabled:  var(--s70);
-  --action-light-secondary-default: var(--p80);
-  --action-light-secondary-hover:   var(--p90);
-  --action-light-secondary-pressed: var(--p80);
-  --action-light-neutral-default:   var(--n70);
-  --action-light-neutral-disabled:  var(--n50);
-  --action-light-neutral-filled:    var(--n40);
+  --action-primary-default-light-color:   var(--p40);
+  --action-primary-hover-light-color:     var(--p50);
+  --action-secondary-disabled-light-color:  var(--s70);
+  --action-secondary-default-light-color: var(--p80);
+  --action-secondary-hover-light-color:   var(--p90);
+  --action-secondary-pressed-light-color: var(--p80);
+  --action-neutral-default-light-color:   var(--n70);
+  --action-neutral-disabled-light-color:  var(--n50);
+  --action-neutral-filled-light-color:    var(--n40);
 
   /* Base — dark mode */
-  --action-dark-primary-default:   var(--p80);
-  --action-dark-primary-hover:     var(--p70);
+  --action-primary-default-dark-color:   var(--p80);
+  --action-primary-hover-dark-color:     var(--p70);
   /* Base — light mode */
-  --action-light-primary-default:    var(--p70);
-  --action-light-primary-overlay:    var(--p80); /* brand tint composited on hover/pressed */
-  --action-light-secondary-disabled: var(--s70);
-  --action-light-secondary-default:  var(--p80);
-  --action-light-secondary-overlay:  var(--p80);
-  --action-light-neutral-default:    var(--n70);
-  --action-light-neutral-disabled:   var(--n50);
-  --action-light-neutral-filled:     var(--n40);
+  --action-primary-default-light-color:    var(--p70);
+  --action-primary-overlay-light-color:    var(--p80); /* brand tint composited on hover/pressed */
+  --action-secondary-disabled-light-color: var(--s70);
+  --action-secondary-default-light-color:  var(--p80);
+  --action-secondary-overlay-light-color:  var(--p80);
+  --action-neutral-default-light-color:    var(--n70);
+  --action-neutral-disabled-light-color:   var(--n50);
+  --action-neutral-filled-light-color:     var(--n40);
 
   /* Base — dark mode */
-  --action-dark-primary-default:    var(--p60);
-  --action-dark-primary-overlay:    var(--p80);
-  --action-dark-secondary-disabled: var(--s30);
-  --action-dark-secondary-default:  var(--p50);
-  --action-dark-secondary-overlay:  var(--p80);
-  --action-dark-neutral-default:    var(--n60);
-  --action-dark-neutral-disabled:   var(--n70);
-  --action-dark-neutral-filled:     var(--n80);
+  --action-primary-default-dark-color:    var(--p60);
+  --action-primary-overlay-dark-color:    var(--p80);
+  --action-secondary-disabled-dark-color: var(--s30);
+  --action-secondary-default-dark-color:  var(--p50);
+  --action-secondary-overlay-dark-color:  var(--p80);
+  --action-neutral-default-dark-color:    var(--n60);
+  --action-neutral-disabled-dark-color:   var(--n70);
+  --action-neutral-filled-dark-color:     var(--n80);
 
   /* Active aliases */
-  --action-primary-default:    var(--action-light-primary-default);
-  --action-primary-overlay:    var(--action-light-primary-overlay);   /* brand tint overlay */
-  --action-secondary-disabled: var(--action-light-secondary-disabled);
-  --action-secondary-default:  var(--action-light-secondary-default);
-  --action-secondary-overlay:  var(--action-light-secondary-overlay); /* brand tint overlay */
-  --action-neutral-default:    var(--action-light-neutral-default);
-  --action-neutral-disabled:   var(--action-light-neutral-disabled);
-  --action-neutral-filled:     var(--action-light-neutral-filled);
+  --action-primary-default-color:    var(--action-light-primary-default);
+  --action-primary-overlay-color:    var(--action-light-primary-overlay);   /* brand tint overlay */
+  --action-secondary-disabled-color: var(--action-light-secondary-disabled);
+  --action-secondary-default-color:  var(--action-light-secondary-default);
+  --action-secondary-overlay-color:  var(--action-light-secondary-overlay); /* brand tint overlay */
+  --action-neutral-default-color:    var(--action-light-neutral-default);
+  --action-neutral-disabled-color:   var(--action-light-neutral-disabled);
+  --action-neutral-filled-color:     var(--action-light-neutral-filled);
   /* Overlay alpha — mode-independent */
-  --action-overlay-alpha-hover:   0.12;
-  --action-overlay-alpha-pressed: 0.22;
+  --action-overlay-hover-global-alpha:   0.12;
+  --action-overlay-pressed-global-alpha: 0.22;
 
   /* ---- Meaning ---- */
   /* Base — light mode */
-  --meaning-light-error:   var(--r30);
-  --meaning-light-alert:   var(--y30);
-  --meaning-light-success: var(--g30);
+  --meaning-error-light-color:   var(--r30);
+  --meaning-alert-light-color:   var(--y30);
+  --meaning-success-light-color: var(--g30);
 
   /* Base — dark mode */
-  --meaning-dark-error:   var(--r70);
-  --meaning-dark-alert:   var(--y70);
-  --meaning-dark-success: var(--g70);
+  --meaning-error-dark-color:   var(--r70);
+  --meaning-alert-dark-color:   var(--y70);
+  --meaning-success-dark-color: var(--g70);
 
   /* Active aliases */
-  --meaning-error:   var(--meaning-light-error);
-  --meaning-alert:   var(--meaning-light-alert);
-  --meaning-success: var(--meaning-light-success);
+  --meaning-error-color:   var(--meaning-light-error);
+  --meaning-alert-color:   var(--meaning-light-alert);
+  --meaning-success-color: var(--meaning-light-success);
 
   /* ---- Information Visualisation ---- */
   /* 9 chart colours. Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
@@ -313,33 +378,33 @@ All mode-switching tokens follow **Pattern 1**:
   --chart-7:     255 206 86;
   --chart-8:     231 233 237;
   --chart-9:     100 181 246;
-  --chart-alpha: 0.81;
+  --chart-global-alpha: 0.81;
 }
 ```
 
 #### Text token usage summary
 
-Text uses a single colour alias per context (`--text-color`, `--text-accent`, `--text-invert-color`, `--text-invert-accent`) combined with a shared alpha scale: `rgb(var(--text-color) / var(--text-alpha-medium))`.
+Text uses a single colour alias per context (`--text-color`, `--text-accent-color`, `--text-invert-color`, `--text-invert-accent-color`) combined with a shared alpha scale: `rgb(var(--text-color) / var(--text-medium-alpha))`.
 
 | Emphasis | Colour var | Alpha var | Light | Dark |
 |---|---|---|---|---|
 | High (icons, highest contrast) | `--text-color` | `--text-alpha-high` | 1.0 | 1.0 |
-| Medium (headings) | `--text-color` | `--text-alpha-medium` | 0.89 | 0.96 |
+| Medium (headings) | `--text-color` | `--text-medium-alpha` | 0.89 | 0.96 |
 | Low (body copy) | `--text-color` | `--text-alpha-low` | 0.60 | 0.77 |
 | Disabled (placeholders) | `--text-color` | `--text-alpha-disabled` | 0.38 | 0.59 |
-| Accent (links, highlights) | `--text-accent` | `--text-alpha-accent` | 0.85 | 0.95 |
-| On inverted surfaces | `--text-invert-color` / `--text-invert-accent` | same alpha scale | — | — |
+| Accent (links, highlights) | `--text-accent-color` | `--text-accent-alpha` | 0.85 | 0.95 |
+| On inverted surfaces | `--text-invert-color` / `--text-invert-accent-color` | same alpha scale | — | — |
 
 #### Border token usage summary
 
-Borders use a single colour alias `--border-color` (mode-adaptive) combined with a per-role alpha. Focus uses `--border-focus`, a separate brand colour.
+Borders use a single colour alias `--border-color` (mode-adaptive) combined with a per-role alpha. Focus uses `--border-focus-color`, a separate brand colour.
 
 | Emphasis | Colour var | Alpha var | Alpha |
 |---|---|---|---|
-| Strong dividers, selected borders | `--border-color` | `--border-alpha-high` | 0.87 |
-| Default input borders, card outlines | `--border-color` | `--border-alpha-medium` | 0.38 |
-| Subtle dividers | `--border-color` | `--border-alpha-low` | 0.12 |
-| Focused inputs, active selection | `--border-focus` | `--border-alpha-focus` | 1.0 |
+| Strong dividers, selected borders | `--border-color` | `--border-high-alpha` | 0.87 |
+| Default input borders, card outlines | `--border-color` | `--border-medium-alpha` | 0.38 |
+| Subtle dividers | `--border-color` | `--border-low-alpha` | 0.12 |
+| Focused inputs, active selection | `--border-focus-color` | `--border-focus-global-alpha` | 1.0 |
 
 Usage in Tailwind: `bg-brand-main`, `text-medium`, `border-medium`, `bg-level2`, `bg-meaning-success`.
 
@@ -355,8 +420,8 @@ Hover and pressed states use a **state layer overlay** model. A brand-tinted ove
 
 | Alpha token | Default | Role |
 |---|---|---|
-| `--action-overlay-alpha-hover` | 0.12 | Applied to overlay colour on hover |
-| `--action-overlay-alpha-pressed` | 0.22 | Applied to overlay colour on pressed/active |
+| `--action-overlay-hover-global-alpha` | 0.12 | Applied to overlay colour on hover |
+| `--action-overlay-pressed-global-alpha` | 0.22 | Applied to overlay colour on pressed/active |
 
 #### Meaning token usage summary
 
@@ -374,7 +439,7 @@ Meaning colours are used on **icons and typography only** — not as background 
 
 Nine chart colours (`chart-1`–`chart-9`), each a single CSS variable whose value swaps at theme change (light ↔ dark). Applied at a standard **81% alpha** throughout: `rgb(var(--chart-1) / var(--chart-alpha))`.
 
-All 9 values are project-specific — replace from Figma. The `--chart-alpha: 0.81` var is defined in `_semantic-tokens.css` and can be adjusted per project if needed.
+All 9 values are project-specific — replace from Figma. The `--chart-global-alpha: 0.81` var is defined in `_semantic-tokens.css` and can be adjusted per project if needed.
 
 ---
 
@@ -595,7 +660,7 @@ Display, heading, title, and label classes have no variants — no bold, no ital
 
 ## Elevation System
 
-Elevation is expressed by **both** a surface colour token and a shadow token together. In light mode, both apply. In dark mode, surfaces resolve to tinted values, no shadows are applied, and `border-low` (`--border-color` at `--border-alpha-low`, 12%) is used on all elevated elements to delineate them.
+Elevation is expressed by **both** a surface colour token and a shadow token together. In light mode, both apply. In dark mode, surfaces resolve to tinted values, no shadows are applied, and `border-low` (`--border-color` at `--border-low-alpha`, 12%) is used on all elevated elements to delineate them.
 
 The `level*` utility classes (`level0`–`level5`, `level2a`, `level-invert`) handle this automatically — they set the fill and apply `border-low` in `.dark {}` with no extra markup needed. Use these instead of the raw `bg-level*` Tailwind utilities.
 
@@ -622,7 +687,7 @@ Shadows are **3-layer composites** modelling two light sources: one directly abo
 
 Layer order within each `shadow-level*` token: **umbra first, ambient second, penumbra third**.
 
-All three layers share the same colour: `--shadow-color` (default `p30`, raw RGB channels from `_base-palette.css`). Only the geometry (offsets and blur) and the per-layer alphas differ. This means you can change the shadow tint globally by editing `--shadow-color` in one place, and tune darkness per-layer via the three alpha vars.
+All three layers share the same colour: `--shadow-color` (default `p30`, raw RGB channels from `_base.css`). Only the geometry (offsets and blur) and the per-layer alphas differ. This means you can change the shadow tint globally by editing `--shadow-color` in one place, and tune darkness per-layer via the three alpha vars.
 
 > **Dark mode**: shadows are not rendered in dark mode. Elevation is communicated entirely through surface lightness. The `shadow-level*` tokens are defined but their visual effect is suppressed — do not apply them in dark mode.
 
@@ -640,7 +705,7 @@ The `level*` token names stay the same in dark mode. The CSS variables they refe
 
 - **Surfaces**: progressively lighter opacities of white layered on the dark base — each higher level gets slightly more white, pushing elements visually closer to the screen
 - **Shadows**: not rendered in dark mode — elevation is communicated entirely through surface lightness
-- **Borders**: `border-low` (`--border-color` / `--border-alpha-low` = 12%) applied as a default border on all elevated elements. This is the primary way surfaces are visually separated from each other in dark mode.
+- **Borders**: `border-low` (`--border-color` / `--border-low-alpha` = 12%) applied as a default border on all elevated elements. This is the primary way surfaces are visually separated from each other in dark mode.
 - **Actions, text, borders, meaning**: same token names, different palette step values resolved via CSS vars
 
 Switching theme is achieved entirely by swapping the CSS variable values in a `.dark` class or `prefers-color-scheme: dark` media query — no Tailwind class changes are needed in markup.

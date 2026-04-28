@@ -204,14 +204,14 @@ async function loadConfig() {
       document.documentElement.style.setProperty(cssVar, String(value));
     });
     // Seed alpha input from server config
-    const alpha = semanticConfig.rawValues && semanticConfig.rawValues['--surfaces-alpha'];
+    const alpha = semanticConfig.rawValues && semanticConfig.rawValues['--surfaces-global-alpha'];
     if (alpha) {
       const inp = document.getElementById('surfaces-alpha-input');
       if (inp) inp.value = alpha;
     }
     ['l1', 'l2', 'l3', 'l4', 'l5'].forEach(level => {
-      const v = semanticConfig.rawValues && semanticConfig.rawValues[`--surfaces-blur-${level}`];
-      if (v) { const i = document.getElementById(`surfaces-blur-${level}`); if (i) i.value = v; }
+      const v = semanticConfig.rawValues && semanticConfig.rawValues[`--surfaces-${level}-global-blur`];
+      if (v) { const i = document.getElementById(`surfaces-${level}-global-blur`); if (i) i.value = v; }
     });
     // Seed shadow colour dropdown
     const shadowColor = semanticConfig.light && semanticConfig.light['--shadow-color'];
@@ -220,8 +220,8 @@ async function loadConfig() {
       if (sel) sel.innerHTML = buildSelectOptions(shadowColor);
     }
     ['umbra', 'penumbra', 'ambient'].forEach(layer => {
-      const v = semanticConfig.rawValues && semanticConfig.rawValues[`--shadow-alpha-${layer}`];
-      if (v) { const i = document.getElementById(`shadow-alpha-${layer}`); if (i) i.value = v; }
+      const v = semanticConfig.rawValues && semanticConfig.rawValues[`--shadow-${layer}-global-alpha`];
+      if (v) { const i = document.getElementById(`shadow-${layer}-global-alpha`); if (i) i.value = v; }
     });
   } catch (e) {
     // server not running — dropdowns default to first option
@@ -248,23 +248,23 @@ function initTextControls() {
   ['high', 'medium', 'low', 'disabled'].forEach(level => {
     ['light', 'dark'].forEach(mode => {
       const inp = document.getElementById(`text-${mode}-alpha-${level}`);
-      if (inp && raw[`--text-${mode}-alpha-${level}`] !== undefined) inp.value = raw[`--text-${mode}-alpha-${level}`];
+      if (inp && raw[`--text-${level}-${mode}-alpha`] !== undefined) inp.value = raw[`--text-${level}-${mode}-alpha`];
     });
   });
 
   const acSelL = document.getElementById('text-accent-select-light');
   const acSelD = document.getElementById('text-accent-select-dark');
-  if (acSelL) acSelL.innerHTML = buildSelectOptions(lightMap['--text-accent'] || '');
-  if (acSelD) acSelD.innerHTML = buildSelectOptions(darkMap['--text-accent']  || '');
+  if (acSelL) acSelL.innerHTML = buildSelectOptions(lightMap['--text-accent-color'] || '');
+  if (acSelD) acSelD.innerHTML = buildSelectOptions(darkMap['--text-accent-color']  || '');
 
   const acPreview = document.getElementById('text-accent-preview');
-  if (acPreview) acPreview.style.background = 'rgb(var(--text-accent))';
+  if (acPreview) acPreview.style.background = 'rgb(var(--text-accent-color))';
 
   // Seed accent alpha inputs
   ['light', 'dark'].forEach(mode => {
     ['accent-high', 'accent-medium', 'accent-low'].forEach(level => {
       const inp = document.getElementById(`text-${mode}-alpha-${level}`);
-      if (inp && raw[`--text-${mode}-alpha-${level}`] !== undefined) inp.value = raw[`--text-${mode}-alpha-${level}`];
+      if (inp && raw[`--text-${level}-${mode}-alpha`] !== undefined) inp.value = raw[`--text-${level}-${mode}-alpha`];
     });
   });
 
@@ -275,18 +275,18 @@ function initTextControls() {
   ['high', 'medium', 'low', 'disabled'].forEach(level => {
     const el = document.getElementById(`meta-text-${level}`);
     if (!el) return;
-    const alpha = raw[`--text-${modeKey}-alpha-${level}`]
-               || raw[`--text-alpha-${level}`]
+    const alpha = raw[`--text-${level}-${modeKey}-alpha`]
+               || raw[`--text-${level}-alpha`]
                || (level === 'high' ? '1' : level === 'medium' ? '0.87' : level === 'low' ? '0.60' : '0.38');
     const base = colorStep ? `(${colorStep})` : '';
     el.innerHTML = `--text-color ${base}<br>opacity ${level} (${alpha})`;
   });
-  const accentStep = activeMap['--text-accent'] || '';
-  const accentBase  = accentStep ? `--text-accent (${accentStep})` : '--text-accent';
+  const accentStep = activeMap['--text-accent-color'] || '';
+  const accentBase  = accentStep ? `--text-accent-color (${accentStep})` : '--text-accent-color';
   ['accent-high', 'accent-medium', 'accent-low'].forEach(level => {
     const el = document.getElementById(`meta-text-${level}`);
     if (!el) return;
-    const alpha = raw[`--text-${modeKey}-alpha-${level}`] || raw[`--text-alpha-${level}`] || '1';
+    const alpha = raw[`--text-${level}-${modeKey}-alpha`] || raw[`--text-${level}-alpha`] || '1';
     el.innerHTML = `${accentBase}<br>opacity ${level} (${alpha})`;
   });
 
@@ -295,21 +295,21 @@ function initTextControls() {
   ['high', 'medium', 'low', 'disabled'].forEach(level => {
     const el = document.getElementById(`meta-text-invert-${level}`);
     if (!el) return;
-    const alpha = raw[`--text-${modeKey}-alpha-${level}`]
-               || raw[`--text-alpha-${level}`]
+    const alpha = raw[`--text-${level}-${modeKey}-alpha`]
+               || raw[`--text-${level}-alpha`]
                || (level === 'high' ? '1' : level === 'medium' ? '0.87' : level === 'low' ? '0.60' : '0.38');
     const base = invertColorStep ? `(${invertColorStep})` : '';
     el.innerHTML = `--text-invert-color ${base}<br>opacity ${level} (${alpha})`;
   });
   const invertAccentEl   = document.getElementById('meta-text-invert-accent');
-  const invertAccentStep = activeMap['--text-invert-accent'] || '';
-  const invertAccentBase = `--text-invert-accent${invertAccentStep ? ` (${invertAccentStep})` : ''}`;
-  const invertAccentAlpha = raw[`--text-${modeKey}-alpha-accent`] || raw['--text-alpha-accent'] || '1';
+  const invertAccentStep = activeMap['--text-invert-accent-color'] || '';
+  const invertAccentBase = `--text-invert-accent-color${invertAccentStep ? ` (${invertAccentStep})` : ''}`;
+  const invertAccentAlpha = raw[`--text-accent-${modeKey}-alpha`] || raw['--text-accent-alpha'] || '1';
   if (invertAccentEl) invertAccentEl.innerHTML = `${invertAccentBase}<br>opacity accent (${invertAccentAlpha})`;
   ['accent-high', 'accent-medium', 'accent-low'].forEach(level => {
     const el = document.getElementById(`meta-text-invert-${level}`);
     if (!el) return;
-    const alpha = raw[`--text-${modeKey}-alpha-${level}`] || raw[`--text-alpha-${level}`] || '1';
+    const alpha = raw[`--text-${level}-${modeKey}-alpha`] || raw[`--text-${level}-alpha`] || '1';
     el.innerHTML = `${invertAccentBase}<br>opacity ${level} (${alpha})`;
   });
 }
@@ -323,8 +323,8 @@ function initBorderControls() {
   const focSelD  = document.getElementById('border-focus-select-dark');
   const baseSelL = document.getElementById('border-base-select-light');
   const baseSelD = document.getElementById('border-base-select-dark');
-  if (focSelL)  focSelL.innerHTML  = buildSelectOptions(lightMap['--border-focus']  || '');
-  if (focSelD)  focSelD.innerHTML  = buildSelectOptions(darkMap['--border-focus']   || '');
+  if (focSelL)  focSelL.innerHTML  = buildSelectOptions(lightMap['--border-focus-color']  || '');
+  if (focSelD)  focSelD.innerHTML  = buildSelectOptions(darkMap['--border-focus-color']   || '');
   if (baseSelL) baseSelL.innerHTML = buildSelectOptions(lightMap['--border-color']  || '');
   if (baseSelD) baseSelD.innerHTML = buildSelectOptions(darkMap['--border-color']   || '');
 
@@ -336,15 +336,15 @@ function initBorderControls() {
   ['high', 'medium', 'low'].forEach(level => {
     ['light', 'dark'].forEach(mode => {
       const inp = document.getElementById(`border-${mode}-alpha-${level}`);
-      if (inp && raw[`--border-${mode}-alpha-${level}`] !== undefined) inp.value = raw[`--border-${mode}-alpha-${level}`];
+      if (inp && raw[`--border-${level}-${mode}-alpha`] !== undefined) inp.value = raw[`--border-${level}-${mode}-alpha`];
     });
   });
-  const focAlpha = document.getElementById('border-alpha-focus');
-  if (focAlpha && raw['--border-alpha-focus'] !== undefined) focAlpha.value = raw['--border-alpha-focus'];
-  ['high', 'medium', 'low', 'focus'].forEach(level => {
-    const inp = document.getElementById(`border-width-${level}`);
-    if (inp && raw[`--border-width-${level}`] !== undefined) inp.value = raw[`--border-width-${level}`];
-  });
+  const focAlpha = document.getElementById('border-focus-global-alpha');
+  if (focAlpha && raw['--border-focus-global-alpha'] !== undefined) focAlpha.value = raw['--border-focus-global-alpha'];
+  const bwInp = document.getElementById('border-global-width');
+  if (bwInp && raw['--border-global-width'] !== undefined) bwInp.value = raw['--border-global-width'];
+  const bwfInp = document.getElementById('border-focus-global-width');
+  if (bwfInp && raw['--border-focus-global-width'] !== undefined) bwfInp.value = raw['--border-focus-global-width'];
 }
 
 function initDropdowns() {
@@ -637,20 +637,20 @@ async function loadPalette() {
 
   // Shadow alpha inputs — umbra, penumbra, ambient
   ['umbra', 'penumbra', 'ambient'].forEach(layer => {
-    new TokenInput(document.getElementById(`shadow-alpha-${layer}`), `--shadow-alpha-${layer}`);
+    new TokenInput(document.getElementById(`shadow-${layer}-global-alpha`), `--shadow-${layer}-global-alpha`);
   });
 })();
 
 // ── Surfaces blur inputs (per level) ────────────────────────────────
 ['l1', 'l2', 'l3', 'l4', 'l5'].forEach(level => {
-  const inp = document.getElementById(`surfaces-blur-${level}`);
+  const inp = document.getElementById(`surfaces-${level}-global-blur`);
   if (!inp) return;
   function commitBlur() {
     const raw = inp.value.trim();
     if (!/^\d+(\.\d+)?(px|rem|em)$/.test(raw)) { inp.style.borderColor = 'rgb(var(--meaning-error))'; return; }
     inp.style.borderColor = '';
-    document.documentElement.style.setProperty(`--surfaces-blur-${level}`, raw);
-    dirtySemanticRaw.set(`--surfaces-blur-${level}`, raw);
+    document.documentElement.style.setProperty(`--surfaces-${level}-global-blur`, raw);
+    dirtySemanticRaw.set(`--surfaces-${level}-global-blur`, raw);
     updateSaveBar();
   }
   inp.addEventListener('change', commitBlur);
@@ -661,7 +661,7 @@ async function loadPalette() {
 });
 
 // ── Surfaces alpha input ─────────────────────────────────────────────
-new TokenInput(document.getElementById('surfaces-alpha-input'), '--surfaces-alpha');
+new TokenInput(document.getElementById('surfaces-alpha-input'), '--surfaces-global-alpha');
 
 // ── Text colour / alpha controls ──────────────────────────────────────
 const TEXT_ON_SURFACE_VARS = ['--text-color'];
@@ -697,7 +697,7 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
   // Per-level alpha inputs — separate light and dark
   ['light', 'dark'].forEach(mode => {
     ['high', 'medium', 'low', 'disabled'].forEach(level => {
-      new TokenInput(document.getElementById(`text-${mode}-alpha-${level}`), `--text-${mode}-alpha-${level}`);
+      new TokenInput(document.getElementById(`text-${mode}-alpha-${level}`), `--text-${level}-${mode}-alpha`);
     });
   });
 
@@ -708,15 +708,15 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
     sel.addEventListener('change', () => {
       const chosen = sel.value;
       if ((mode === 'dark') === isDark()) {
-        document.documentElement.style.setProperty('--text-accent', `var(--${chosen})`);
+        document.documentElement.style.setProperty('--text-accent-color', `var(--${chosen})`);
         const preview = document.getElementById('text-accent-preview');
         if (preview) preview.style.background = `rgb(var(--${chosen}))`;
       }
-      if (mode === 'dark') dirtySemanticD.set('text-accent', chosen);
-      else                 dirtySemanticL.set('text-accent', chosen);
+      if (mode === 'dark') dirtySemanticD.set('text-accent-color', chosen);
+      else                 dirtySemanticL.set('text-accent-color', chosen);
       // Mirror to opposite-mode invert-accent
-      if (mode === 'dark') dirtySemanticL.set('text-invert-accent', chosen);
-      else                 dirtySemanticD.set('text-invert-accent', chosen);
+      if (mode === 'dark') dirtySemanticL.set('text-invert-accent-color', chosen);
+      else                 dirtySemanticD.set('text-invert-accent-color', chosen);
       updateSaveBar();
     });
   });
@@ -724,7 +724,7 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
   // Accent alpha — high/medium/low for each mode
   ['light', 'dark'].forEach(mode => {
     ['accent-high', 'accent-medium', 'accent-low'].forEach(level => {
-      new TokenInput(document.getElementById(`text-${mode}-alpha-${level}`), `--text-${mode}-alpha-${level}`);
+      new TokenInput(document.getElementById(`text-${mode}-alpha-${level}`), `--text-${level}-${mode}-alpha`);
     });
   });
 })();
@@ -732,10 +732,10 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
 // ── Action overlay alpha controls ─────────────────────────────────────
 (function wireActionOverlayAlpha() {
   ['hover', 'pressed'].forEach(level => {
-    const inp = document.getElementById(`action-overlay-alpha-${level}`);
-    const seeded = getCSSAlpha(`--action-overlay-alpha-${level}`);
+    const inp = document.getElementById(`action-overlay-${level}-global-alpha`);
+    const seeded = getCSSAlpha(`--action-overlay-${level}-global-alpha`);
     if (inp && seeded !== null) inp.value = String(seeded);
-    new TokenInput(inp, `--action-overlay-alpha-${level}`, { precision: 1000 });
+    new TokenInput(inp, `--action-overlay-${level}-global-alpha`, { precision: 1000 });
   });
 })();
 
@@ -745,11 +745,11 @@ function updateBorderSwatchLabels() {
   const mode = isDark() ? 'dark' : 'light';
   const activeMap = isDark() ? (semanticConfig.dark || {}) : (semanticConfig.light || {});
   const colorStep = activeMap['--border-color'] || '';
-  const focusStep = activeMap['--border-focus'] || '';
-  const aHigh = getComputedStyle(document.documentElement).getPropertyValue(`--border-${mode}-alpha-high`).trim();
-  const aMid  = getComputedStyle(document.documentElement).getPropertyValue(`--border-${mode}-alpha-medium`).trim();
-  const aLow  = getComputedStyle(document.documentElement).getPropertyValue(`--border-${mode}-alpha-low`).trim();
-  const aFoc  = getComputedStyle(document.documentElement).getPropertyValue('--border-alpha-focus').trim();
+  const focusStep = activeMap['--border-focus-color'] || '';
+  const aHigh = getComputedStyle(document.documentElement).getPropertyValue(`--border-high-${mode}-alpha`).trim();
+  const aMid  = getComputedStyle(document.documentElement).getPropertyValue(`--border-medium-${mode}-alpha`).trim();
+  const aLow  = getComputedStyle(document.documentElement).getPropertyValue(`--border-low-${mode}-alpha`).trim();
+  const aFoc  = getComputedStyle(document.documentElement).getPropertyValue('--border-focus-global-alpha').trim();
   const colorBase = colorStep ? `(${colorStep})` : '';
   const focusBase = focusStep ? `(${focusStep})` : '';
   const h = document.getElementById('border-meta-high');   if (h) h.innerHTML = `--border-color ${colorBase}<br>opacity high (${aHigh})`;
@@ -761,7 +761,7 @@ function updateBorderSwatchLabels() {
 // ── Border colour / alpha / width controls ────────────────────────────
 (function wireBorderControls() {
   ['focus', 'base'].forEach(token => {
-    const varName   = token === 'focus' ? '--border-focus' : '--border-color';
+    const varName   = token === 'focus' ? '--border-focus-color' : '--border-color';
     const previewId = token === 'focus' ? 'border-focus-preview' : 'border-base-preview';
     ['light', 'dark'].forEach(mode => {
       const sel = document.getElementById(`border-${token}-select-${mode}`);
@@ -786,17 +786,17 @@ function updateBorderSwatchLabels() {
     ['light', 'dark'].forEach(mode => {
       new TokenInput(
         document.getElementById(`border-${mode}-alpha-${level}`),
-        `--border-${mode}-alpha-${level}`,
-        { aliasVar: `--border-alpha-${level}`, aliasMode: mode }
+        `--border-${level}-${mode}-alpha`,
+        { aliasVar: `--border-${level}-alpha`, aliasMode: mode }
       );
     });
   });
 
   updateBorderSwatchLabels();
 
-  new TokenInput(document.getElementById('border-alpha-focus'), '--border-alpha-focus');
+  new TokenInput(document.getElementById('border-focus-global-alpha'), '--border-focus-global-alpha');
 
-  ['border-width', 'border-width-focus'].forEach(varKey => {
+  ['border-global-width', 'border-focus-global-width'].forEach(varKey => {
     const inp = document.getElementById(varKey);
     if (!inp) return;
     function commitWidth() {
@@ -910,8 +910,8 @@ function buildDualAPCATable(containerId, leftTokens, rightTokens, leftTitle, rig
 }
 
 function rebuildAPCA() {
-  const sAlpha  = getCSSAlpha('--surfaces-alpha') || 0.93;
-  const baseRGB = resolveToRGB('rgb(var(--surfaces-base))');
+  const sAlpha  = getCSSAlpha('--surfaces-global-alpha') || 0.93;
+  const baseRGB = resolveToRGB('rgb(var(--surfaces-base-color))');
 
   const surfaces = [
     { label: 'base',   rgb: baseRGB },
@@ -947,8 +947,8 @@ function rebuildAPCA() {
     { label: 'Disabled (Lc>30 Spot Text)', rgb: textColorRGB, alpha: aDis  },
   ];
 
-  const aOverlayHover    = getCSSAlpha('--action-overlay-alpha-hover')   || 0.12;
-  const aOverlayPressed  = getCSSAlpha('--action-overlay-alpha-pressed') || 0.22;
+  const aOverlayHover    = getCSSAlpha('--action-overlay-hover-global-alpha')   || 0.12;
+  const aOverlayPressed  = getCSSAlpha('--action-overlay-pressed-global-alpha') || 0.22;
   const primaryDefaultRGB  = resolveToRGB('rgb(var(--action-primary-default))');
   const primaryOverlayRGB  = resolveToRGB('rgb(var(--action-primary-overlay))');
   const secondaryDefaultRGB = resolveToRGB('rgb(var(--action-secondary-default))');
@@ -964,10 +964,10 @@ function rebuildAPCA() {
   ];
 
   const borderColor = resolveToRGB('rgb(var(--border-color))');
-  const aBHigh = getCSSAlpha('--border-alpha-high')   || 0.87;
-  const aBMid  = getCSSAlpha('--border-alpha-medium') || 0.38;
-  const aBLow  = getCSSAlpha('--border-alpha-low')    || 0.12;
-  const aBFoc  = getCSSAlpha('--border-alpha-focus')  || 1;
+  const aBHigh = getCSSAlpha('--border-high-alpha')   || 0.87;
+  const aBMid  = getCSSAlpha('--border-medium-alpha') || 0.38;
+  const aBLow  = getCSSAlpha('--border-low-alpha')    || 0.12;
+  const aBFoc  = getCSSAlpha('--border-focus-global-alpha')  || 1;
   const borderTokens = [
     { label: 'high',   rgb: borderColor,                                alpha: aBHigh },
     { label: 'medium', rgb: borderColor,                                alpha: aBMid  },
