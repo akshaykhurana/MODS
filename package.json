@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node server.js",
     "build:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css",
-    "watch:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css --watch"
+    "watch:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css --watch",
+    "pack": "sh scripts/pack.sh"
   },
   "keywords": [],
   "author": "",
