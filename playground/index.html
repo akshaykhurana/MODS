@@ -23,6 +23,7 @@
     <a href="#spacing">Spacing</a>
     <a href="#shape">Shape</a>
     <a href="#elevations">Elevations</a>
+    <a href="#dividers">Dividers</a>
     <a href="#components">Components</a>
   </div>
   <button class="pg-dark-toggle" id="darkToggle">&#9790; Dark</button>
@@ -363,15 +364,15 @@
   <div class="pg-group-label" style="margin-top: 16px">Border tokens — rendered via .border-* utility classes</div>
   <div class="pg-border-tokens">
     <div class="pg-border-token">
-      <div class="pg-border-swatch border-high"></div>
+      <div class="pg-border-swatch border-all border-high"></div>
       <div class="pg-border-meta" id="border-meta-high">--border-color<br>opacity high</div>
     </div>
     <div class="pg-border-token">
-      <div class="pg-border-swatch border-medium"></div>
+      <div class="pg-border-swatch border-all border-medium"></div>
       <div class="pg-border-meta" id="border-meta-medium">--border-color<br>opacity medium</div>
     </div>
     <div class="pg-border-token">
-      <div class="pg-border-swatch border-low"></div>
+      <div class="pg-border-swatch border-all border-low"></div>
       <div class="pg-border-meta" id="border-meta-low">--border-color<br>opacity low</div>
     </div>
     <div class="pg-border-token">
@@ -622,6 +623,32 @@
     <div class="overline-s text-medium pg-type-sample">Overline Small</div>
     <div class="pg-type-meta">.overline-s · font-label · 600 · UPPERCASE · letter-spacing: 2px · f1 (9px) / lb1 (12px) → scr-l: f2 (10.5px) / lb2 (16px)</div>
   </div>
+
+  <h3 class="pg-subsection-title">Links</h3>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-high link">full report</a> for all the details on this topic.</div>
+    <div class="pg-type-meta">.link · inline · text-accent-high · underline fades at rest</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-medium link">full report</a> for all the details on this topic.</div>
+    <div class="pg-type-meta">.link · inline · text-accent-medium · underline fades at rest</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-low link">full report</a> for all the details on this topic.</div>
+    <div class="pg-type-meta">.link · inline · text-accent-low · underline fades at rest</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample"><a class="text-accent-medium link-standalone">View all results →</a></div>
+    <div class="pg-type-meta">.link-standalone · no underline at rest · appears on hover</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-medium pg-type-sample">This paragraph references a <a class="text-medium link-subtle">well-known source</a> that underpins the argument.</div>
+    <div class="pg-type-meta">.link-subtle · inherits surrounding text colour · always-solid underline</div>
+  </div>
+  <div class="pg-type-row">
+    <div class="body-m text-low pg-type-sample">Source: <a class="text-low link-subtle">Wikipedia, 2024</a>.</div>
+    <div class="pg-type-meta">.link-subtle · text-low · footnote / caption context</div>
+  </div>
 </section>
 
 
@@ -700,6 +727,40 @@
       <div class="pg-shape-meta">--shape-control<br>sh16 · 2px<br>h16 controls</div>
     </div>
   </div>
+
+</section>
+
+
+<!-- ================================================================
+     DIVIDERS
+     ================================================================ -->
+<section id="dividers" class="pg-section">
+  <h2 class="pg-section-title">Dividers</h2>
+
+  <div class="pg-group-label" style="display:flex;align-items:center;gap:10px;">
+    Emphasis
+    <select id="divider-emphasis-select" class="pg-token-select" style="margin-top:0;width:110px;">
+      <option value="border-low" selected>border-low</option>
+      <option value="border-medium">border-medium</option>
+      <option value="border-high">border-high</option>
+    </select>
+  </div>
+
+  <div class="pg-group-label" style="margin-top:24px;">Horizontal</div>
+  <div class="pg-divider-demo-h">
+    <p class="pg-divider-context-text">Content above the divider</p>
+    <hr class="divider border-low" id="pg-divider-h">
+    <p class="pg-divider-context-text">Content below the divider</p>
+  </div>
+  <div class="pg-comp-note" id="pg-divider-h-note">&lt;hr class=&quot;divider border-low&quot;&gt;</div>
+
+  <div class="pg-group-label" style="margin-top:24px;">Vertical</div>
+  <div class="pg-divider-demo-v">
+    <span class="pg-divider-context-text">Left content</span>
+    <div class="divider-vertical border-low" id="pg-divider-v"></div>
+    <span class="pg-divider-context-text">Right content</span>
+  </div>
+  <div class="pg-comp-note" id="pg-divider-v-note">&lt;div class=&quot;divider-vertical border-low&quot;&gt;&lt;/div&gt;</div>
 
 </section>
 

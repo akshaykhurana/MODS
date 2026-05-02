@@ -995,3 +995,29 @@ document.addEventListener('keydown', e => {
   e.preventDefault();
   instance.nudge((e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? 0.1 : 0.01));
 });
+
+// ── Divider emphasis dropdown ─────────────────────────────────────────
+// Swaps the border-low/medium/high class on both demo elements and
+// updates the comp-note labels to reflect the current composition.
+(function initDividerEmphasis() {
+  const sel    = document.getElementById('divider-emphasis-select');
+  const demoH  = document.getElementById('pg-divider-h');
+  const demoV  = document.getElementById('pg-divider-v');
+  const noteH  = document.getElementById('pg-divider-h-note');
+  const noteV  = document.getElementById('pg-divider-v-note');
+  if (!sel || !demoH || !demoV) return;
+
+  const EMPHASIS = ['border-low', 'border-medium', 'border-high'];
+
+  sel.addEventListener('change', () => {
+    const chosen = sel.value;
+    EMPHASIS.forEach(cls => {
+      demoH.classList.remove(cls);
+      demoV.classList.remove(cls);
+    });
+    demoH.classList.add(chosen);
+    demoV.classList.add(chosen);
+    if (noteH) noteH.textContent = `<hr class="divider ${chosen}">`;
+    if (noteV) noteV.textContent = `<div class="divider-vertical ${chosen}"></div>`;
+  });
+})();

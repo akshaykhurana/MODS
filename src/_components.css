@@ -70,17 +70,70 @@
   color: rgb(var(--text-invert-accent-color) / var(--text-accent-low-alpha));
 }
 
-/* Border colours + widths */
-@utility border-high {
+/* Border width utilities — set structure (which sides, what width)
+   Compose with a colour utility: border-top border-high */
+@utility border-all {
+  border-style: solid;
   border-width: var(--border-global-width);
+}
+@utility border-top {
+  border-style: solid;
+  border-top-width: var(--border-global-width);
+}
+@utility border-bottom {
+  border-style: solid;
+  border-bottom-width: var(--border-global-width);
+}
+@utility border-left {
+  border-style: solid;
+  border-left-width: var(--border-global-width);
+}
+@utility border-right {
+  border-style: solid;
+  border-right-width: var(--border-global-width);
+}
+@utility border-horizontal {
+  border-style: solid;
+  border-left-width: var(--border-global-width);
+  border-right-width: var(--border-global-width);
+}
+@utility border-vertical {
+  border-style: solid;
+  border-top-width: var(--border-global-width);
+  border-bottom-width: var(--border-global-width);
+}
+
+/* Divider utilities — structural only, no colour baked in.
+   Compose with a colour utility: divider border-low, divider-vertical border-medium */
+@utility divider {
+  display: block;
+  height: 0;
+  border-top-style: solid;
+  border-top-width: var(--border-global-width);
+  border-right-width: 0;
+  border-bottom-width: 0;
+  border-left-width: 0;
+}
+@utility divider-vertical {
+  display: block;
+  width: 0;
+  align-self: stretch;
+  border-left-style: solid;
+  border-left-width: var(--border-global-width);
+  border-top-width: 0;
+  border-right-width: 0;
+  border-bottom-width: 0;
+}
+
+/* Border colour utilities — set colour + alpha only
+   Always pair with a width utility above, e.g. border-all border-high */
+@utility border-high {
   border-color: rgb(var(--border-color) / var(--border-high-alpha));
 }
 @utility border-medium {
-  border-width: var(--border-global-width);
   border-color: rgb(var(--border-color) / var(--border-medium-alpha));
 }
 @utility border-low {
-  border-width: var(--border-global-width);
   border-color: rgb(var(--border-color) / var(--border-low-alpha));
 }
 @utility border-focus {
@@ -580,6 +633,7 @@
     display: inline-flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: var(--spacing-g1);
     transition: all 150ms;
     cursor: pointer;
@@ -1467,6 +1521,77 @@
     background-color: rgb(var(--surfaces-l2-color) / var(--surfaces-global-alpha));
     border-color: rgb(var(--border-color) / var(--border-medium-alpha));
     color: rgb(var(--text-color) / var(--text-medium-alpha));
+  }
+
+
+  /* ========================================================================
+     LINKS
+     Decoration-only — colour comes from composing text-accent-* or text-* utilities.
+
+     .link           — inline links inside body text.
+                       Default colour: text-accent-medium (overridden by any text-accent-* utility).
+                       Underline always visible; reduced alpha at rest, full currentColor on hover.
+     .link-standalone — standalone links outside body text.
+                       Same default colour. No underline at rest; appears on hover/focus.
+     .link-subtle    — links in dense text where accent colour would overwhelm.
+                       No default colour — fully inherits surrounding text-* utility.
+                       Always-solid underline (colour alone is not enough to distinguish from text).
+
+     Usage:
+       <p class="text-medium">Read the <a class="text-accent-medium link">full report</a>.</p>
+       <a class="text-accent-medium link-standalone">View all results</a>
+       <p class="text-low">Source: <a class="text-low link-subtle">Wikipedia</a></p>
+
+     color-mix() requires Chrome 111+, Firefox 113+, Safari 16.2+ — same baseline as Tailwind v4.
+     ======================================================================== */
+
+  .link {
+    color: rgb(var(--text-accent-color) / var(--text-accent-medium-alpha));
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: text-decoration-color 150ms;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+  .link:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+    border-radius: 2px;
+    text-decoration-color: currentColor;
+  }
+
+  .link-standalone {
+    color: rgb(var(--text-accent-color) / var(--text-accent-medium-alpha));
+    text-decoration: none;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: text-decoration-color 150ms;
+  }
+  .link-standalone:hover {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
+  .link-standalone:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+    border-radius: 2px;
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
+
+  .link-subtle {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .link-subtle:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
 

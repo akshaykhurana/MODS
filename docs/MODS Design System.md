@@ -401,12 +401,73 @@ Borders use a single colour alias `--border-color` (mode-adaptive) combined with
 
 | Emphasis | Colour var | Alpha var | Alpha |
 |---|---|---|---|
-| Strong dividers, selected borders | `--border-color` | `--border-high-alpha` | 0.87 |
-| Default input borders, card outlines | `--border-color` | `--border-medium-alpha` | 0.38 |
-| Subtle dividers | `--border-color` | `--border-low-alpha` | 0.12 |
-| Focused inputs, active selection | `--border-focus-color` | `--border-focus-global-alpha` | 1.0 |
+| Strong dividers, selected borders | `--border-color` | `--border-high-alpha` | — |
+| Default input borders, card outlines | `--border-color` | `--border-medium-alpha` | — |
+| Subtle dividers | `--border-color` | `--border-low-alpha` | — |
+| Focused inputs, active selection | `--border-focus-color` | `--border-focus-global-alpha` | — |
 
-Usage in Tailwind: `bg-brand-main`, `text-medium`, `border-medium`, `bg-level2`, `bg-meaning-success`.
+#### Border utilities
+
+Border utilities are split into two concerns — **width** (which sides) and **colour** (emphasis). Always compose them together.
+
+**Width utilities** — set `border-style: solid` and `border-width` on the specified sides using `--border-global-width`:
+
+| Utility | Sides |
+|---|---|
+| `border-all` | All four sides |
+| `border-top` | Top only |
+| `border-bottom` | Bottom only |
+| `border-left` | Left only |
+| `border-right` | Right only |
+| `border-horizontal` | Left + right |
+| `border-vertical` | Top + bottom |
+
+**Colour utilities** — set `border-color` only (no width):
+
+| Utility | Token |
+|---|---|
+| `border-high` | `--border-color` / `--border-high-alpha` |
+| `border-medium` | `--border-color` / `--border-medium-alpha` |
+| `border-low` | `--border-color` / `--border-low-alpha` |
+
+`border-focus` is the exception — it sets both width (`--border-focus-global-width`) and color in one class, since focus rings are always all-sides.
+
+**Composition examples:**
+```html
+<!-- All-sides medium border -->
+<div class="border-all border-medium">
+
+<!-- Bottom divider only -->
+<div class="border-bottom border-low">
+
+<!-- Focus ring (combined utility) -->
+<input class="border-focus">
+```
+
+#### Divider utilities
+
+For standalone divider elements, use `divider` (horizontal) or `divider-vertical`. Both are structural-only — always compose with a colour utility.
+
+| Utility | Element | Renders |
+|---|---|---|
+| `divider` | `<hr>` or `<div>` | 0-height block, top border only |
+| `divider-vertical` | `<div>` | 0-width block, left border only, stretches to container height |
+
+```html
+<!-- Horizontal divider, default emphasis -->
+<hr class="divider border-low">
+
+<!-- Vertical divider between two items -->
+<div class="flex items-center gap-3">
+  <span>Left</span>
+  <div class="divider-vertical border-low"></div>
+  <span>Right</span>
+</div>
+```
+
+`border-low` is the standard emphasis for standalone dividers (consistent with all major design systems). Use `border-medium` or `border-high` when stronger visual separation is needed.
+
+Usage in Tailwind: `bg-brand-main`, `text-medium`, `border-all border-medium`, `bg-level2`, `bg-meaning-success`.
 
 #### Action token usage summary
 
@@ -655,6 +716,49 @@ In v4 CSS, responsive sizing uses breakpoint variant prefixes on `@apply`:
 This applies across all body sizes: `.body-l`, `.body-m`, `.body-s`, `.body-xs`, `.body-xxs`.
 
 Display, heading, title, and label classes have no variants — no bold, no italic. Weight and style are fixed by the class definition.
+
+---
+
+## Links
+
+Three component classes handle all inline hyperlink use cases. They are **decoration-only** — colour is applied by composing `text-accent-*` or `text-*` utilities, so link intensity matches the surrounding text emphasis exactly.
+
+### Classes
+
+| Class | Colour default | Underline at rest | Underline on hover/focus |
+|---|---|---|---|
+| `.link` | `text-accent-medium` | Always visible, 40% alpha | Full `currentColor` |
+| `.link-standalone` | `text-accent-medium` | None | Full `currentColor` |
+| `.link-subtle` | None — inherits surrounding text | Always solid `currentColor` | No change |
+
+### Usage pattern
+
+```html
+<!-- Inline link — matches body emphasis -->
+<p class="text-medium">Read the <a class="text-accent-medium link">full report</a> for details.</p>
+
+<!-- Inline link — high emphasis heading context -->
+<p class="text-high">See <a class="text-accent-high link">related work</a>.</p>
+
+<!-- Standalone link -->
+<a class="text-accent-medium link-standalone">View all results →</a>
+
+<!-- Subtle link — dense text, footnotes, captions -->
+<p class="text-low">Source: <a class="text-low link-subtle">Wikipedia, 2024</a>.</p>
+```
+
+### Rules
+
+- **`.link`** — use inside sentences and paragraphs. Compose with `text-accent-high`, `text-accent-medium`, or `text-accent-low` to match surrounding text emphasis. Default is `text-accent-medium`.
+- **`.link-standalone`** — use for links that stand alone outside body text (e.g. "View all →" after a card, resource links in footers). No underline at rest; hover reveals it.
+- **`.link-subtle`** — use when accent colour would be visually overwhelming in dense text. No colour default — must always be composed with a `text-*` utility. Always-solid underline is mandatory since it is the only visual differentiator from surrounding text.
+- **Never use `.link-subtle` without a `text-*` companion class** — without colour context there is no visual distinction between link and plain text.
+- **No visited state in base** — projects that need visited styling (documentation sites, editorial) add `:visited` rules themselves.
+- **Focus**: all three classes use the standard `2px solid --border-focus-color` outline with `outline-offset: 2px`, consistent with buttons and form controls.
+
+### Browser baseline
+
+`color-mix(in srgb, ...)` used by `.link` requires Chrome 111+, Firefox 113+, Safari 16.2+. This is the same baseline required by Tailwind v4 itself.
 
 ---
 
