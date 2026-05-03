@@ -18,16 +18,25 @@ let PALETTE_OPTS = [
 
 function numSuffix(name) { return parseInt(name.match(/\d+$/)[0], 10); }
 
+// ── Named constants ───────────────────────────────────────────────────
+const APCA_REBUILD_DEBOUNCE_MS = 40;
+const NUDGE_SMALL              = 0.01;
+const NUDGE_LARGE              = 0.1;
+const DEFAULT_TEXT_ALPHAS      = { high: 1, medium: 0.87, low: 0.60, disabled: 0.38 };
+const EMPHASIS_LEVELS          = ['border-low', 'border-medium', 'border-high'];
+
+function paletteKeysByPrefix(prefix) {
+  return Object.keys(localPalette)
+    .filter(k => k.startsWith(prefix) && /^\d+$/.test(k.slice(prefix.length)))
+    .sort((a, b) => numSuffix(a) - numSuffix(b));
+}
+
 function rebuildPaletteOpts() {
-  const byPrefix = (pfx) =>
-    Object.keys(localPalette)
-      .filter(k => k.startsWith(pfx) && /^\d+$/.test(k.slice(pfx.length)))
-      .sort((a, b) => numSuffix(a) - numSuffix(b));
   PALETTE_OPTS = [
-    { group: 'Primary',   vars: byPrefix('p') },
-    { group: 'Secondary', vars: byPrefix('s') },
-    { group: 'Neutral',   vars: byPrefix('n') },
-    { group: 'Meaning',   vars: [...byPrefix('r'), ...byPrefix('y'), ...byPrefix('g')] },
+    { group: 'Primary',   vars: paletteKeysByPrefix('p') },
+    { group: 'Secondary', vars: paletteKeysByPrefix('s') },
+    { group: 'Neutral',   vars: paletteKeysByPrefix('n') },
+    { group: 'Meaning',   vars: [...paletteKeysByPrefix('r'), ...paletteKeysByPrefix('y'), ...paletteKeysByPrefix('g')] },
   ];
 }
 
@@ -72,59 +81,77 @@ function makeAddTile(prefix) {
     `</div>`;
 }
 
-function renderGroup(containerId, prefix) {
+function renderPaletteSection(containerId, prefixes) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  const keys = Object.keys(localPalette)
-    .filter(k => k.startsWith(prefix) && /^\d+$/.test(k.slice(prefix.length)))
-    .sort((a, b) => numSuffix(a) - numSuffix(b));
-  el.innerHTML = keys.map(k => makeSwatch(k, localPalette[k])).join('') + makeAddTile(prefix);
-}
-
-function renderMeaningGroup() {
-  const el = document.getElementById('palette-meaning');
-  if (!el) return;
-  const byP = (pfx) => Object.keys(localPalette)
-    .filter(k => k.startsWith(pfx) && /^\d+$/.test(k.slice(pfx.length)))
-    .sort((a, b) => numSuffix(a) - numSuffix(b));
-  const keys = [...byP('r'), ...byP('y'), ...byP('g')];
-  el.innerHTML = keys.map(k => makeSwatch(k, localPalette[k])).join('') + makeAddTile('meaning');
+  const keys = prefixes.flatMap(pfx => paletteKeysByPrefix(pfx));
+  const tilePrefix = prefixes.length === 1 ? prefixes[0] : 'meaning';
+  el.innerHTML = keys.map(k => makeSwatch(k, localPalette[k])).join('') + makeAddTile(tilePrefix);
 }
 
 function refreshPaletteUI() { rebuildPaletteOpts(); initDropdowns(); }
 
 function renderPaletteGroups() {
-  renderGroup('palette-p', 'p');
-  renderGroup('palette-s', 's');
-  renderGroup('palette-n', 'n');
-  renderMeaningGroup();
+  renderPaletteSection('palette-p', ['p']);
+  renderPaletteSection('palette-s', ['s']);
+  renderPaletteSection('palette-n', ['n']);
+  renderPaletteSection('palette-meaning', ['r', 'y', 'g']);
   refreshPaletteUI();
 }
 
+// ── In-use palette tags ───────────────────────────────────────────────
+function refreshInUseTags() {
+  const used = new Set();
+  document.querySelectorAll('select').forEach(sel => {
+    if (sel.value && localPalette[sel.value] !== undefined) used.add(sel.value);
+  });
+  ['palette-p', 'palette-s', 'palette-n', 'palette-meaning'].forEach(id => {
+    const container = document.getElementById(id);
+    if (!container) return;
+    container.querySelectorAll('.pg-swatch').forEach(swatch => {
+      const key = swatch.dataset.var.replace(/^--/, '');
+      let tag = swatch.querySelector('.pg-in-use-tag');
+      if (used.has(key)) {
+        if (!tag) {
+          tag = document.createElement('div');
+          tag.className = 'pg-in-use-tag';
+          tag.textContent = 'in use';
+          swatch.appendChild(tag);
+        }
+      } else {
+        tag?.remove();
+      }
+    });
+  });
+}
+
 // ── Dirty state ──────────────────────────────────────────────────────
-const dirtyPalette   = new Map(); // patch-mode only: varName → rgb
-const dirtySemanticL = new Map();
-const dirtySemanticD = new Map();
+const dirtyPalette     = new Map(); // patch-mode only: varName → rgb
+const dirtySemanticL   = new Map();
+const dirtySemanticD   = new Map();
 const dirtySemanticRaw = new Map(); // raw non-var values e.g. --surfaces-alpha
+const dirtyFonts       = new Map(); // '--font-{role}' | '--letter-spacing-{role}' → value
+let   dirtyScale       = false;     // true when type scale grid has been edited
 
 // ── Cached save-bar elements (queried once at load) ────────────────────
-const _statusEl   = document.getElementById('save-status');
-const _saveBtn    = document.getElementById('save-btn');
-const _discardBtn = document.getElementById('discard-btn');
+const statusEl   = document.getElementById('save-status');
+const saveBtn    = document.getElementById('save-btn');
+const discardBtn = document.getElementById('discard-btn');
 
 function updateSaveBar() {
   const palCount = paletteMode === 'full' ? 1 : dirtyPalette.size;
-  const total    = palCount + dirtySemanticL.size + dirtySemanticD.size + dirtySemanticRaw.size;
+  const total    = palCount + dirtySemanticL.size + dirtySemanticD.size + dirtySemanticRaw.size
+                 + dirtyFonts.size + (dirtyScale ? 1 : 0);
   if (total === 0) {
-    _statusEl.className   = 'pg-save-status';
-    _statusEl.textContent = 'No unsaved changes';
-    _saveBtn.disabled     = true;
-    _discardBtn.disabled  = true;
+    statusEl.className   = 'pg-save-status';
+    statusEl.textContent = 'No unsaved changes';
+    saveBtn.disabled     = true;
+    discardBtn.disabled  = true;
   } else {
-    _statusEl.className   = 'pg-save-status has-changes';
-    _statusEl.textContent = `${total} unsaved change${total > 1 ? 's' : ''}`;
-    _saveBtn.disabled     = false;
-    _discardBtn.disabled  = false;
+    statusEl.className   = 'pg-save-status has-changes';
+    statusEl.textContent = `${total} unsaved change${total > 1 ? 's' : ''}`;
+    saveBtn.disabled     = false;
+    discardBtn.disabled  = false;
   }
 }
 
@@ -186,10 +213,14 @@ class TokenInput {
 // ── Reactive side-effects (store subscribers) ─────────────────────────
 // All APCA rebuilds, save-bar updates, and border label refreshes cascade
 // from store.set() — no individual commit handler needs to call them.
-let _apcaTimer;
-store.subscribe(() => { clearTimeout(_apcaTimer); _apcaTimer = setTimeout(rebuildAPCA, 40); });
+let apcaTimer;
+store.subscribe(() => { clearTimeout(apcaTimer); apcaTimer = setTimeout(rebuildAPCA, APCA_REBUILD_DEBOUNCE_MS); });
 store.subscribe(() => updateSaveBar());
 store.subscribe(cssVar => { if (cssVar.startsWith('--border')) updateBorderSwatchLabels(); });
+
+document.addEventListener('change', e => {
+  if (e.target.tagName === 'SELECT') refreshInUseTags();
+});
 
 // ── Semantic config from server ───────────────────────────────────────
 let semanticConfig = { light: {}, dark: {} };
@@ -277,7 +308,7 @@ function initTextControls() {
     if (!el) return;
     const alpha = raw[`--text-${level}-${modeKey}-alpha`]
                || raw[`--text-${level}-alpha`]
-               || (level === 'high' ? '1' : level === 'medium' ? '0.87' : level === 'low' ? '0.60' : '0.38');
+               || String(DEFAULT_TEXT_ALPHAS[level]);
     const base = colorStep ? `(${colorStep})` : '';
     el.innerHTML = `--text-color ${base}<br>opacity ${level} (${alpha})`;
   });
@@ -297,7 +328,7 @@ function initTextControls() {
     if (!el) return;
     const alpha = raw[`--text-${level}-${modeKey}-alpha`]
                || raw[`--text-${level}-alpha`]
-               || (level === 'high' ? '1' : level === 'medium' ? '0.87' : level === 'low' ? '0.60' : '0.38');
+               || String(DEFAULT_TEXT_ALPHAS[level]);
     const base = invertColorStep ? `(${invertColorStep})` : '';
     el.innerHTML = `--text-invert-color ${base}<br>opacity ${level} (${alpha})`;
   });
@@ -362,6 +393,7 @@ function initDropdowns() {
   });
   initTextControls();
   initBorderControls();
+  refreshInUseTags();
 }
 
 // ── Pencil edit helpers ───────────────────────────────────────────────
@@ -421,10 +453,10 @@ function handleDelete(varName) {
   updateSaveBar();
   rebuildAPCA();
   const prefix = varName.match(/^[a-z]+/)[0];
-  if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
-  else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
-  else if (prefix === 's') { renderGroup('palette-s', 's'); }
-  else if (prefix === 'n') { renderGroup('palette-n', 'n'); }
+  if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderPaletteSection('palette-meaning', ['r', 'y', 'g']); }
+  else if (prefix === 'p') { renderPaletteSection('palette-p', ['p']); }
+  else if (prefix === 's') { renderPaletteSection('palette-s', ['s']); }
+  else if (prefix === 'n') { renderPaletteSection('palette-n', ['n']); }
   refreshPaletteUI();
 }
 
@@ -463,10 +495,10 @@ function handleAdd(form) {
   paletteMode = 'full';
   updateSaveBar();
   rebuildAPCA();
-  if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderMeaningGroup(); }
-  else if (prefix === 'p') { renderGroup('palette-p', 'p'); }
-  else if (prefix === 's') { renderGroup('palette-s', 's'); }
-  else if (prefix === 'n') { renderGroup('palette-n', 'n'); }
+  if (prefix === 'r' || prefix === 'y' || prefix === 'g') { renderPaletteSection('palette-meaning', ['r', 'y', 'g']); }
+  else if (prefix === 'p') { renderPaletteSection('palette-p', ['p']); }
+  else if (prefix === 's') { renderPaletteSection('palette-s', ['s']); }
+  else if (prefix === 'n') { renderPaletteSection('palette-n', ['n']); }
   refreshPaletteUI();
 }
 
@@ -487,6 +519,15 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { e.preventDefault(); cancelPencil(e.target); }
 });
 
+// ── Live token target helper ────────────────────────────────────────
+// Semantic tokens are declared in :root (light) and body.dark (dark).
+// Inline styles on an element beat CSS class rules on that same element,
+// but a rule on body beats an inline style set further up on html.
+// So dark-mode overrides must be written to document.body, not documentElement.
+function liveTokenTarget() {
+  return isDark() ? document.body : document.documentElement;
+}
+
 // ── Semantic select (dropdown) ────────────────────────────────────────
 function initSemanticSelects() {
   document.querySelectorAll('.pg-swatch-select').forEach(sel => {
@@ -497,7 +538,7 @@ function initSemanticSelects() {
       const chosen  = sel.value;
       // Apply live only when this select's mode is the active mode
       if ((mode === 'dark') === isDark()) {
-        document.documentElement.style.setProperty(varName, `var(--${chosen})`);
+        liveTokenTarget().style.setProperty(varName, `var(--${chosen})`);
       }
       const bareKey = varName.replace(/^--/, '');
       if (mode === 'dark') {
@@ -505,7 +546,7 @@ function initSemanticSelects() {
       } else {
         dirtySemanticL.set(bareKey, chosen);
       }
-      markDirty(swatch);
+      if (swatch) markDirty(swatch);
       rebuildAPCA();
       updateSaveBar();
     });
@@ -514,9 +555,9 @@ function initSemanticSelects() {
 
 // ── Save ──────────────────────────────────────────────────────────────
 async function save() {
-  _statusEl.className   = 'pg-save-status building';
-  _statusEl.textContent = 'Building…';
-  _saveBtn.disabled     = true;
+  statusEl.className   = 'pg-save-status building';
+  statusEl.textContent = 'Building…';
+  saveBtn.disabled     = true;
 
   let palettePayload;
   if (paletteMode === 'full') {
@@ -532,6 +573,11 @@ async function save() {
     semanticLight: Object.fromEntries(dirtySemanticL),
     semanticDark:  Object.fromEntries(dirtySemanticD),
     semanticRaw:   Object.fromEntries(dirtySemanticRaw),
+    fonts:         Object.fromEntries(dirtyFonts),
+    fontImports:   dirtyFonts.size > 0
+                     ? [...loadedFonts.values()].map(e => ({ name: e.name, weights: [...e.weights], italic: e.italic }))
+                     : null,
+    scale:         dirtyScale ? { ...currentScaleValues } : null,
   };
 
   try {
@@ -541,12 +587,12 @@ async function save() {
       body: JSON.stringify(payload),
     });
     if (!r.ok) throw new Error(await r.text());
-    _statusEl.className   = 'pg-save-status building';
-    _statusEl.textContent = 'Building…';
+    statusEl.className   = 'pg-save-status building';
+    statusEl.textContent = 'Building…';
   } catch (e) {
-    _statusEl.className   = 'pg-save-status error';
-    _statusEl.textContent = 'Error: ' + e.message;
-    _saveBtn.disabled     = false;
+    statusEl.className   = 'pg-save-status error';
+    statusEl.textContent = 'Error: ' + e.message;
+    saveBtn.disabled     = false;
   }
 }
 
@@ -565,10 +611,12 @@ function connectSSE() {
       dirtySemanticL.clear();
       dirtySemanticD.clear();
       dirtySemanticRaw.clear();
+      dirtyFonts.clear();
+      dirtyScale = false;
       paletteMode = 'patch';
       clearAllDirty();
-      _statusEl.className   = 'pg-save-status saved';
-      _statusEl.textContent = 'Saved — reloading…';
+      statusEl.className   = 'pg-save-status saved';
+      statusEl.textContent = 'Saved — reloading…';
       setTimeout(() => {
         localStorage.setItem('pg-dark', isDark() ? '1' : '0');
         sessionStorage.setItem('pg-scroll', window.scrollY);
@@ -576,9 +624,9 @@ function connectSSE() {
       }, 400);
     }
     if (e.data === 'rebuild-error') {
-      _statusEl.className   = 'pg-save-status error';
-      _statusEl.textContent = 'Build error — check terminal';
-      _saveBtn.disabled = false;
+      statusEl.className   = 'pg-save-status error';
+      statusEl.textContent = 'Build error — check terminal';
+      saveBtn.disabled = false;
     }
   });
   es.onerror = () => { setTimeout(connectSSE, 3000); };
@@ -675,7 +723,7 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
     sel.addEventListener('change', () => {
       const chosen = sel.value;
       if ((mode === 'dark') === isDark()) {
-        TEXT_ON_SURFACE_VARS.forEach(v => document.documentElement.style.setProperty(v, `var(--${chosen})`));
+        TEXT_ON_SURFACE_VARS.forEach(v => liveTokenTarget().style.setProperty(v, `var(--${chosen})`));
         const preview = document.getElementById('text-onsurface-preview');
         if (preview) preview.style.background = `rgb(var(--${chosen}))`;
       }
@@ -708,7 +756,7 @@ const TEXT_INVERT_VARS     = ['--text-invert-color'];
     sel.addEventListener('change', () => {
       const chosen = sel.value;
       if ((mode === 'dark') === isDark()) {
-        document.documentElement.style.setProperty('--text-accent-color', `var(--${chosen})`);
+        liveTokenTarget().style.setProperty('--text-accent-color', `var(--${chosen})`);
         const preview = document.getElementById('text-accent-preview');
         if (preview) preview.style.background = `rgb(var(--${chosen}))`;
       }
@@ -769,7 +817,7 @@ function updateBorderSwatchLabels() {
       sel.addEventListener('change', () => {
         const chosen = sel.value;
         if ((mode === 'dark') === isDark()) {
-          document.documentElement.style.setProperty(varName, `var(--${chosen})`);
+          liveTokenTarget().style.setProperty(varName, `var(--${chosen})`);
           const preview = document.getElementById(previewId);
           if (preview) preview.style.background = `rgb(var(--${chosen}))`;
         }
@@ -827,7 +875,9 @@ function compositeRGB(fg, a, bg) {
     b: Math.round(a * fg.b + (1 - a) * bg.b),
   };
 }
+const resolveToRGBCache = new Map();
 function resolveToRGB(expr) {
+  if (resolveToRGBCache.has(expr)) return resolveToRGBCache.get(expr);
   const el = document.createElement('div');
   el.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;width:0;height:0;';
   el.style.color = expr;
@@ -835,7 +885,9 @@ function resolveToRGB(expr) {
   const c = window.getComputedStyle(el).color;
   el.remove();
   const m = c.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-  return m ? { r: +m[1], g: +m[2], b: +m[3] } : { r: 0, g: 0, b: 0 };
+  const result = m ? { r: +m[1], g: +m[2], b: +m[3] } : { r: 0, g: 0, b: 0 };
+  resolveToRGBCache.set(expr, result);
+  return result;
 }
 function getCSSAlpha(varName) {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(varName).trim()) || 0;
@@ -910,31 +962,31 @@ function buildDualAPCATable(containerId, leftTokens, rightTokens, leftTitle, rig
 }
 
 function rebuildAPCA() {
+  resolveToRGBCache.clear();
   const sAlpha  = getCSSAlpha('--surfaces-global-alpha') || 0.93;
   const baseRGB = resolveToRGB('rgb(var(--surfaces-base-color))');
 
   const surfaces = [
     { label: 'base',   rgb: baseRGB },
-    { label: 'l1',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l1))'),  sAlpha, baseRGB) },
-    { label: 'l2',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2))'),  sAlpha, baseRGB) },
-    { label: 'l2a',    rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2a))'), sAlpha, baseRGB) },
-    { label: 'l3',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l3))'),  sAlpha, baseRGB) },
-    { label: 'l4',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l4))'),  sAlpha, baseRGB) },
-    { label: 'l5',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l5))'),  sAlpha, baseRGB) },
+    { label: 'l1',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l1-color))'),  sAlpha, baseRGB) },
+    { label: 'l2',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2-color))'),  sAlpha, baseRGB) },
+    { label: 'l2a',    rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l2a-color))'), sAlpha, baseRGB) },
+    { label: 'l3',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l3-color))'),  sAlpha, baseRGB) },
+    { label: 'l4',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l4-color))'),  sAlpha, baseRGB) },
+    { label: 'l5',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l5-color))'),  sAlpha, baseRGB) },
   ];
 
-  const _am    = isDark() ? 'dark' : 'light';
-  const aHigh = getCSSAlpha(`--text-${_am}-alpha-high`)     || 1;
-  const aMid  = getCSSAlpha(`--text-${_am}-alpha-medium`)   || 0.87;
-  const aLow  = getCSSAlpha(`--text-${_am}-alpha-low`)      || 0.60;
-  const aDis  = getCSSAlpha(`--text-${_am}-alpha-disabled`) || 0.38;
+  const aHigh = getCSSAlpha('--text-high-alpha')        || 1;
+  const aMid  = getCSSAlpha('--text-medium-alpha')      || 0.87;
+  const aLow  = getCSSAlpha('--text-low-alpha')         || 0.60;
+  const aDis  = getCSSAlpha('--text-disabled-alpha')    || 0.38;
 
-  const aAccHigh = getCSSAlpha(`--text-${_am}-alpha-accent-high`)   || 0.85;
-  const aAccMid  = getCSSAlpha(`--text-${_am}-alpha-accent-medium`) || 0.60;
-  const aAccLow  = getCSSAlpha(`--text-${_am}-alpha-accent-low`)    || 0.38;
+  const aAccHigh = getCSSAlpha('--text-accent-high-alpha')   || 0.85;
+  const aAccMid  = getCSSAlpha('--text-accent-medium-alpha') || 0.60;
+  const aAccLow  = getCSSAlpha('--text-accent-low-alpha')    || 0.38;
 
   const textColorRGB  = resolveToRGB('rgb(var(--text-color))');
-  const accentRGB     = resolveToRGB('rgb(var(--text-accent))');
+  const accentRGB     = resolveToRGB('rgb(var(--text-accent-color))');
   const accentTokens = [
     { label: 'High (Lc>90 Fluent Text)',    rgb: accentRGB, alpha: aAccHigh },
     { label: 'Medium (Lc>75 Body Text)',    rgb: accentRGB, alpha: aAccMid  },
@@ -949,15 +1001,15 @@ function rebuildAPCA() {
 
   const aOverlayHover    = getCSSAlpha('--action-overlay-hover-global-alpha')   || 0.12;
   const aOverlayPressed  = getCSSAlpha('--action-overlay-pressed-global-alpha') || 0.22;
-  const primaryDefaultRGB  = resolveToRGB('rgb(var(--action-primary-default))');
-  const primaryOverlayRGB  = resolveToRGB('rgb(var(--action-primary-overlay))');
-  const secondaryDefaultRGB = resolveToRGB('rgb(var(--action-secondary-default))');
-  const secondaryOverlayRGB = resolveToRGB('rgb(var(--action-secondary-overlay))');
+  const primaryDefaultRGB   = resolveToRGB('rgb(var(--action-primary-default-color))');
+  const primaryOverlayRGB   = resolveToRGB('rgb(var(--action-primary-overlay-color))');
+  const secondaryDefaultRGB = resolveToRGB('rgb(var(--action-secondary-default-color))');
+  const secondaryOverlayRGB = resolveToRGB('rgb(var(--action-secondary-overlay-color))');
   const actionTokens = [
     { label: 'primary-default',         rgb: primaryDefaultRGB,  alpha: 1 },
     { label: 'primary-overlay (hover)',  rgb: compositeRGB(primaryOverlayRGB, aOverlayHover, primaryDefaultRGB),  alpha: 1 },
     { label: 'primary-overlay (pressed)',rgb: compositeRGB(primaryOverlayRGB, aOverlayPressed, primaryDefaultRGB), alpha: 1 },
-    { label: 'secondary-disabled',      rgb: resolveToRGB('rgb(var(--action-secondary-disabled))'), alpha: 1 },
+    { label: 'secondary-disabled',      rgb: resolveToRGB('rgb(var(--action-secondary-disabled-color))'), alpha: 1 },
     { label: 'secondary-default',       rgb: secondaryDefaultRGB, alpha: 1 },
     { label: 'secondary-overlay (hover)',  rgb: compositeRGB(secondaryOverlayRGB, aOverlayHover, secondaryDefaultRGB),  alpha: 1 },
     { label: 'secondary-overlay (pressed)',rgb: compositeRGB(secondaryOverlayRGB, aOverlayPressed, secondaryDefaultRGB), alpha: 1 },
@@ -972,7 +1024,7 @@ function rebuildAPCA() {
     { label: 'high',   rgb: borderColor,                                alpha: aBHigh },
     { label: 'medium', rgb: borderColor,                                alpha: aBMid  },
     { label: 'low',    rgb: borderColor,                                alpha: aBLow  },
-    { label: 'focus',  rgb: resolveToRGB('rgb(var(--border-focus))'),   alpha: aBFoc  },
+    { label: 'focus',  rgb: resolveToRGB('rgb(var(--border-focus-color))'),   alpha: aBFoc  },
   ];
 
   buildDualAPCATable('apca-text-combined', accentTokens, textTokens,
@@ -993,7 +1045,7 @@ document.addEventListener('keydown', e => {
   const instance = inputRegistry.get(e.target);
   if (!instance) return;
   e.preventDefault();
-  instance.nudge((e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? 0.1 : 0.01));
+  instance.nudge((e.key === 'ArrowUp' ? 1 : -1) * (e.shiftKey ? NUDGE_LARGE : NUDGE_SMALL));
 });
 
 // ── Divider emphasis dropdown ─────────────────────────────────────────
@@ -1007,11 +1059,11 @@ document.addEventListener('keydown', e => {
   const noteV  = document.getElementById('pg-divider-v-note');
   if (!sel || !demoH || !demoV) return;
 
-  const EMPHASIS = ['border-low', 'border-medium', 'border-high'];
+  // EMPHASIS_LEVELS is defined at module scope
 
   sel.addEventListener('change', () => {
     const chosen = sel.value;
-    EMPHASIS.forEach(cls => {
+    EMPHASIS_LEVELS.forEach(cls => {
       demoH.classList.remove(cls);
       demoV.classList.remove(cls);
     });
@@ -1020,4 +1072,390 @@ document.addEventListener('keydown', e => {
     if (noteH) noteH.textContent = `<hr class="divider ${chosen}">`;
     if (noteV) noteV.textContent = `<div class="divider-vertical ${chosen}"></div>`;
   });
+})();
+
+/* =====================================================================
+   TYPOGRAPHY CONTROLS
+   Loaded Fonts · Font Roles · Letter Spacing · Type Scale
+   ===================================================================== */
+
+// ── Scale computation ─────────────────────────────────────────────────
+const SCALE_RATIOS = {
+  'minor-second':   1.067,
+  'major-second':   1.125,
+  'minor-third':    1.200,
+  'major-third':    1.250,
+  'perfect-fourth': 1.333,
+};
+
+function computeScale(ratio) {
+  const snap  = v => Math.round(v / 1.5) * 1.5;
+  const snap4 = v => Math.round(v / 4) * 4;
+  const f = {}, fRaw = {}, lb = {}, lt = {}, ld = {};
+  for (let n = 1; n <= 15; n++) {
+    const raw = 9 * Math.pow(ratio, n - 1);
+    fRaw[n] = parseFloat(raw.toFixed(2));
+    f[n]    = snap(raw);
+  }
+  for (let n = 1; n <= 8;  n++) lb[n] = Math.max(snap4(f[n] * 1.5),  4);
+  for (let n = 1; n <= 15; n++) lt[n] = Math.max(snap4(f[n] * 1.333), 4);
+  for (let n = 6; n <= 15; n++) ld[n] = Math.max(snap4(f[n] * 1.25),  4);
+  return { f, fRaw, lb, lt, ld };
+}
+
+const SCALE_TABLES = Object.fromEntries(
+  Object.entries(SCALE_RATIOS).map(([k, r]) => [k, computeScale(r)])
+);
+
+// ── Loaded fonts state ────────────────────────────────────────────────
+// Map<slug, { name, weights: Set<string>, italic: boolean, availableWeights: Set<string>|null, hasItalic: boolean|null }>
+const loadedFonts = new Map();
+
+// ── Discover available weights via Google Fonts CSS2 API ─────────────
+async function discoverFontWeights(name) {
+  try {
+    const encoded = name.trim().replace(/ /g, '+');
+    // Request all weights + italic — GF returns only @font-face blocks that actually exist
+    const url = `https://fonts.googleapis.com/css2?family=${encoded}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const css = await res.text();
+    if (!css.includes('@font-face')) return null; // font not on Google Fonts
+    const weightSet = new Set();
+    for (const m of css.matchAll(/font-weight:\s*(\d+)(?:\s+(\d+))?\s*;/g)) {
+      if (m[2]) {
+        // Variable font range e.g. "100 900"
+        const lo = parseInt(m[1], 10), hi = parseInt(m[2], 10);
+        for (let w = lo; w <= hi; w += 100) weightSet.add(String(w));
+      } else {
+        weightSet.add(m[1]);
+      }
+    }
+    const hasItalic = /font-style:\s*italic/.test(css);
+    return { weights: weightSet, hasItalic };
+  } catch {
+    return null;
+  }
+}
+
+function showFontError(msg) {
+  const el = document.getElementById('pg-font-error');
+  if (el) { el.textContent = msg; el.hidden = false; }
+}
+function clearFontError() {
+  const el = document.getElementById('pg-font-error');
+  if (el) { el.textContent = ''; el.hidden = true; }
+}
+
+// ── Current scale working copy ────────────────────────────────────────
+// Flat object: { f1..f15, lb1..lb8, lt1..lt15, ld6..ld15 } — all numbers (px values without unit)
+let currentScaleValues = {};
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function fontSlug(name) { return name.trim().toLowerCase().replace(/\s+/g, '-'); }
+
+function buildGFUrl(entry) {
+  const sorted = [...entry.weights].map(Number).sort((a, b) => a - b);
+  const encoded = entry.name.replace(/ /g, '+');
+  if (entry.italic) {
+    const regular = sorted.map(w => `0,${w}`).join(';');
+    const italic  = sorted.map(w => `1,${w}`).join(';');
+    return `https://fonts.googleapis.com/css2?family=${encoded}:ital,wght@${regular};${italic}&display=swap`;
+  }
+  return `https://fonts.googleapis.com/css2?family=${encoded}:wght@${sorted.join(';')}&display=swap`;
+}
+
+function injectFontLink(slug, url) {
+  let link = document.getElementById(`gf-${slug}`);
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.id  = `gf-${slug}`;
+    document.head.appendChild(link);
+  }
+  link.href = url;
+}
+
+function removeFontLink(slug) {
+  const link = document.getElementById(`gf-${slug}`);
+  if (link) link.remove();
+}
+
+// ── Font role select population ───────────────────────────────────────
+function repopulateRoleSelects() {
+  const opts = [...loadedFonts.values()]
+    .map(e => `<option value="${e.name}">${e.name}</option>`)
+    .join('');
+  document.querySelectorAll('.pg-font-role-select').forEach(sel => {
+    const current = sel.value;
+    sel.innerHTML = opts || '<option value="">— no fonts loaded —</option>';
+    if (current && [...loadedFonts.values()].some(e => e.name === current)) sel.value = current;
+  });
+}
+
+// ── Render a loaded font entry row ────────────────────────────────────
+const GF_WEIGHTS = ['100','200','300','400','500','600','700','800','900'];
+
+function renderFontEntry(entry) {
+  const slug = fontSlug(entry.name);
+  const weightBoxes = GF_WEIGHTS.map(w => {
+    const checked    = entry.weights.has(w) ? ' checked' : '';
+    // availableWeights is null when loaded from a save (unknown) — treat as available
+    const available  = !entry.availableWeights || entry.availableWeights.has(w);
+    const disabledAttr  = available ? '' : ' disabled';
+    const unavailClass  = available ? '' : ' pg-fw-unavail';
+    const titleAttr     = available ? '' : ' title="Not available for this font"';
+    return `<label class="pg-fw-label${unavailClass}"${titleAttr}>` +
+      `<input type="checkbox" class="pg-fw-cb" data-slug="${slug}" data-weight="${w}"${checked}${disabledAttr}> ${w}` +
+    `</label>`;
+  }).join('');
+  const italicChecked  = entry.italic ? ' checked' : '';
+  // hasItalic null = unknown (old saves) → show as available
+  const italicAvail    = entry.hasItalic == null || entry.hasItalic;
+  const italicDisabled = italicAvail ? '' : ' disabled';
+  const italicClass    = italicAvail ? '' : ' pg-fw-unavail';
+  const italicTitle    = italicAvail ? '' : ' title="No italic variant for this font"';
+  return `<div class="pg-font-entry" id="pg-font-entry-${slug}">
+    <div class="pg-font-entry-header">
+      <span class="pg-font-entry-name">${entry.name}</span>
+      <button class="pg-font-remove-btn" data-slug="${slug}" title="Remove">&times;</button>
+    </div>
+    <div class="pg-fw-row">
+      ${weightBoxes}
+      <label class="pg-fw-label pg-fw-italic-label${italicClass}"${italicTitle}><input type="checkbox" class="pg-fw-italic-cb" data-slug="${slug}"${italicChecked}${italicDisabled}> italic</label>
+    </div>
+  </div>`;
+}
+
+function refreshFontList() {
+  const list = document.getElementById('pg-loaded-fonts-list');
+  if (!list) return;
+  list.innerHTML = [...loadedFonts.values()].map(renderFontEntry).join('');
+}
+
+// ── Add font ──────────────────────────────────────────────────────────
+async function addFont(rawName) {
+  const name = rawName.trim();
+  if (!name) return false;
+  const slug = fontSlug(name);
+  if (loadedFonts.has(slug)) return false;
+
+  // Show loading state
+  const btn = document.getElementById('pg-font-add-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+  clearFontError();
+
+  const result = await discoverFontWeights(name);
+
+  if (btn) { btn.disabled = false; btn.textContent = '+ Add Font'; }
+
+  if (!result || result.weights.size === 0) {
+    showFontError(`"${name}" was not found on Google Fonts. Check spelling or browse to find the exact name.`);
+    return false;
+  }
+
+  // Default selection: 400 + 700 if available; otherwise pick the two most central weights
+  const avail = [...result.weights].map(Number).sort((a, b) => a - b);
+  const defaultWeights = new Set();
+  if (result.weights.has('400')) defaultWeights.add('400');
+  if (result.weights.has('700')) defaultWeights.add('700');
+  if (defaultWeights.size === 0) {
+    defaultWeights.add(String(avail[Math.floor((avail.length - 1) / 2)]));
+  }
+
+  const entry = {
+    name,
+    weights:          defaultWeights,
+    italic:           result.hasItalic,
+    availableWeights: result.weights,
+    hasItalic:        result.hasItalic,
+  };
+  loadedFonts.set(slug, entry);
+  injectFontLink(slug, buildGFUrl(entry));
+  refreshFontList();
+  repopulateRoleSelects();
+  return true;
+}
+
+// ── Loaded fonts area events ──────────────────────────────────────────
+document.getElementById('pg-font-add-btn')?.addEventListener('click', async () => {
+  const inp = document.getElementById('pg-font-name-input');
+  if (!inp) return;
+  const ok = await addFont(inp.value);
+  if (ok) inp.value = '';
+  inp.focus();
+});
+
+document.getElementById('pg-font-name-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('pg-font-add-btn')?.click(); }
+});
+
+// Update the "Browse" link href as the user types
+document.getElementById('pg-font-name-input')?.addEventListener('input', e => {
+  const link = document.getElementById('pg-font-browse-link');
+  if (!link) return;
+  const q = e.target.value.trim();
+  link.href = q
+    ? `https://fonts.google.com/?query=${encodeURIComponent(q)}`
+    : 'https://fonts.google.com/';
+});
+
+document.getElementById('pg-loaded-fonts-list')?.addEventListener('change', e => {
+  if (e.target.matches('.pg-fw-cb')) {
+    const { slug, weight } = e.target.dataset;
+    const entry = loadedFonts.get(slug);
+    if (!entry) return;
+    if (e.target.checked) entry.weights.add(weight);
+    else entry.weights.delete(weight);
+    injectFontLink(slug, buildGFUrl(entry));
+  } else if (e.target.matches('.pg-fw-italic-cb')) {
+    const { slug } = e.target.dataset;
+    const entry = loadedFonts.get(slug);
+    if (!entry) return;
+    entry.italic = e.target.checked;
+    injectFontLink(slug, buildGFUrl(entry));
+  }
+});
+
+document.getElementById('pg-loaded-fonts-list')?.addEventListener('click', e => {
+  if (!e.target.matches('.pg-font-remove-btn')) return;
+  const { slug } = e.target.dataset;
+  loadedFonts.delete(slug);
+  removeFontLink(slug);
+  document.getElementById(`pg-font-entry-${slug}`)?.remove();
+  repopulateRoleSelects();
+});
+
+// ── Font role selects ─────────────────────────────────────────────────
+document.querySelectorAll('.pg-font-role-select').forEach(sel => {
+  sel.addEventListener('change', () => {
+    const cssVar = sel.dataset.var;
+    const name   = sel.value;
+    if (!name) return;
+    const value = `'${name}', system-ui, sans-serif`;
+    dirtyFonts.set(cssVar, value);
+    store.set(cssVar, value);
+  });
+});
+
+// ── Font weight selects ───────────────────────────────────────────────
+document.querySelectorAll('.pg-font-weight-select').forEach(sel => {
+  sel.addEventListener('change', () => {
+    const cssVar = sel.dataset.var;
+    const value  = sel.value;
+    dirtyFonts.set(cssVar, value);
+    store.set(cssVar, value);
+  });
+});
+
+// ── Letter-spacing inputs ─────────────────────────────────────────────
+document.querySelectorAll('.pg-ls-input').forEach(inp => {
+  function commitLS() {
+    const pct = parseFloat(inp.value);
+    if (isNaN(pct)) return;
+    const em   = Math.round(pct / 100 * 10000) / 10000;
+    const base = parseFloat(inp.dataset.base) || 16;
+    const px   = Math.round(pct / 100 * base * 10) / 10;
+    const pxLabel = document.getElementById(inp.id + '-px');
+    if (pxLabel) pxLabel.textContent = `\u2248${px}px at ${base}px`;
+    const emStr = `${em}em`;
+    dirtyFonts.set(inp.dataset.var, emStr);
+    store.set(inp.dataset.var, emStr);
+  }
+  inp.addEventListener('change', commitLS);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); commitLS(); inp.blur(); }
+    if (e.key === 'Escape') { inp.blur(); }
+  });
+});
+
+// ── Scale grid ────────────────────────────────────────────────────────
+function applyScaleValues(table) {
+  for (let n = 1; n <= 15; n++) {
+    document.documentElement.style.setProperty(`--font-size-f${n}`,     `${table.f[n]}px`);
+    document.documentElement.style.setProperty(`--line-height-lt${n}`,  `${table.lt[n]}px`);
+  }
+  for (let n = 1; n <= 8;  n++) document.documentElement.style.setProperty(`--line-height-lb${n}`, `${table.lb[n]}px`);
+  for (let n = 6; n <= 15; n++) document.documentElement.style.setProperty(`--line-height-ld${n}`, `${table.ld[n]}px`);
+}
+
+function renderScaleGrid(table) {
+  const tbody = document.getElementById('pg-scale-tbody');
+  if (!tbody) return;
+  let html = '';
+  for (let n = 1; n <= 15; n++) {
+    const haslb = n <= 8;
+    const hasld = n >= 6;
+    html += `<tr>
+      <td class="pg-scale-td pg-scale-step">f${n}</td>
+      <td class="pg-scale-td pg-scale-raw">${table.fRaw[n]}</td>
+      <td class="pg-scale-td"><input type="number" class="pg-scale-input" data-key="f${n}"  data-cssvar="--font-size-f${n}"    value="${table.f[n]}"  step="0.5" min="1"></td>
+      <td class="pg-scale-td">${haslb ? `<input type="number" class="pg-scale-input" data-key="lb${n}" data-cssvar="--line-height-lb${n}" value="${table.lb[n]}" step="1" min="1">` : ''}</td>
+      <td class="pg-scale-td"><input type="number" class="pg-scale-input" data-key="lt${n}" data-cssvar="--line-height-lt${n}" value="${table.lt[n]}" step="1" min="1"></td>
+      <td class="pg-scale-td">${hasld ? `<input type="number" class="pg-scale-input" data-key="ld${n}" data-cssvar="--line-height-ld${n}" value="${table.ld[n]}" step="1" min="1">` : ''}</td>
+    </tr>`;
+  }
+  tbody.innerHTML = html;
+  wireScaleGridInputs();
+}
+
+function wireScaleGridInputs() {
+  document.querySelectorAll('.pg-scale-input').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const val = parseFloat(inp.value);
+      if (isNaN(val) || val <= 0) return;
+      inp.classList.add('pg-scale-dirty');
+      document.documentElement.style.setProperty(inp.dataset.cssvar, `${val}px`);
+      currentScaleValues[inp.dataset.key] = val;
+      dirtyScale = true;
+      updateSaveBar();
+    });
+  });
+}
+
+// ── Scale preset select ───────────────────────────────────────────────
+document.getElementById('pg-scale-select')?.addEventListener('change', e => {
+  const key   = e.target.value;
+  const table = SCALE_TABLES[key];
+  if (!table) return;
+  // Flatten into currentScaleValues
+  for (let n = 1; n <= 15; n++) { currentScaleValues[`f${n}`]  = table.f[n];  currentScaleValues[`lt${n}`] = table.lt[n]; }
+  for (let n = 1; n <= 8;  n++) { currentScaleValues[`lb${n}`] = table.lb[n]; }
+  for (let n = 6; n <= 15; n++) { currentScaleValues[`ld${n}`] = table.ld[n]; }
+  applyScaleValues(table);
+  renderScaleGrid(table);
+  dirtyScale = true;
+  updateSaveBar();
+});
+
+// ── Init typography controls ──────────────────────────────────────────
+(function initTypographyControls() {
+  const cs = getComputedStyle(document.documentElement);
+
+  // Seed font-weight selects from computed styles
+  document.querySelectorAll('.pg-font-weight-select').forEach(sel => {
+    const raw = cs.getPropertyValue(sel.dataset.var).trim();
+    if (raw && sel.querySelector(`option[value="${raw}"]`)) sel.value = raw;
+  });
+
+  // Seed letter-spacing inputs from computed styles
+  document.querySelectorAll('.pg-ls-input').forEach(inp => {
+    const raw  = cs.getPropertyValue(inp.dataset.var).trim();
+    const base = parseFloat(inp.dataset.base) || 16;
+    if (raw && raw !== '0em' && raw !== '0') {
+      const emVal = parseFloat(raw);
+      if (!isNaN(emVal)) {
+        inp.value = String(Math.round(emVal * 100 * 10) / 10);
+        const pxLabel = document.getElementById(inp.id + '-px');
+        if (pxLabel) pxLabel.textContent = `\u2248${Math.round(emVal * base * 10) / 10}px at ${base}px`;
+      }
+    }
+  });
+
+  // Seed scale grid with current theme values (Minor Third default)
+  const defaultTable = SCALE_TABLES['minor-third'];
+  for (let n = 1; n <= 15; n++) { currentScaleValues[`f${n}`]  = defaultTable.f[n];  currentScaleValues[`lt${n}`] = defaultTable.lt[n]; }
+  for (let n = 1; n <= 8;  n++) { currentScaleValues[`lb${n}`] = defaultTable.lb[n]; }
+  for (let n = 6; n <= 15; n++) { currentScaleValues[`ld${n}`] = defaultTable.ld[n]; }
+  renderScaleGrid(defaultTable);
 })();

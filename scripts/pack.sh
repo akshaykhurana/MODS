@@ -12,15 +12,15 @@ fi
 HOST_ROOT=$(dirname "$MODS_DEST")
 DEST_NAME=$(basename "$MODS_DEST")
 
-# Copy the 5 source partials
+# Copy the 3 source partials
 mkdir -p "$MODS_DEST"
-cp src/_base.css src/_components.css src/_fonts.css src/_semantic-tokens.css src/_theme.css "$MODS_DEST/"
-echo "Packed 5 source partials to $MODS_DEST"
+cp src/_base.css src/_components.css src/_semantic-tokens.css "$MODS_DEST/"
+echo "Packed 3 source partials to $MODS_DEST"
 
 # Check if the host .gitignore would swallow the destination directory
 GITIGNORE="$HOST_ROOT/.gitignore"
 if [ -f "$GITIGNORE" ]; then
-  if grep -qE "^/?${DEST_NAME}(/|$)?" "$GITIGNORE"; then
+  if grep -qE "^/?${DEST_NAME}(/.*)?$" "$GITIGNORE"; then
     echo ""
     echo "Warning: $GITIGNORE contains a rule that ignores '$DEST_NAME/'."
     echo "The packed files will be untracked by git and won't reach CI."

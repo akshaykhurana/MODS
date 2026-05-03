@@ -1,16 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
 /* ==========================================================================
    _base.css
-   Base variables — Raw values only. No var() references anywhere in this file.
+   Single source of truth for every raw, user-editable design token AND the
+   Tailwind @theme blocks that turn them into utility classes.
 
-   Two sections:
-     1. PALETTE  — Raw RGB channels for all colour stops + chart colours.
-                   The server regenerates this block entirely on palette writes.
-     2. BASE VARS — Scalar tokens (alpha scales, widths, radii).
-                   The server patches individual lines on token saves.
+   STRUCTURE
+     1. USER EDITABLE   — palettes, alphas, type scale, fonts, letter-spacing
+                          The only section a project should touch when branding.
+     2. DO NOT EDIT     — system constants (breakpoints, spacing, shadow geometry)
+                          Stable across projects. Change only with intent.
+     3. TAILWIND THEME  — composition layer. Maps tokens to Tailwind utilities.
+                          Edit only when adding/removing a utility category.
+
+   _semantic-tokens.css contains zero raw values — it resolves roles to vars
+   defined here. Components reference semantic vars, never raw vars.
    ========================================================================== */
 
 
-/* ===== PALETTE ===== */
+/* ==========================================================================
+   1. USER EDITABLE
+   ========================================================================== */
+
+
+/* ===== PALETTE =====
+   Raw RGB channels for every colour stop. The playground server regenerates
+   this block in full on palette writes — it is delimited by the
+   /* ===== PALETTE ===== */ and /* ===== BASE VARS ===== */ markers below
+   and must not be deleted.
+   ========================================================================== */
 
 :root {
 
@@ -60,18 +78,23 @@
   --s100: 255 255 255;
 
   /* ---- Neutral palette (n) — replace from Figma ---- */
-  --n0:   10  10  10;
-  --n10:  40  40  40;
-  --n20:  80  80  80;
-  --n30:  120 120 120;
-  --n35:  140 140 140;
-  --n40:  160 160 160;
-  --n50:  180 180 180;
-  --n60:  200 200 200;
-  --n65:  207 207 207;
-  --n70:  215 215 215;
-  --n80:  230 230 230;
-  --n90:  245 245 245;
+  --n0:   0   0   0;
+  --n5:   17  17  17;
+  --n10:  28  28  28;
+  --n15:  38  38  38;
+  --n20:  48  48  48;
+  --n25:  59  59  59;
+  --n30:  71  71  71;
+  --n35:  82  82  82;
+  --n40:  95  95  95;
+  --n50:  119 119 119;
+  --n60:  144 144 144;
+  --n70:  171 171 171;
+  --n80:  198 198 198;
+  --n90:  226 226 226;
+  --n95:  241 241 241;
+  --n98:  249 249 249;
+  --n99:  252 252 252;
   --n100: 255 255 255;
 
   /* ---- Meaning tones — two fixed tones per meaning, not full palettes ----
@@ -87,7 +110,7 @@
   --g70: 85 198 133;
 
   /* ---- Chart colours — replace from Figma per project ----
-     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
+     Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-global-alpha))
      -------------------------------------------------------- */
   --chart-1: 255 99  132;
   --chart-2: 255 159 64;
@@ -103,16 +126,14 @@
 }
 
 
-/* ===== BASE VARS ===== */
+/* ===== BASE VARS =====
+   Scalar tokens. The playground patches individual lines here on save —
+   each --name must appear exactly once across the whole file.
+   ========================================================================== */
 
 :root {
 
-  /* ==========================================================================
-     SURFACES — scalars
-     --surfaces-alpha is applied at @theme inline level for translucent surfaces.
-     --surfaces-blur-l* is used for backdrop-filter on each floating surface level.
-     ========================================================================== */
-
+  /* SURFACES — translucency + per-level backdrop blur */
   --surfaces-global-alpha:   0.96;
   --surfaces-l1-global-blur: 0px;
   --surfaces-l2-global-blur: 0px;
@@ -120,82 +141,51 @@
   --surfaces-l4-global-blur: 0px;
   --surfaces-l5-global-blur: 0px;
 
-
-  /* ==========================================================================
-     SHADOWS — per-layer alpha scale
-     umbra    = direct-light shadow (darkest, concentrated)
-     penumbra = outer region of the direct-light shadow
-     ambient  = diffuse top-light shadow (widest, lightest)
-     Shadow colour step is set via dropdown in _semantic-tokens.css.
-     ========================================================================== */
-
+  /* SHADOWS — per-layer alpha (geometry lives in DO NOT EDIT) */
   --shadow-umbra-global-alpha:    0.09;
   --shadow-penumbra-global-alpha: 0.03;
   --shadow-ambient-global-alpha:  0.06;
 
-
-  /* ==========================================================================
-     TEXT ALPHA — emphasis scale (MD-derived)
-     Light and dark sets tuned independently; aliases in _semantic-tokens.css
-     automatically switch between them when .dark is toggled.
-     ========================================================================== */
-
-  /* Light mode */
-  --text-high-light-alpha:     0.83;
-  --text-medium-light-alpha:   0.66;
-  --text-low-light-alpha:      0.51;
-  --text-disabled-light-alpha: 0.26;
+  /* TEXT ALPHA — emphasis scale (MD-derived). Light + dark sets tuned independently. */
+  --text-high-light-alpha:          0.83;
+  --text-medium-light-alpha:        0.66;
+  --text-low-light-alpha:           0.51;
+  --text-disabled-light-alpha:      0.26;
   --text-accent-light-alpha:        0.85;
   --text-accent-high-light-alpha:   1;
   --text-accent-medium-light-alpha: 0.82;
   --text-accent-low-light-alpha:    0.63;
 
-  /* Dark mode */
-  --text-high-dark-alpha:     0.96;
-  --text-medium-dark-alpha:   0.84;
-  --text-low-dark-alpha:      0.72;
-  --text-disabled-dark-alpha: 0.46;
+  --text-high-dark-alpha:          0.96;
+  --text-medium-dark-alpha:        0.84;
+  --text-low-dark-alpha:           0.72;
+  --text-disabled-dark-alpha:      0.46;
   --text-accent-dark-alpha:        0.95;
   --text-accent-high-dark-alpha:   1;
   --text-accent-medium-dark-alpha: 0.97;
   --text-accent-low-dark-alpha:    0.89;
 
+  /* ACTION OVERLAY — alphas for hover/pressed brand-tinted layer (mode-independent) */
+  --action-overlay-hover-global-alpha:   0.36;
+  --action-overlay-pressed-global-alpha: 0.16;
 
-  /* ==========================================================================
-     ACTION OVERLAY — alpha scales (mode-independent)
-     Applied as a brand-tinted layer on top of the base action colour.
-     ========================================================================== */
-
-  --action-overlay-hover-global-alpha:   0.35;
-  --action-overlay-pressed-global-alpha: 0.45;
-
-  /* ==========================================================================
-     BORDERS — alpha + width scales
-     Mode-independent: same values apply in both light and dark.
-     ========================================================================== */
-
-  /* Alpha scale — light mode */
+  /* BORDER — alpha + width scales */
   --border-high-light-alpha:   0.48;
   --border-medium-light-alpha: 0.36;
   --border-low-light-alpha:    0.25;
-  /* Alpha scale — dark mode */
+
   --border-high-dark-alpha:   0.62;
   --border-medium-dark-alpha: 0.53;
   --border-low-dark-alpha:    0.4;
-  /* Focus alpha — mode-independent */
+
   --border-focus-global-alpha: 0.68;
 
-  /* Width scale — override per project */
   --border-global-width:       1px;
   --border-focus-global-width: 2px;
 
-
-  /* ==========================================================================
-     SHAPE — raw radius scale
+  /* SHAPE — raw radius scale.
      Formula: sh{h} = h ÷ 8 (radius = one-eighth of component height).
-     Semantic role aliases (--shape-xs etc.) live in _semantic-tokens.css.
-     ========================================================================== */
-
+     Semantic role aliases (--shape-xs etc.) live in _semantic-tokens.css. */
   --sh8:     1px;
   --sh16:    2px;
   --sh24:    3px;
@@ -206,5 +196,299 @@
   --sh64:    8px;
   --sh72:    9px;
   --sh-full: 9999px;
+
+  /* LETTER SPACING — per role, em-based so tracking scales with font size.
+     Playground accepts plain percentages (5 → 0.05em). */
+  --letter-spacing-display:  0em;
+  --letter-spacing-heading:  0em;
+  --letter-spacing-title:    0em;
+  --letter-spacing-body:     0em;
+  --letter-spacing-label:    0em;
+  --letter-spacing-overline: 0.167em; /* ~2px at f3 (12px) */
+
+}
+
+
+/* ===== TYPE SCALE + FONT FAMILIES =====
+   Tailwind @theme — generates utilities (text-f1, leading-lt5, font-display, …).
+   In v4 @theme vars are hoisted to :root automatically; declaring them here is
+   the canonical pattern, not a duplication.
+   ========================================================================== */
+
+@theme {
+
+  /* FONT SIZES — f-scale (minor third ratio, snapped to 1.5px).
+     Playground writes here via the Type Scale panel. */
+  --font-size-f1:  9px;
+  --font-size-f2:  10.5px;
+  --font-size-f3:  13.5px;
+  --font-size-f4:  15px;
+  --font-size-f5:  18px;
+  --font-size-f6:  22.5px;
+  --font-size-f7:  27px;
+  --font-size-f8:  31.5px;
+  --font-size-f9:  39px;
+  --font-size-f10: 46.5px;
+  --font-size-f11: 55.5px;
+  --font-size-f12: 67.5px;
+  --font-size-f13: 81px;
+  --font-size-f14: 96px;
+  --font-size-f15: 115.5px;
+
+  /* LINE HEIGHTS — three independent scales for body/title/display roles. */
+  /* lb — Body / Label / Overline (~1.5×) */
+  --line-height-lb1: 12px;
+  --line-height-lb2: 16px;
+  --line-height-lb3: 20px;
+  --line-height-lb4: 24px;
+  --line-height-lb5: 28px;
+  --line-height-lb6: 32px;
+  --line-height-lb7: 40px;
+  --line-height-lb8: 48px;
+
+  /* lt — Title (~1.33×) */
+  --line-height-lt1:  12px;
+  --line-height-lt2:  12px;
+  --line-height-lt3:  16px;
+  --line-height-lt4:  20px;
+  --line-height-lt5:  24px;
+  --line-height-lt6:  28px;
+  --line-height-lt7:  36px;
+  --line-height-lt8:  40px;
+  --line-height-lt9:  52px;
+  --line-height-lt10: 60px;
+  --line-height-lt11: 72px;
+  --line-height-lt12: 88px;
+  --line-height-lt13: 104px;
+  --line-height-lt14: 128px;
+  --line-height-lt15: 152px;
+
+  /* ld — Display (~1.2×) — ld6–ld15 only (small sizes never used for display) */
+  --line-height-ld6:  28px;
+  --line-height-ld7:  32px;
+  --line-height-ld8:  40px;
+  --line-height-ld9:  48px;
+  --line-height-ld10: 60px;
+  --line-height-ld11: 68px;
+  --line-height-ld12: 84px;
+  --line-height-ld13: 100px;
+  --line-height-ld14: 120px;
+  --line-height-ld15: 144px;
+
+  /* FONT FAMILIES — per role.
+     The Google Fonts @import at the top of this file must be kept in sync
+     with these values. Playground rewrites both on font changes. */
+  --font-family-display: 'Roboto', sans-serif;
+  --font-family-heading: 'Roboto', sans-serif;
+  --font-family-title:   'Roboto', sans-serif;
+  --font-family-body:    'Roboto', sans-serif;
+  --font-family-label:   'Roboto', sans-serif;
+
+  /* FONT WEIGHTS — per role.
+     Body exposes separate regular and bold weights so .body-*-b and .body-*-i
+     can use different values. Display / Heading / Title are always their bold
+     weight. Label/Overline uses a single semi-bold weight. */
+  --font-weight-display:      700;
+  --font-weight-heading:      700;
+  --font-weight-title:        700;
+  --font-weight-body-regular: 400;
+  --font-weight-body-bold:    700;
+  --font-weight-label:        600;
+
+}
+
+
+/* ==========================================================================
+   2. DO NOT EDIT
+   System constants. Same across every project. Touch only with full intent.
+   ========================================================================== */
+
+
+/* ===== SHADOW GEOMETRY =====
+   Promoted from inline literals so the composite definitions in section 3
+   remain readable. Three layers per level:
+     umbra    — direct-light (darkest, concentrated)
+     penumbra — outer region of direct-light
+     ambient  — diffuse top-light (widest, lightest)
+   ========================================================================== */
+
+:root {
+
+  /* Level 1 */
+  --shadow-l1-umbra-offset-y:    3px;  --shadow-l1-umbra-blur:    4px;  --shadow-l1-umbra-spread:    0px;
+  --shadow-l1-ambient-offset-y:  2px;  --shadow-l1-ambient-blur:  8px;  --shadow-l1-ambient-spread:  0px;
+  --shadow-l1-penumbra-offset-y: 2px;  --shadow-l1-penumbra-blur: 2px;  --shadow-l1-penumbra-spread: 0px;
+
+  /* Level 2 */
+  --shadow-l2-umbra-offset-y:    4px;  --shadow-l2-umbra-blur:    6px;  --shadow-l2-umbra-spread:    0px;
+  --shadow-l2-ambient-offset-y:  3px;  --shadow-l2-ambient-blur:  16px; --shadow-l2-ambient-spread:  0px;
+  --shadow-l2-penumbra-offset-y: 2px;  --shadow-l2-penumbra-blur: 4px;  --shadow-l2-penumbra-spread: 0px;
+
+  /* Level 3 */
+  --shadow-l3-umbra-offset-y:    5px;  --shadow-l3-umbra-blur:    10px; --shadow-l3-umbra-spread:    0px;
+  --shadow-l3-ambient-offset-y:  1px;  --shadow-l3-ambient-blur:  28px; --shadow-l3-ambient-spread:  0px;
+  --shadow-l3-penumbra-offset-y: 2px;  --shadow-l3-penumbra-blur: 8px;  --shadow-l3-penumbra-spread: 0px;
+
+  /* Level 4 */
+  --shadow-l4-umbra-offset-y:    8px;  --shadow-l4-umbra-blur:    16px; --shadow-l4-umbra-spread:    0px;
+  --shadow-l4-ambient-offset-y:  2px;  --shadow-l4-ambient-blur:  44px; --shadow-l4-ambient-spread:  0px;
+  --shadow-l4-penumbra-offset-y: 3px;  --shadow-l4-penumbra-blur: 12px; --shadow-l4-penumbra-spread: 0px;
+
+  /* Level 5 */
+  --shadow-l5-umbra-offset-y:    14px; --shadow-l5-umbra-blur:    28px; --shadow-l5-umbra-spread:    0px;
+  --shadow-l5-ambient-offset-y:  4px;  --shadow-l5-ambient-blur:  64px; --shadow-l5-ambient-spread:  0px;
+  --shadow-l5-penumbra-offset-y: 6px;  --shadow-l5-penumbra-blur: 20px; --shadow-l5-penumbra-spread: 0px;
+
+}
+
+
+/* ===== BREAKPOINTS + SPACING =====
+   Tailwind @theme — mobile-first breakpoints and the g-scale spacing system.
+   Generates: mob-p:, tab-s:, scr-l: variants and p-g3, mt-g2, gap-g4 utilities.
+   ========================================================================== */
+
+@theme {
+
+  /* BREAKPOINTS — min-width, mobile-first */
+  --breakpoint-mob-p: 250px;  /* All phones portrait        */
+  --breakpoint-mob-l: 480px;  /* All phones landscape       */
+  --breakpoint-tab-s: 768px;  /* iPads                      */
+  --breakpoint-tab-l: 992px;  /* iPad Pro                   */
+  --breakpoint-scr-s: 1280px; /* Desktop small              */
+  --breakpoint-scr-m: 1440px; /* Desktops medium, MacBooks  */
+  --breakpoint-scr-l: 1920px; /* Desktop large              */
+
+  /* SPACING — g-scale.
+     Formula: gN = N × 8px | gNh = (N × 8) + 4px */
+  --spacing-g0:   0px;
+  --spacing-g0h:  4px;
+  --spacing-g1:   8px;
+  --spacing-g1h:  12px;
+  --spacing-g2:   16px;
+  --spacing-g2h:  20px;
+  --spacing-g3:   24px;
+  --spacing-g3h:  28px;
+  --spacing-g4:   32px;
+  --spacing-g4h:  36px;
+  --spacing-g5:   40px;
+  --spacing-g5h:  44px;
+  --spacing-g6:   48px;
+  --spacing-g6h:  52px;
+  --spacing-g7:   56px;
+  --spacing-g7h:  60px;
+  --spacing-g8:   64px;
+  --spacing-g8h:  68px;
+  --spacing-g9:   72px;
+  --spacing-g9h:  76px;
+  --spacing-g10:  80px;
+  --spacing-g10h: 84px;
+  --spacing-g11:  88px;
+  --spacing-g11h: 92px;
+  --spacing-g12:  96px;
+  --spacing-g12h: 100px;
+  --spacing-g13:  104px;
+  --spacing-g13h: 108px;
+  --spacing-g15:  120px;
+  --spacing-g16:  128px;
+  --spacing-g20:  160px;
+  --spacing-g25:  200px;
+
+}
+
+
+/* ==========================================================================
+   3. TAILWIND THEME COMPOSITION
+   Maps semantic tokens (and a handful of base tokens) to Tailwind utility
+   classes. Anything that needs to read a CSS var at runtime goes here in
+   @theme inline {}.
+
+   NOTE: Text and border colours with alpha composition are NOT here — they
+   need to compose two independent vars (rgb(var(--text-high) / var(--text-alpha))),
+   which @theme inline cannot express. They are surfaced as @utility in
+   _components.css instead.
+   ========================================================================== */
+
+@theme inline {
+
+  /* BRAND */
+  --color-brand-main: rgb(var(--brand-main-color));
+
+  /* SURFACES
+     --surfaces-global-alpha (0.96) is baked in — surfaces are always
+     translucent by design. level-invert is fully opaque to guarantee
+     legibility on dark backgrounds. */
+  --color-level0:       rgb(var(--surfaces-base-color)   / var(--surfaces-global-alpha));
+  --color-level1:       rgb(var(--surfaces-l1-color)     / var(--surfaces-global-alpha));
+  --color-level2:       rgb(var(--surfaces-l2-color)     / var(--surfaces-global-alpha));
+  --color-level2a:      rgb(var(--surfaces-l2a-color)    / var(--surfaces-global-alpha));
+  --color-level3:       rgb(var(--surfaces-l3-color)     / var(--surfaces-global-alpha));
+  --color-level4:       rgb(var(--surfaces-l4-color)     / var(--surfaces-global-alpha));
+  --color-level5:       rgb(var(--surfaces-l5-color)     / var(--surfaces-global-alpha));
+  --color-level-invert: rgb(var(--surfaces-invert-color));
+
+  /* ACTIONS — fully opaque, no alpha */
+  --color-action-primary-default:    rgb(var(--action-primary-default-color));
+  --color-action-primary-overlay:    rgb(var(--action-primary-overlay-color));
+  --color-action-secondary-disabled: rgb(var(--action-secondary-disabled-color));
+  --color-action-secondary-default:  rgb(var(--action-secondary-default-color));
+  --color-action-secondary-overlay:  rgb(var(--action-secondary-overlay-color));
+  --color-action-neutral-default:    rgb(var(--action-neutral-default-color));
+  --color-action-neutral-disabled:   rgb(var(--action-neutral-disabled-color));
+  --color-action-neutral-filled:     rgb(var(--action-neutral-filled-color));
+
+  /* MEANING — fully opaque */
+  --color-meaning-error:   rgb(var(--meaning-error-color));
+  --color-meaning-alert:   rgb(var(--meaning-alert-color));
+  --color-meaning-success: rgb(var(--meaning-success-color));
+
+  /* CHARTS — --chart-global-alpha (0.81) baked in */
+  --color-chart-1: rgb(var(--chart-1) / var(--chart-global-alpha));
+  --color-chart-2: rgb(var(--chart-2) / var(--chart-global-alpha));
+  --color-chart-3: rgb(var(--chart-3) / var(--chart-global-alpha));
+  --color-chart-4: rgb(var(--chart-4) / var(--chart-global-alpha));
+  --color-chart-5: rgb(var(--chart-5) / var(--chart-global-alpha));
+  --color-chart-6: rgb(var(--chart-6) / var(--chart-global-alpha));
+  --color-chart-7: rgb(var(--chart-7) / var(--chart-global-alpha));
+  --color-chart-8: rgb(var(--chart-8) / var(--chart-global-alpha));
+  --color-chart-9: rgb(var(--chart-9) / var(--chart-global-alpha));
+
+  /* SHADOWS — 3-layer composites: umbra + ambient + penumbra.
+     Geometry from DO NOT EDIT, colour and alphas from USER EDITABLE. */
+  --shadow-level1:
+    0px var(--shadow-l1-umbra-offset-y)    var(--shadow-l1-umbra-blur)    var(--shadow-l1-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px var(--shadow-l1-ambient-offset-y)  var(--shadow-l1-ambient-blur)  var(--shadow-l1-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px var(--shadow-l1-penumbra-offset-y) var(--shadow-l1-penumbra-blur) var(--shadow-l1-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  --shadow-level2:
+    0px var(--shadow-l2-umbra-offset-y)    var(--shadow-l2-umbra-blur)    var(--shadow-l2-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px var(--shadow-l2-ambient-offset-y)  var(--shadow-l2-ambient-blur)  var(--shadow-l2-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px var(--shadow-l2-penumbra-offset-y) var(--shadow-l2-penumbra-blur) var(--shadow-l2-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  --shadow-level3:
+    0px var(--shadow-l3-umbra-offset-y)    var(--shadow-l3-umbra-blur)    var(--shadow-l3-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px var(--shadow-l3-ambient-offset-y)  var(--shadow-l3-ambient-blur)  var(--shadow-l3-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px var(--shadow-l3-penumbra-offset-y) var(--shadow-l3-penumbra-blur) var(--shadow-l3-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  --shadow-level4:
+    0px var(--shadow-l4-umbra-offset-y)    var(--shadow-l4-umbra-blur)    var(--shadow-l4-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px var(--shadow-l4-ambient-offset-y)  var(--shadow-l4-ambient-blur)  var(--shadow-l4-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px var(--shadow-l4-penumbra-offset-y) var(--shadow-l4-penumbra-blur) var(--shadow-l4-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  --shadow-level5:
+    0px var(--shadow-l5-umbra-offset-y)    var(--shadow-l5-umbra-blur)    var(--shadow-l5-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
+    0px var(--shadow-l5-ambient-offset-y)  var(--shadow-l5-ambient-blur)  var(--shadow-l5-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
+    0px var(--shadow-l5-penumbra-offset-y) var(--shadow-l5-penumbra-blur) var(--shadow-l5-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  /* BORDER RADIUS — derived from raw scale above. */
+  --radius-sh8:     var(--sh8);
+  --radius-sh16:    var(--sh16);
+  --radius-sh24:    var(--sh24);
+  --radius-sh32:    var(--sh32);
+  --radius-sh40:    var(--sh40);
+  --radius-sh48:    var(--sh48);
+  --radius-sh56:    var(--sh56);
+  --radius-sh64:    var(--sh64);
+  --radius-sh72:    var(--sh72);
+  --radius-sh-full: var(--sh-full);
 
 }

@@ -484,6 +484,204 @@
 <section id="text" class="pg-section">
   <h2 class="pg-section-title">Text</h2>
 
+  <!-- LOADED FONTS -->
+  <h3 class="pg-subsection-title">Loaded Fonts</h3>
+  <div class="pg-fonts-add-row">
+    <input type="text" id="pg-font-name-input" class="pg-font-name-input" placeholder="e.g. Inter" list="gf-font-list" autocomplete="off">
+    <button class="pg-font-add-btn" id="pg-font-add-btn">+ Add Font</button>
+    <a id="pg-font-browse-link" class="pg-font-browse-link" href="https://fonts.google.com/" target="_blank" rel="noopener">Browse Google Fonts ↗</a>
+  </div>
+  <p id="pg-font-error" class="pg-font-error" hidden></p>
+  <div id="pg-loaded-fonts-list" class="pg-loaded-fonts-list"></div>
+
+  <!-- Google Fonts autocomplete list -->
+  <datalist id="gf-font-list">
+    <option value="ABeeZee"><option value="Abel"><option value="Abril Fatface">
+    <option value="Acme"><option value="Alegreya"><option value="Alegreya Sans">
+    <option value="Alegreya Sans SC"><option value="Alfa Slab One"><option value="Alice">
+    <option value="Allura"><option value="Almarai"><option value="Almendra">
+    <option value="Alumni Sans"><option value="Amiri"><option value="Anaheim">
+    <option value="Anton"><option value="Arimo"><option value="Arvo">
+    <option value="Asap"><option value="Asap Condensed"><option value="Atkinson Hyperlegible">
+    <option value="Bangers"><option value="Barlow"><option value="Barlow Condensed">
+    <option value="Barlow Semi Condensed"><option value="Be Vietnam Pro"><option value="Bebas Neue">
+    <option value="Big Shoulders Display"><option value="Bitter"><option value="Black Han Sans">
+    <option value="Bree Serif"><option value="Cabin"><option value="Cairo">
+    <option value="Cantarell"><option value="Cardo"><option value="Catamaran">
+    <option value="Caveat"><option value="Changa"><option value="Chivo">
+    <option value="Cinzel"><option value="Cinzel Decorative"><option value="Courgette">
+    <option value="Comfortaa"><option value="Cookie"><option value="Cormorant Garamond">
+    <option value="Crete Round"><option value="Crimson Text"><option value="Dancing Script">
+    <option value="DM Mono"><option value="DM Sans"><option value="DM Serif Display">
+    <option value="DM Serif Text"><option value="Domine"><option value="Dosis">
+    <option value="EB Garamond"><option value="Encode Sans"><option value="Exo">
+    <option value="Exo 2"><option value="Fira Code"><option value="Fira Sans">
+    <option value="Fira Sans Condensed"><option value="Fjalla One"><option value="Francois One">
+    <option value="Fredoka One"><option value="GFS Didot"><option value="Gelasio">
+    <option value="Gloock"><option value="Gloria Hallelujah"><option value="Great Vibes">
+    <option value="Hanken Grotesk"><option value="Heebo"><option value="Hind">
+    <option value="Hind Siliguri"><option value="IBM Plex Mono"><option value="IBM Plex Sans">
+    <option value="IBM Plex Sans Arabic"><option value="IBM Plex Serif"><option value="Inconsolata">
+    <option value="Indie Flower"><option value="Inter"><option value="Inter Tight">
+    <option value="Josefin Sans"><option value="Josefin Slab"><option value="Jost">
+    <option value="Julius Sans One"><option value="Kanit"><option value="Karla">
+    <option value="Kaushan Script"><option value="Kreon"><option value="Lato">
+    <option value="Lexend"><option value="Lexend Deca"><option value="Libre Baskerville">
+    <option value="Libre Franklin"><option value="Lilita One"><option value="Lobster">
+    <option value="Lora"><option value="Mada"><option value="Manrope">
+    <option value="Maven Pro"><option value="Merriweather"><option value="Merriweather Sans">
+    <option value="Montserrat"><option value="Montserrat Alternates"><option value="Mukta">
+    <option value="Mulish"><option value="Nanum Gothic"><option value="Niconne">
+    <option value="Noticia Text"><option value="Noto Sans"><option value="Noto Sans Arabic">
+    <option value="Noto Serif"><option value="Nunito"><option value="Nunito Sans">
+    <option value="Oleo Script"><option value="Open Sans"><option value="Oswald">
+    <option value="Outfit"><option value="Oxygen"><option value="Pacifico">
+    <option value="Passion One"><option value="Pathway Gothic One"><option value="Permanent Marker">
+    <option value="Philosopher"><option value="Piazzolla"><option value="Playfair Display">
+    <option value="Plus Jakarta Sans"><option value="Poppins"><option value="PT Sans">
+    <option value="PT Serif"><option value="Quattrocento"><option value="Quattrocento Sans">
+    <option value="Questrial"><option value="Quicksand"><option value="Raleway">
+    <option value="Readex Pro"><option value="Recursive"><option value="Red Hat Display">
+    <option value="Red Hat Text"><option value="Righteous"><option value="Roboto">
+    <option value="Roboto Condensed"><option value="Roboto Mono"><option value="Roboto Slab">
+    <option value="Rokkitt"><option value="Rubik"><option value="Sacramento">
+    <option value="Satisfy"><option value="Scheherazade New"><option value="Shadows Into Light">
+    <option value="Signika"><option value="Slabo 27px"><option value="Source Code Pro">
+    <option value="Source Sans 3"><option value="Source Serif 4"><option value="Space Grotesk">
+    <option value="Space Mono"><option value="Spectral"><option value="Syne">
+    <option value="Tajawal"><option value="Tangerine"><option value="Titillium Web">
+    <option value="Ubuntu"><option value="Ubuntu Condensed"><option value="Ubuntu Mono">
+    <option value="Unna"><option value="Urbanist"><option value="Varela Round">
+    <option value="Vollkorn"><option value="Volkhov"><option value="Work Sans">
+    <option value="Yanone Kaffeesatz"><option value="Yellowtail"><option value="Zilla Slab">
+  </datalist>
+
+  <!-- FONT ROLES -->
+  <h3 class="pg-subsection-title">Font Roles</h3>
+  <div class="pg-font-roles">
+    <div class="pg-font-role-row">
+      <span class="pg-token-label">Display</span>
+      <select id="pg-font-role-display" class="pg-token-select pg-font-role-select" data-role="display" data-var="--font-display"></select>
+      <select class="pg-font-weight-select" data-var="--font-weight-display" title="Weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400">400</option><option value="500">500</option><option value="600">600</option>
+        <option value="700" selected>700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+    </div>
+    <div class="pg-font-role-row">
+      <span class="pg-token-label">Heading</span>
+      <select id="pg-font-role-heading" class="pg-token-select pg-font-role-select" data-role="heading" data-var="--font-heading"></select>
+      <select class="pg-font-weight-select" data-var="--font-weight-heading" title="Weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400">400</option><option value="500">500</option><option value="600">600</option>
+        <option value="700" selected>700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+    </div>
+    <div class="pg-font-role-row">
+      <span class="pg-token-label">Title</span>
+      <select id="pg-font-role-title" class="pg-token-select pg-font-role-select" data-role="title" data-var="--font-title"></select>
+      <select class="pg-font-weight-select" data-var="--font-weight-title" title="Weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400">400</option><option value="500">500</option><option value="600">600</option>
+        <option value="700" selected>700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+    </div>
+    <div class="pg-font-role-row">
+      <span class="pg-token-label">Body</span>
+      <select id="pg-font-role-body" class="pg-token-select pg-font-role-select" data-role="body" data-var="--font-body"></select>
+      <span class="pg-font-weight-label">Regular</span>
+      <select class="pg-font-weight-select" data-var="--font-weight-body-regular" title="Regular weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400" selected>400</option><option value="500">500</option><option value="600">600</option>
+        <option value="700">700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+      <span class="pg-font-weight-label">Bold</span>
+      <select class="pg-font-weight-select" data-var="--font-weight-body-bold" title="Bold weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400">400</option><option value="500">500</option><option value="600">600</option>
+        <option value="700" selected>700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+    </div>
+    <div class="pg-font-role-row">
+      <span class="pg-token-label">Label</span>
+      <select id="pg-font-role-label" class="pg-token-select pg-font-role-select" data-role="label" data-var="--font-label"></select>
+      <select class="pg-font-weight-select" data-var="--font-weight-label" title="Weight">
+        <option value="100">100</option><option value="200">200</option><option value="300">300</option>
+        <option value="400">400</option><option value="500">500</option>
+        <option value="600" selected>600</option>
+        <option value="700">700</option><option value="800">800</option><option value="900">900</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- LETTER SPACING -->
+  <h3 class="pg-subsection-title">Letter Spacing</h3>
+  <p class="pg-ls-hint">Enter a percentage — e.g. <code>5</code> → stored as <code>0.05em</code>, scales with font size at every breakpoint.</p>
+  <div class="pg-ls-rows">
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Display</span>
+      <input type="number" id="pg-ls-display" class="pg-token-input pg-ls-input" data-var="--letter-spacing-display" data-base="30" step="0.1" value="0">
+      <span class="pg-ls-px-label" id="pg-ls-display-px">0px</span>
+    </div>
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Heading</span>
+      <input type="number" id="pg-ls-heading" class="pg-token-input pg-ls-input" data-var="--letter-spacing-heading" data-base="30" step="0.1" value="0">
+      <span class="pg-ls-px-label" id="pg-ls-heading-px">0px</span>
+    </div>
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Title</span>
+      <input type="number" id="pg-ls-title" class="pg-token-input pg-ls-input" data-var="--letter-spacing-title" data-base="24" step="0.1" value="0">
+      <span class="pg-ls-px-label" id="pg-ls-title-px">0px</span>
+    </div>
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Body</span>
+      <input type="number" id="pg-ls-body" class="pg-token-input pg-ls-input" data-var="--letter-spacing-body" data-base="15" step="0.1" value="0">
+      <span class="pg-ls-px-label" id="pg-ls-body-px">0px</span>
+    </div>
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Label</span>
+      <input type="number" id="pg-ls-label" class="pg-token-input pg-ls-input" data-var="--letter-spacing-label" data-base="12" step="0.1" value="0">
+      <span class="pg-ls-px-label" id="pg-ls-label-px">0px</span>
+    </div>
+    <div class="pg-ls-row">
+      <span class="pg-token-label">Overline</span>
+      <input type="number" id="pg-ls-overline" class="pg-token-input pg-ls-input" data-var="--letter-spacing-overline" data-base="12" step="0.1" value="16.7">
+      <span class="pg-ls-px-label" id="pg-ls-overline-px">2px</span>
+    </div>
+  </div>
+
+  <!-- TYPE SCALE -->
+  <h3 class="pg-subsection-title">Type Scale</h3>
+  <div class="pg-scale-controls">
+    <div class="pg-scale-select-row">
+      <span class="pg-token-label">Scale Preset</span>
+      <select id="pg-scale-select" class="pg-token-select">
+        <option value="minor-second">Minor Second (×1.067)</option>
+        <option value="major-second">Major Second (×1.125)</option>
+        <option value="minor-third" selected>Minor Third (×1.200)</option>
+        <option value="major-third">Major Third (×1.250)</option>
+        <option value="perfect-fourth">Perfect Fourth (×1.333)</option>
+      </select>
+    </div>
+    <div class="pg-scale-grid-wrap">
+      <table class="pg-scale-grid" id="pg-scale-grid">
+        <thead>
+          <tr>
+            <th class="pg-scale-th pg-scale-th-step">Step</th>
+            <th class="pg-scale-th pg-scale-th-raw">f raw</th>
+            <th class="pg-scale-th">f</th>
+            <th class="pg-scale-th">lb</th>
+            <th class="pg-scale-th">lt</th>
+            <th class="pg-scale-th">ld</th>
+          </tr>
+        </thead>
+        <tbody id="pg-scale-tbody">
+          <!-- Populated by playground.js -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <h3 class="pg-subsection-title">Display</h3>
   <div class="pg-type-row">
     <div class="d1 text-medium pg-type-sample">The quick brown fox</div>
@@ -775,6 +973,18 @@
   <h3 class="pg-subsection-title">Buttons</h3>
 
   <div class="pg-comp-label">Primary</div>
+  <div class="pg-btn-token-controls">
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-primary-label-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-primary-label-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label (disabled)</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-primary-label-disabled-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-primary-label-disabled-color" data-mode="dark"></select>
+    </div>
+  </div>
   <div class="pg-comp-row">
     <button class="btn btn-xs btn-primary">XS</button>
     <button class="btn btn-s btn-primary">Small</button>
@@ -793,6 +1003,28 @@
   <div class="pg-comp-note">disabled state</div>
 
   <div class="pg-comp-label">Secondary</div>
+  <div class="pg-btn-token-controls">
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Outline</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-label-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-label-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Outline (disabled)</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label (disabled)</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-label-disabled-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-label-disabled-color" data-mode="dark"></select>
+    </div>
+  </div>
   <div class="pg-comp-row">
     <button class="btn btn-xs btn-secondary">XS</button>
     <button class="btn btn-s btn-secondary">Small</button>
@@ -811,6 +1043,18 @@
   <div class="pg-comp-note">disabled state</div>
 
   <div class="pg-comp-label">Tertiary</div>
+  <div class="pg-btn-token-controls">
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-tertiary-label-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-tertiary-label-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-btn-token-row">
+      <span class="pg-btn-token-label">Label (disabled)</span>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-tertiary-label-disabled-color" data-mode="light"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-tertiary-label-disabled-color" data-mode="dark"></select>
+    </div>
+  </div>
   <div class="pg-comp-row">
     <button class="btn btn-xs btn-tertiary">XS</button>
     <button class="btn btn-s btn-tertiary">Small</button>

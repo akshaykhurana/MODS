@@ -5,7 +5,7 @@
    Raw values live in _base.css.
 
    Light mode in :root {}. Dark mode overrides in .dark {}.
-   All mode-switching tokens follow Pattern 1: named base vars (--{cat}-light-{prop} /
+   All mode-switching tokens follow the Variables Naming Pattern: named base vars (--{cat}-light-{prop} /
    --{cat}-dark-{prop}) in :root, with active aliases (--{cat}-{prop}) that re-point in .dark {}.
    ========================================================================== */
 
@@ -18,7 +18,7 @@
 
   --brand-main-light-color: var(--p60);
   --brand-main-dark-color:  var(--p80);
-  --brand-main-color: var(--brand-main-light-color);
+  --brand-main-color: var(--p30);
 
 
   /* ==========================================================================
@@ -136,6 +136,15 @@
   --action-neutral-default-light-color:    var(--n30);
   --action-neutral-disabled-light-color:   var(--n50);
   --action-neutral-filled-light-color:     var(--n60);
+  /* Button labels & outlines — light mode */
+  --action-primary-label-light-color:              var(--s60);
+  --action-primary-label-disabled-light-color:     var(--s60);
+  --action-secondary-outline-light-color:          var(--s10);
+  --action-secondary-label-light-color:            var(--s10);
+  --action-secondary-outline-disabled-light-color: var(--s70);
+  --action-secondary-label-disabled-light-color:   var(--s10);
+  --action-tertiary-label-light-color:             var(--s10);
+  --action-tertiary-label-disabled-light-color:    var(--s10);
 
   /* Base — dark mode */
   --action-primary-default-dark-color:    var(--p60);
@@ -146,6 +155,15 @@
   --action-neutral-default-dark-color:    var(--n40);
   --action-neutral-disabled-dark-color:   var(--n30);
   --action-neutral-filled-dark-color:     var(--n20);
+  /* Button labels & outlines — dark mode */
+  --action-primary-label-dark-color:              var(--s10);
+  --action-primary-label-disabled-dark-color:     var(--s10);
+  --action-secondary-outline-dark-color:          var(--s60);
+  --action-secondary-label-dark-color:            var(--s60);
+  --action-secondary-outline-disabled-dark-color: var(--s30);
+  --action-secondary-label-disabled-dark-color:   var(--s60);
+  --action-tertiary-label-dark-color:             var(--s60);
+  --action-tertiary-label-disabled-dark-color:    var(--s60);
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
   --action-primary-default-color:    var(--action-primary-default-light-color);   /* base state */
@@ -156,6 +174,14 @@
   --action-neutral-default-color:    var(--action-neutral-default-light-color);
   --action-neutral-disabled-color:   var(--action-neutral-disabled-light-color);
   --action-neutral-filled-color:     var(--action-neutral-filled-light-color);
+  --action-primary-label-color:              var(--action-primary-label-light-color);
+  --action-primary-label-disabled-color:     var(--action-primary-label-disabled-light-color);
+  --action-secondary-outline-color:          var(--action-secondary-outline-light-color);
+  --action-secondary-label-color:            var(--action-secondary-label-light-color);
+  --action-secondary-outline-disabled-color: var(--action-secondary-outline-disabled-light-color);
+  --action-secondary-label-disabled-color:   var(--action-secondary-label-disabled-light-color);
+  --action-tertiary-label-color:             var(--action-tertiary-label-light-color);
+  --action-tertiary-label-disabled-color:    var(--action-tertiary-label-disabled-light-color);
   /* Overlay alpha — mode-independent; --action-overlay-hover/pressed-global-alpha defined in _base.css */
 
 
@@ -241,6 +267,14 @@
   --action-neutral-default-color:    var(--action-neutral-default-dark-color);
   --action-neutral-disabled-color:   var(--action-neutral-disabled-dark-color);
   --action-neutral-filled-color:     var(--action-neutral-filled-dark-color);
+  --action-primary-label-color:              var(--action-primary-label-dark-color);
+  --action-primary-label-disabled-color:     var(--action-primary-label-disabled-dark-color);
+  --action-secondary-outline-color:          var(--action-secondary-outline-dark-color);
+  --action-secondary-label-color:            var(--action-secondary-label-dark-color);
+  --action-secondary-outline-disabled-color: var(--action-secondary-outline-disabled-dark-color);
+  --action-secondary-label-disabled-color:   var(--action-secondary-label-disabled-dark-color);
+  --action-tertiary-label-color:             var(--action-tertiary-label-dark-color);
+  --action-tertiary-label-disabled-color:    var(--action-tertiary-label-disabled-dark-color);
 
   /* Meaning — re-point aliases to dark base set */
   --meaning-error-color:   var(--meaning-error-dark-color);

@@ -254,7 +254,8 @@
 
   .d1 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: var(--font-weight-display);
+    letter-spacing: var(--letter-spacing-display);
     font-size: var(--font-size-f8);
     line-height: var(--line-height-ld8);
     @media (min-width: 1280px) {
@@ -269,7 +270,8 @@
 
   .d2 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: var(--font-weight-display);
+    letter-spacing: var(--letter-spacing-display);
     font-size: var(--font-size-f8);
     line-height: var(--line-height-ld8);
     @media (min-width: 768px) {
@@ -288,7 +290,8 @@
 
   .d3 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: var(--font-weight-display);
+    letter-spacing: var(--letter-spacing-display);
     font-size: var(--font-size-f7);
     line-height: var(--line-height-ld7);
     @media (min-width: 768px) {
@@ -309,7 +312,8 @@
 
   .h1 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--letter-spacing-heading);
     font-size: var(--font-size-f8);
     line-height: var(--line-height-lt8);
     @media (min-width: 768px) {
@@ -328,7 +332,8 @@
 
   .h2 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--letter-spacing-heading);
     font-size: var(--font-size-f7);
     line-height: var(--line-height-lt7);
     @media (min-width: 768px) {
@@ -347,7 +352,8 @@
 
   .h3 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--letter-spacing-heading);
     font-size: var(--font-size-f6);
     line-height: var(--line-height-lt6);
     @media (min-width: 768px) {
@@ -368,7 +374,8 @@
 
   .title-l {
     font-family: var(--font-title);
-    font-weight: 700;
+    font-weight: var(--font-weight-title);
+    letter-spacing: var(--letter-spacing-title);
     font-size: var(--font-size-f7);
     line-height: var(--line-height-lt7);
     @media (min-width: 1920px) {
@@ -379,7 +386,8 @@
 
   .title-m {
     font-family: var(--font-title);
-    font-weight: 700;
+    font-weight: var(--font-weight-title);
+    letter-spacing: var(--letter-spacing-title);
     font-size: var(--font-size-f6);
     line-height: var(--line-height-lt6);
     @media (min-width: 1920px) {
@@ -390,7 +398,8 @@
 
   .title-s {
     font-family: var(--font-title);
-    font-weight: 700;
+    font-weight: var(--font-weight-title);
+    letter-spacing: var(--letter-spacing-title);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lt5);
     @media (min-width: 1920px) {
@@ -401,7 +410,8 @@
 
   .title-xs {
     font-family: var(--font-title);
-    font-weight: 700;
+    font-weight: var(--font-weight-title);
+    letter-spacing: var(--letter-spacing-title);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lt4);
     @media (min-width: 1920px) {
@@ -415,22 +425,25 @@
 
   .body-l {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lb5);
     @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
   }
   .body-l-b {
     font-family: var(--font-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-body-bold);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lb5);
     @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
   }
   .body-l-i {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-style: italic;
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lb5);
     @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
@@ -438,22 +451,25 @@
 
   .body-m {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
   }
   .body-m-b {
     font-family: var(--font-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-body-bold);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
   }
   .body-m-i {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-style: italic;
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
@@ -461,22 +477,25 @@
 
   .body-s {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
   }
   .body-s-b {
     font-family: var(--font-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-body-bold);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
   }
   .body-s-i {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-style: italic;
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
@@ -484,22 +503,25 @@
 
   .body-xs {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
   }
   .body-xs-b {
     font-family: var(--font-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-body-bold);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
   }
   .body-xs-i {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-style: italic;
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
@@ -507,22 +529,25 @@
 
   .body-xxs {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f1);
     line-height: var(--line-height-lb1);
     @media (min-width: 1920px) { font-size: var(--font-size-f2); line-height: var(--line-height-lb2); }
   }
   .body-xxs-b {
     font-family: var(--font-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-body-bold);
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f1);
     line-height: var(--line-height-lb1);
     @media (min-width: 1920px) { font-size: var(--font-size-f2); line-height: var(--line-height-lb2); }
   }
   .body-xxs-i {
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-style: italic;
+    letter-spacing: var(--letter-spacing-body);
     font-size: var(--font-size-f1);
     line-height: var(--line-height-lb1);
     @media (min-width: 1920px) { font-size: var(--font-size-f2); line-height: var(--line-height-lb2); }
@@ -530,7 +555,8 @@
 
   .label-xl {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
+    letter-spacing: var(--letter-spacing-label);
     font-size: var(--font-size-f6);
     line-height: var(--line-height-lb6);
     @media (min-width: 1920px) { font-size: var(--font-size-f7); line-height: 36px; }
@@ -538,7 +564,8 @@
 
   .label-l {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
+    letter-spacing: var(--letter-spacing-label);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lb5);
     @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
@@ -546,7 +573,8 @@
 
   .label-m {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
+    letter-spacing: var(--letter-spacing-label);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
@@ -554,7 +582,8 @@
 
   .label-s {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
+    letter-spacing: var(--letter-spacing-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
@@ -562,7 +591,8 @@
 
   .label-xs {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
+    letter-spacing: var(--letter-spacing-label);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
@@ -573,9 +603,9 @@
 
   .overline-xl {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: var(--letter-spacing-overline);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 768px) {
@@ -594,9 +624,9 @@
 
   .overline-l {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: var(--letter-spacing-overline);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
@@ -604,9 +634,9 @@
 
   .overline-m {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: var(--letter-spacing-overline);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
@@ -614,9 +644,9 @@
 
   .overline-s {
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: var(--letter-spacing-overline);
     font-size: var(--font-size-f1);
     line-height: var(--line-height-lb1);
     @media (min-width: 1920px) { font-size: var(--font-size-f2); line-height: var(--line-height-lb2); }
@@ -654,7 +684,7 @@
     padding-inline: var(--spacing-g2h);
     border-radius: var(--shape-xs);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
     @media (min-width: 1920px) {
@@ -670,7 +700,7 @@
     padding-inline: var(--spacing-g3);
     border-radius: var(--shape-s);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) {
@@ -686,7 +716,7 @@
     padding-inline: var(--spacing-g4);
     border-radius: var(--shape-m);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) {
@@ -702,7 +732,7 @@
     padding-inline: var(--spacing-g4);
     border-radius: var(--shape-l);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f5);
     line-height: var(--line-height-lb5);
     @media (min-width: 1920px) {
@@ -718,7 +748,7 @@
     padding-inline: var(--spacing-g5);
     border-radius: var(--shape-xl);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f6);
     line-height: var(--line-height-lb6);
     @media (min-width: 1920px) {
@@ -731,7 +761,7 @@
 
   .btn-primary {
     background-color: rgb(var(--action-primary-default-color));
-    color: rgb(var(--text-invert-color) / var(--text-medium-alpha));
+    color: rgb(var(--action-primary-label-color) / var(--text-medium-alpha));
     box-shadow: var(--shadow-level2);
   }
   .btn-primary:hover {
@@ -748,14 +778,15 @@
   }
   .btn-primary:disabled {
     background-color: rgb(var(--action-secondary-disabled-color));
+    color: rgb(var(--action-primary-label-disabled-color) / var(--text-disabled-alpha));
     box-shadow: none;
     cursor: not-allowed;
   }
 
   .btn-secondary {
     background-color: transparent;
-    border: 1.5px solid rgb(var(--text-color) / var(--text-disabled-alpha));
-    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    border: 1.5px solid rgb(var(--action-secondary-outline-color) / var(--text-disabled-alpha));
+    color: rgb(var(--action-secondary-label-color) / var(--text-disabled-alpha));
   }
   .btn-secondary:hover {
     background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)));
@@ -769,14 +800,14 @@
   }
   .btn-secondary:disabled {
     background-color: transparent;
-    border-color: rgb(var(--action-secondary-disabled-color));
-    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    border-color: rgb(var(--action-secondary-outline-disabled-color));
+    color: rgb(var(--action-secondary-label-disabled-color) / var(--text-disabled-alpha));
     cursor: not-allowed;
   }
 
   .btn-tertiary {
     background-color: transparent;
-    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    color: rgb(var(--action-tertiary-label-color) / var(--text-medium-alpha));
   }
   .btn-tertiary:hover {
     background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)));
@@ -790,7 +821,7 @@
   }
   .btn-tertiary:disabled {
     background-color: transparent;
-    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    color: rgb(var(--action-tertiary-label-disabled-color) / var(--text-disabled-alpha));
     cursor: not-allowed;
   }
 
@@ -929,7 +960,7 @@
     color: rgb(var(--meaning-error-color));
     margin-top: var(--spacing-g0h);
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
@@ -1106,7 +1137,7 @@
     padding-block: var(--spacing-g0h);
     /* label-s inlined */
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
@@ -1159,7 +1190,7 @@
     transition: all 150ms;
     /* label-s inlined */
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) {
@@ -1234,7 +1265,7 @@
     transition: all 150ms;
     cursor: pointer;
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
   }
@@ -1285,7 +1316,7 @@
     outline: none;
     transition: all 150ms;
     font-family: var(--font-body);
-    font-weight: 400;
+    font-weight: var(--font-weight-body-regular);
     font-size: var(--font-size-f4);
     line-height: var(--line-height-lb4);
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
@@ -1326,7 +1357,7 @@
     background-color: rgb(var(--brand-main-color) / 0.15);
     color: rgb(var(--text-accent-color));
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
   }
   .avatar img {
     width: 100%;
@@ -1385,7 +1416,7 @@
     padding: var(--spacing-g0h) var(--spacing-g1h);
     /* label-xs inlined */
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f2);
     line-height: var(--line-height-lb2);
   }
@@ -1452,7 +1483,7 @@
     background: transparent;
     /* label-s inlined */
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) {
@@ -1493,7 +1524,7 @@
     border-style: solid;
     /* label-s inlined */
     font-family: var(--font-label);
-    font-weight: 600;
+    font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }

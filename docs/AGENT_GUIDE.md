@@ -26,9 +26,9 @@ If `dist/style.css` is produced without errors, the baseline is healthy. Proceed
 
 ---
 
-## Step 1 — Palette (`src/_base.css`)
+## Step 1 — Palette (`src/_base.css`, USER EDITABLE → PALETTE)
 
-This file contains raw RGB channel values only. No `var()` references are allowed anywhere in this file. The build will not error if you add them, but it will break the alpha-composition pattern used throughout the system.
+The PALETTE block at the top of `_base.css` contains raw RGB channel values only. No `var()` references are allowed inside this block. The build will not error if you add them, but it will break the alpha-composition pattern used throughout the system.
 
 ### Primary, secondary, and neutral palettes
 
@@ -62,13 +62,13 @@ Replace these from Figma alongside the main palettes.
 
 ### Alpha and scalar vars
 
-The alpha scales (text, border, action, surface), border widths, blur values, and shadow alphas in `_base.css` are rarely changed per project. Only edit them if the project has a specific contrast or visual density requirement.
+The alpha scales (text, border, action, surface), border widths, blur values, and shadow alphas live in the BASE VARS block of `_base.css` (still in the USER EDITABLE section). They are rarely changed per project. Only edit them if the project has a specific contrast or visual density requirement.
 
 ---
 
 ## Step 2 — Semantic tokens (`src/_semantic-tokens.css`)
 
-This file maps the raw palette steps to named semantic roles. Every colour token follows **Pattern 1**:
+This file maps the raw palette steps to named semantic roles. Every colour token follows the **Variables Naming Pattern**:
 
 1. `--{cat}-{prop}-light-color` / `--{cat}-{prop}-dark-color` — hold the raw palette step
 2. `--{cat}-{prop}-color` — the active alias, points to the light set by default
@@ -83,7 +83,7 @@ After changing `_base.css`, walk through `_semantic-tokens.css` and re-point the
 | Surfaces | Which neutral steps to use for `base`, `l1`–`l5`, and `invert` |
 | Text | Which neutral/primary step reads well as the main text colour; which primary step for accent |
 | Borders | Which neutral step for default borders; which primary step for focus rings |
-| Actions | Which primary steps for buttons (default + hover); which neutral steps for inactive states |
+| Actions | Which primary steps for buttons (default + hover overlay); which neutral steps for inactive states; which steps for button label/outline colours (primary-label, secondary-outline, secondary-label, tertiary-label — each has a default and disabled variant) |
 | Meaning | Only needed if you changed `--r*`, `--y*`, `--g*` in `_base.css` |
 | Brand | `--brand-main-color` — the single brand accent used in logo/wordmark contexts |
 | Shadow | `--shadow-color` defaults to `p30`; change if the primary palette produces an odd shadow tint |
@@ -96,6 +96,16 @@ After changing `_base.css`, walk through `_semantic-tokens.css` and re-point the
 ```
 
 Active aliases omit `{mode}` — mode is resolved at runtime by `.dark {}`. Full spec in [`MODS Design System.md`](MODS%20Design%20System.md).
+
+### Using the playground to re-point tokens
+
+The playground provides live dropdowns for all semantic colour tokens — no need to edit `_semantic-tokens.css` by hand for colour decisions. Open `http://localhost:3001`, select a token category panel (Surfaces, Text, Borders, Actions), pick palette steps from the dropdowns, and hit **Save**. The server rewrites the relevant vars in `_semantic-tokens.css` and triggers a rebuild.
+
+**How the server writes semantic tokens.** The playground sends the active alias name (e.g. `action-primary-default-color`) plus a mode (`light` or `dark`). The server resolves this to the matching base var by inserting the mode before the last dash-segment (the property): `action-primary-default-color` → `action-primary-default-light-color`. It writes only to base vars in `:root {}`; the active aliases and `.dark {}` block are never touched. If you ever see an active alias pointing directly to a palette step (e.g. `var(--p80)` instead of `var(--action-primary-default-light-color)`), that means a save corrupted it — restore it to point at its `-light-color` base var.
+
+Palette swatches show an **in-use** tag on any step that is currently referenced by at least one semantic token. This makes it easy to see at a glance which steps are load-bearing and which are free to reassign.
+
+Button label and outline colours (primary label, secondary outline + label, tertiary label, and all disabled variants) have their own dropdown rows in the **Actions** panel, covering both light and dark modes.
 
 ---
 
@@ -112,24 +122,72 @@ Do not delete the base typography classes (`.h1`–`.h3`, `.body-*`, `.label-*`)
 
 ---
 
-## Step 4 — Fonts (`src/_fonts.css`)
+## Step 4 — Fonts (`src/_base.css`, USER EDITABLE → TYPE SCALE + FONT FAMILIES)
+
+Fonts live entirely in `_base.css`:
+
+1. The Google Fonts `@import` URL on line 1 (must stay first per CSS spec).
+2. The `@theme {}` block — font-family variables, font sizes (`--font-size-f*`), and line heights.
+3. The BASE VARS block — font-weight variables and letter-spacing variables.
 
 If the project uses a typeface other than Roboto:
 
-1. Replace the Google Fonts `@import` URL with the new font
-2. Update the font-role CSS variables:
+1. Replace the Google Fonts `@import` URL on line 1 of `_base.css` with the new font(s)
+2. Update the `--font-family-*` variables in the TYPE SCALE + FONT FAMILIES block:
 
 ```css
-:root {
-  --font-display:  'YourFont', system-ui, sans-serif;
-  --font-heading:  'YourFont', system-ui, sans-serif;
-  --font-title:    'YourFont', system-ui, sans-serif;
-  --font-body:     'YourFont', system-ui, sans-serif;
-  --font-label:    'YourFont', system-ui, sans-serif;
+@theme {
+  --font-family-display: 'YourFont', system-ui, sans-serif;
+  --font-family-heading: 'YourFont', system-ui, sans-serif;
+  --font-family-title:   'YourFont', system-ui, sans-serif;
+  --font-family-body:    'YourFont', system-ui, sans-serif;
+  --font-family-label:   'YourFont', system-ui, sans-serif;
 }
 ```
 
-`--font-display` and `--font-heading` are typically a brand/display typeface. `--font-title` is intentionally separate — card and section titles often follow the body typeface where a display font would be too heavy at smaller sizes.
+`--font-family-display` and `--font-family-heading` are typically a brand/display typeface. `--font-family-title` is intentionally separate — card and section titles often follow the body typeface where a display font would be too heavy at smaller sizes.
+
+### Font weights
+
+Each font role has a dedicated weight variable in the BASE VARS block of `_base.css`:
+
+```css
+:root {
+  --font-weight-display:      700;
+  --font-weight-heading:      700;
+  --font-weight-title:        700;
+  --font-weight-body-regular: 400;
+  --font-weight-body-bold:    700;
+  --font-weight-label:        600;
+}
+```
+
+Body has two weight vars because the same font family is used at both weights within the body role. All component classes in `_components.css` reference these vars — changing a weight var affects every component in that role.
+
+### Letter spacing
+
+Six letter-spacing variables live in the BASE VARS block of `_base.css`, one per role (stored in `em` so they scale with each element's own font size):
+
+```css
+:root {
+  --letter-spacing-display:  0em;
+  --letter-spacing-heading:  0em;
+  --letter-spacing-title:    0em;
+  --letter-spacing-body:     0em;
+  --letter-spacing-label:    0em;
+  --letter-spacing-overline: 0.167em; /* ~2px at 12px */
+}
+```
+
+The overline default matches the old hardcoded `2px` value. Every type class in `_components.css` references `letter-spacing: var(--letter-spacing-{role})`, so adjusting these vars affects all classes in that role simultaneously.
+
+The playground's **Letter Spacing** panel lets you edit these live. Enter a value as a plain percentage (e.g. `5` → `0.05em`). A px reference label shows the approximate pixel equivalent at that role's base size.
+
+### Type scale
+
+The f-scale (font sizes) and lb/lt/ld (line heights) live in the TYPE SCALE + FONT FAMILIES block of `_base.css`. To regenerate from a different ratio, use the playground's **Type Scale** panel: select a preset (Minor Second through Perfect Fourth), optionally tweak individual cells in the editable grid, then save — the server rewrites all 48 tokens in `_base.css` from the snapshot.
+
+If you prefer to edit `_base.css` directly, the token names are `--font-size-f1` through `--font-size-f15`, `--line-height-lb1`–`lb8`, `--line-height-lt1`–`lt15`, `--line-height-ld6`–`ld15`.
 
 ---
 
@@ -159,17 +217,15 @@ MODS_DEST=../../mods npm run pack
 MODS_DEST=../mods npm run pack
 ```
 
-This copies the five source partials to `MODS_DEST`:
+This copies the three source partials to `MODS_DEST`:
 
 ```
 _base.css
 _components.css
-_fonts.css
 _semantic-tokens.css
-_theme.css
 ```
 
-The host project's own Tailwind build processes these files — the `@theme` block in `_theme.css` must be visible to the host's compiler so it can generate utility classes from the design tokens. **Never point the host at `dist/style.css`** — the pre-compiled output bypasses the host's build and no MODS-derived utilities will be generated.
+The host project's own Tailwind build processes these files — the `@theme` blocks in `_base.css` must be visible to the host's compiler so it can generate utility classes from the design tokens. **Never point the host at `dist/style.css`** — the pre-compiled output bypasses the host's build and no MODS-derived utilities will be generated.
 
 The script will warn you if the host `.gitignore` contains a rule that would hide the packed files from git.
 
@@ -181,12 +237,10 @@ Run `pack` every time you rebuild after changing any source partial.
 
 ### CSS import
 
-In the host project's CSS entry point (e.g. `globals.css`), import the five partials:
+In the host project's CSS entry point (e.g. `globals.css`), import the three partials:
 
 ```css
-@import './mods/_theme.css';
 @import './mods/_base.css';
-@import './mods/_fonts.css';
 @import './mods/_semantic-tokens.css';
 @import './mods/_components.css';
 ```
@@ -239,9 +293,20 @@ When working with files inside /mods/, follow the workflow in mods/docs/AGENT_GU
 
 ## What not to touch
 
-| File | Notes |
+| File / section | Notes |
 |---|---|
-| `src/_theme.css` | Spacing scale, breakpoints, shape scale, typography size/leading tokens — system-wide, rarely changed. Only edit if the project requires a fundamentally different spatial grid. |
+| `src/_base.css` → DO NOT EDIT | Breakpoints, spacing scale (g0–g25), shadow geometry literals. System-wide, rarely changed. Only edit if the project requires a fundamentally different spatial grid or shadow language. |
+| `src/_base.css` → TAILWIND THEME COMPOSITION | The `@theme inline {}` block at the bottom of the file. Changing it adds/removes utility categories. Edit only with intent. |
 | `src/style.css` | Entry point import chain — only edit to add or remove partial files. |
 | `dist/style.css` | Compiled output — never edit by hand, always overwritten by the build. |
 | `server.js` | Playground dev server — leave as-is unless modifying the playground itself. |
+
+---
+
+## Playground engineering notes
+
+### Dark-mode live token cascade
+Semantic tokens are declared in `:root {}` (light) and `body.dark {}` (dark). When the playground applies a live token change via `setProperty`, the target element matters: a CSS class rule on `body` wins over an inline style set further up on `html` (`document.documentElement`). All live dark-mode overrides in `playground.js` must therefore write to `document.body`, not `document.documentElement`. Use the `liveTokenTarget()` helper — it returns `document.body` in dark mode and `document.documentElement` in light mode — for any `setProperty` call that is mode-specific.
+
+### Playground spacing convention
+All `gap`, `padding`, and `margin` values in `playground.css` must use spacing tokens (`var(--spacing-g*)`) rather than hardcoded pixel values. This keeps the playground chrome consistent with the design system's spatial grid.

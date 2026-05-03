@@ -17,41 +17,8 @@ The same pattern governs every part of the system.
 | **Spacing** | `g0`–`g25` + half-steps | `p-g3`, `gap-g2`, `.gap-default` |
 | **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xs`–`--shape-xxl`, `--shape-full`, `--shape-control` |
 
-Base variables live in `src/_theme.css` and `src/_base.css`.  
+Base variables live in `src/_base.css`.  
 The Semantic layer lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.css` (everything else).
-
----
-
-## CSS Variable Naming Convention
-
-All CSS custom properties in MODS follow a strict 4-part naming rule:
-
-```
---{category}-{type}-{mode}-{property}
-```
-
-| Part | Values | Notes |
-|---|---|---|
-| `category` | `surfaces`, `text`, `border`, `action`, `meaning`, `brand`, `shadow`, `chart` | Semantic domain |
-| `type` | `base`, `l1`–`l5`, `invert`, `high`, `medium`, `low`, `primary`, `error`, etc. | The specific role within the category |
-| `mode` | `light`, `dark`, `global` | `global` for mode-independent values (alphas, widths, blurs) |
-| `property` | `color`, `alpha`, `width`, `blur` | The CSS property type |
-
-**Active aliases** (used in components and utilities) omit `mode` — the mode is resolved at runtime by the `.dark {}` block:
-```
---surfaces-base-color    ← active alias (no mode)
---surfaces-base-light-color  ← base var (light)
---surfaces-base-dark-color   ← base var (dark)
-```
-
-**Dimension vars** (alpha, width, blur) omit mode when mode-independent:
-```
---border-global-width       ← single value, not mode-sensitive
---border-focus-global-alpha ← focus alpha, same in all modes
---text-high-light-alpha     ← per-mode emphasis alpha (base var)
---text-high-alpha           ← active alias (no mode)
-```
-
 
 ---
 
@@ -93,10 +60,9 @@ All CSS custom properties in MODS follow a strict 4-part naming rule:
 ```
 src/
   style.css               ← Entry point. @import "tailwindcss" + all partials.
-  _theme.css              ← @theme block: all Base design tokens
-  _base.css               ← :root CSS vars: raw palette steps, alpha scales, border widths, shape raw scale
+  _base.css               ← All raw tokens: @theme block, :root palette, alpha scales, shape scale,
+                            Google Fonts import, font families, font weights, font sizes, line heights
   _semantic-tokens.css    ← :root CSS vars: brand, surfaces, actions, text, borders, shadows
-  _fonts.css              ← Google Fonts import + font role CSS variables
   _components.css         ← @layer components: all Semantic utility classes
 dist/
   style.css               ← Compiled output (gitignored per project)
@@ -112,9 +78,11 @@ docs/
 
 ### Base variables — Palettes
 
-Three full palettes in the starter, each with 10 steps. Stored as raw RGB channel values (no `rgb()` wrapper) so alpha can be applied at point of use via `rgb(var(--p40) / 0.87)`.
+Three full palettes in the starter. Stored as raw RGB channel values (no `rgb()` wrapper) so alpha can be applied at point of use via `rgb(var(--p40) / 0.87)`.
 
-Steps run `10, 20, 30, 40, 50, 60, 70, 80, 90, 100` where 10 is lightest and 100 is darkest.
+The **primary (p)** and **secondary (s)** palettes use steps `0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 95, 98, 99, 100`.
+
+The **neutral (n)** palette uses steps `0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100` — pure grey steps (R=G=B), no chromatic bias.
 
 > **Generate palettes using Google's official Material Theme Builder Figma plugin.** The plugin produces a full tonal palette in the HCT colour space for any source hue. The step numbers map directly — `p10` is tone 10 of the primary palette from the plugin, `p40` is tone 40, and so on. Copy the HEX values from the plugin, convert to RGB channels, and drop them into `_base.css`. Do not use HSB or HSL to hand-pick the steps — those colour spaces are perceptually uneven and will produce mismatched contrast ratios across hues.
 
@@ -209,7 +177,7 @@ The alpha values follow the Material Design emphasis scale and are rarely overri
 
 #### Colour semantic tokens
 
-All mode-switching tokens follow **Pattern 1**:
+All mode-switching tokens follow the **Variables Naming Pattern**:
 1. Named base vars `--{cat}-{prop}-light-color` / `--{cat}-{prop}-dark-color` in `:root` hold the raw palette step.
 2. Active aliases `--{cat}-{prop}` point to the light set by default.
 3. `.dark {}` re-points aliases to the dark set — `.dark {}` is never written programmatically.
@@ -478,6 +446,10 @@ Hover and pressed states use a **state layer overlay** model. A brand-tinted ove
 | `action-primary-*` | default + overlay (hover/pressed) + disabled | Buttons, checkboxes, dropdowns, progress bars |
 | `action-secondary-*` | default + overlay (hover/pressed) + disabled | Secondary button fills, ghost button active states |
 | `action-neutral-*` | default / disabled / filled | Inactive toggles, unselected tabs, neutral state fills |
+| `action-primary-label-color` / `action-primary-label-disabled-color` | — | Label colour on primary buttons (default + disabled) |
+| `action-secondary-outline-color` / `action-secondary-outline-disabled-color` | — | Border colour on secondary buttons (default + disabled) |
+| `action-secondary-label-color` / `action-secondary-label-disabled-color` | — | Label colour on secondary buttons (default + disabled) |
+| `action-tertiary-label-color` / `action-tertiary-label-disabled-color` | — | Label colour on tertiary/ghost buttons (default + disabled) |
 
 | Alpha token | Default | Role |
 |---|---|---|
@@ -508,11 +480,11 @@ All 9 values are project-specific — replace from Figma. The `--chart-global-al
 
 ### Base variables — Size Scale: `f1`–`f15`
 
-Sizes are generated using the **minor third musical interval (6:5 = 1.2×)**, each step snapped to the nearest multiple of 1.5px. Base is 9px.
+Sizes are generated using the **minor third musical interval (6:5 = 1.2×)** by default, each step snapped to the nearest multiple of 1.5px. Base is 9px. Five ratio presets are supported — see "Type scale presets" below.
 
-**Generation method:** Start at 9px and multiply by 1.2 repeatedly. Then snap each raw result to the nearest 1.5px multiple. 1.5px is the smallest unit that divides evenly into the most common screen densities, so all values remain crisp at integer pixel boundaries on 1×, 1.5×, and 2× displays.
+**Generation method:** Start at 9px and multiply by the ratio repeatedly. Then snap each raw result to the nearest 1.5px multiple. 1.5px is the smallest unit that divides evenly into the most common screen densities, so all values remain crisp at integer pixel boundaries on 1×, 1.5×, and 2× displays.
 
-$$f_n = \text{round}(9 \times 1.2^{(n-1)} \div 1.5) \times 1.5$$
+$$f_n = \text{round}(9 \times r^{(n-1)} \div 1.5) \times 1.5$$
 
 | Step | Raw value | Snapped to 1.5px |
 |---|---|---|
@@ -533,8 +505,6 @@ $$f_n = \text{round}(9 \times 1.2^{(n-1)} \div 1.5) \times 1.5$$
 | f15 | 115.53px | 115.5px → **96px** (nearest applied) |
 
 > The larger steps (f11–f15) have visually larger snap distances. At display sizes the perceptual difference is negligible and the snapping preserves grid alignment over exact ratio fidelity.
-
-> To change the drama of the scale, swap the ratio: major second (~1.125×) for subtler, major third (~1.25×) for more dramatic.
 
 | Token | Size |
 |---|---|
@@ -649,20 +619,63 @@ In practice, you will rarely write these by hand. Component classes (`.h1`, `.bo
 
 ### Font role variables
 
-Each text role has its own font family CSS variable, all defaulting to Roboto.
+Each text role has its own font family, font weight, and letter-spacing CSS variable. All live in `src/_base.css`.
 
 ```css
-/* src/_fonts.css */
+/* src/_base.css */
 :root {
+  /* Font families — all default to Roboto */
   --font-display:   'Roboto', system-ui, sans-serif; /* d1–d3 */
   --font-heading:   'Roboto', system-ui, sans-serif; /* h1–h3 */
   --font-title:     'Roboto', system-ui, sans-serif; /* title-l, title-m, title-s, title-xs */
   --font-body:      'Roboto', system-ui, sans-serif; /* body-* */
   --font-label:     'Roboto', system-ui, sans-serif; /* label-*, overline-* */
+
+  /* Font weights — one per role (body has regular + bold separately) */
+  --font-weight-display:      700;
+  --font-weight-heading:      700;
+  --font-weight-title:        700;
+  --font-weight-body-regular: 400;
+  --font-weight-body-bold:    700;
+  --font-weight-label:        600;
+
+  /* Letter spacing — in em units (scales proportionally with font size) */
+  --letter-spacing-display:  0em;
+  --letter-spacing-heading:  0em;
+  --letter-spacing-title:    0em;
+  --letter-spacing-body:     0em;
+  --letter-spacing-label:    0em;
+  --letter-spacing-overline: 0.167em; /* ~2px at the overline base size (12px) */
 }
 ```
 
 `--font-display` and `--font-heading` default to the same value and are typically a display or brand typeface. `--font-title` defaults to the same but is intentionally separate — card titles and section titles often follow the body typeface on projects where the display font would be too heavy at smaller sizes.
+
+Body has two weight vars (`--font-weight-body-regular` and `--font-weight-body-bold`) because the same font family is used at both weights within the body role. All other roles use a single weight var.
+
+**Letter spacing** is stored in `em` so it scales proportionally at every breakpoint. Every type class in `_components.css` applies `letter-spacing: var(--letter-spacing-{role})`. The overline default is `0.167em` — this matches the old hardcoded `2px` value at the overline base size of 12px.
+
+### Type scale presets
+
+The f/lb/lt/ld scale is generated by the formula:
+
+$$f_n = \lfloor 9 \times r^{n-1} \div 1.5 \rceil \times 1.5$$
+
+where $r$ is the ratio and values are snapped to the nearest 1.5px multiple. The leading scales are derived from the snapped f-values:
+
+$$lb_n = \text{round}(f_n \times 1.5 \div 4) \times 4 \qquad lt_n = \text{round}(f_n \times 1.333 \div 4) \times 4 \qquad ld_n = \text{round}(f_n \times 1.25 \div 4) \times 4$$
+
+Five ratio presets are available:
+
+| Preset | Ratio | Character |
+|---|---|---|
+| Minor Second | 1.067 | Very subtle — nearly flat scale |
+| Major Second | 1.125 | Subtle — good for dense UI |
+| **Minor Third** | **1.200** | **Default — balanced drama** |
+| Major Third | 1.250 | Noticeable jump between steps |
+| Perfect Fourth | 1.333 | High contrast display scale |
+
+The playground's **Type Scale** panel lets you select a preset, then override individual cells. The full 48-value snapshot (`f1`–`f15`, `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15`) is written to `src/_base.css` on save, preserving any per-cell tweaks.
 
 ### Semantic — Typography component classes
 
@@ -696,7 +709,7 @@ In v4 CSS, responsive sizing uses breakpoint variant prefixes on `@apply`:
   font-family: var(--font-label);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: var(--letter-spacing-overline);
 }
 
 /* Label pattern — semibold UI text, NOT uppercase */
@@ -930,7 +943,7 @@ Corner radius is a brand expression token — the same component reads as sharp 
 
 ### Base variables — Shape scale
 
-Defined in `src/_theme.css`. The `sh{h}` tokens are the raw vocabulary — see [Shape Scale](#shape-scale) for the full scale. Each token encodes the component height it is designed for; the value is exactly one-eighth of that height.
+Defined in `src/_base.css`. The `sh{h}` tokens are the raw vocabulary — see [Shape Scale](#shape-scale) for the full scale. Each token encodes the component height it is designed for; the value is exactly one-eighth of that height.
 
 ### Semantic shape tokens
 

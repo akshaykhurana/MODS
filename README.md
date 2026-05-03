@@ -7,9 +7,9 @@ MODS is a Tailwind v4 CSS-first design system starter. Clone it into a project, 
 ## How it works
 
 1. Clone this repo into a host project (e.g. `store/mods/`)
-2. Edit `src/` to set the brand (see [Branding workflow](#branding-workflow) below)
+2. Edit `src/_base.css` to set the brand (see [Branding workflow](#branding-workflow) below)
 3. Run `npm run build:css` to compile (used by the playground)
-4. Run `MODS_DEST=<path> npm run pack` to copy the 5 source partials to the host's tracked `mods/` directory
+4. Run `MODS_DEST=<path> npm run pack` to copy the 3 source partials to the host's tracked `mods/` directory
 5. Import those partials in the host's CSS entry point — the host's own Tailwind build processes them
 
 The MODS tool directory is not committed. The packed `mods/` directory in the host project is.
@@ -46,16 +46,19 @@ Adjust `store/mods` and `MODS_DEST` to match the host project's directory layout
 
 Full step-by-step for agents and developers: [`docs/AGENT_GUIDE.md`](docs/AGENT_GUIDE.md)
 
-Summary:
+Summary — every change happens in `src/_base.css`:
 
-| Step | File | What to do |
+| Step | Section of `_base.css` | What to do |
 |---|---|---|
-| 1 | `src/_base.css` | Replace palette RGB channels (`--p*`, `--s*`, `--n*`, meaning tones) |
-| 2 | `src/_semantic-tokens.css` | Re-point light/dark base vars to the correct new palette steps |
-| 3 | `src/_components.css` | Delete any `@layer components` blocks the project doesn't need |
-| 4 | `src/_fonts.css` | Swap Google Fonts import + font-role CSS vars (if changing typeface) |
-| 5 | — | Run `npm run build:css` |
-| 6 | — | Run `MODS_DEST=<path> npm run pack` to copy source partials to host |
+| 1 | PALETTE  (USER EDITABLE) | Replace palette RGB channels (`--p*`, `--s*`, `--n*`, meaning tones, charts) |
+| 2 | BASE VARS (USER EDITABLE) | Tune alphas, border widths, radius scale, letter-spacing |
+| 3 | TYPE SCALE / FONT FAMILIES (USER EDITABLE) | Adjust `--font-size-f*`, `--line-height-*`, `--font-family-*` and the Google Fonts `@import` at the top of the file |
+| 4 | `src/_semantic-tokens.css` | Re-point light/dark base vars to the correct new palette steps |
+| 5 | `src/_components.css` | Delete any `@layer components` blocks the project doesn't need |
+| 6 | — | Run `npm run build:css` |
+| 7 | — | Run `MODS_DEST=<path> npm run pack` to copy source partials to host |
+
+The DO NOT EDIT and TAILWIND THEME COMPOSITION sections of `_base.css` are system-defined — change only with intent.
 
 ---
 
@@ -64,10 +67,8 @@ Summary:
 ```
 src/
   style.css               ← Entry point — @import chain
-  _base.css               ← Raw palette RGB channels + scalar base vars (alphas, widths, radii)
-  _semantic-tokens.css    ← Semantic colour/shape tokens + dark-mode alias switching
-  _theme.css              ← Tailwind @theme block — spacing, breakpoints, typography, shape scales
-  _fonts.css              ← Google Fonts import + font-role CSS variables
+  _base.css               ← All raw, user-editable design tokens + Tailwind @theme blocks
+  _semantic-tokens.css    ← Semantic colour/shape aliases + dark-mode switching (var() only)
   _components.css         ← @layer components — all semantic utility classes
 dist/
   style.css               ← Compiled output (playground only — not imported by host projects)
