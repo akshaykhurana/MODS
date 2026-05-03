@@ -16,13 +16,19 @@ For the full token reference (naming convention, all token tables, system ration
 
 ## Setup
 
+Run these commands from the **host project root**:
+
 ```bash
-cd mods
-npm install
-npm run build:css    # confirm baseline compiles → dist/style.css
+git clone <mods-repo-url> mods   # clone MODS into the host project
+rm -rf mods/.git                  # detach from upstream — kills the nested git repo
+echo "mods/" >> .gitignore        # hide the tool tree from host git and VS Code
+cd mods && npm install
+npm run build:css                 # confirm baseline compiles → dist/style.css
 ```
 
 If `dist/style.css` is produced without errors, the baseline is healthy. Proceed to Step 1.
+
+To uninstall MODS later: `rm -rf mods/` is always safe — the compiled CSS published to `MODS_DEST` (see Step 6) is what production uses, and that file lives in the host's tracked tree.
 
 ---
 
@@ -129,25 +135,27 @@ Do not delete the base typography classes (`.h1`–`.h3`, `.body-*`, `.label-*`)
 Fonts live entirely in `_base.css`:
 
 1. The Google Fonts `@import` URL on line 1 (must stay first per CSS spec).
-2. The `@theme {}` block — font-family variables, font sizes (`--font-size-f*`), and line heights.
+2. The `@theme {}` block — font variables, font sizes (`--font-size-f*`), and line heights.
 3. The BASE VARS block — font-weight variables and letter-spacing variables.
 
-If the project uses a typeface other than Roboto:
+If the project uses a typeface other than Jost:
 
 1. Replace the Google Fonts `@import` URL on line 1 of `_base.css` with the new font(s)
-2. Update the `--font-family-*` variables in the TYPE SCALE + FONT FAMILIES block:
+2. Update the `--font-*` variables in the TYPE SCALE + FONT FAMILIES block:
 
 ```css
 @theme {
-  --font-family-display: 'YourFont', system-ui, sans-serif;
-  --font-family-heading: 'YourFont', system-ui, sans-serif;
-  --font-family-title:   'YourFont', system-ui, sans-serif;
-  --font-family-body:    'YourFont', system-ui, sans-serif;
-  --font-family-label:   'YourFont', system-ui, sans-serif;
+  --font-display: 'YourFont', system-ui, sans-serif;
+  --font-heading: 'YourFont', system-ui, sans-serif;
+  --font-title:   'YourFont', system-ui, sans-serif;
+  --font-body:    'YourFont', system-ui, sans-serif;
+  --font-label:   'YourFont', system-ui, sans-serif;
 }
 ```
 
-`--font-family-display` and `--font-family-heading` are typically a brand/display typeface. `--font-family-title` is intentionally separate — card and section titles often follow the body typeface where a display font would be too heavy at smaller sizes.
+`--font-display` and `--font-heading` are typically a brand/display typeface. `--font-title` is intentionally separate — card and section titles often follow the body typeface where a display font would be too heavy at smaller sizes.
+
+> **Using `_base.css` as a partial (imported by a host entry file)?** CSS requires all `@import` rules before any other rules. When `_base.css` is pulled in via `@import "mods/_base.css"` from a host `globals.css`, the Google Fonts `@import` on line 1 ends up after `@import "tailwindcss"` in the processed output and is silently dropped by the parser. Fix: move the `@import url('https://fonts.googleapis.com/...')` line to the very top of your host entry file and remove it from `_base.css`. Importing partials directly is not the recommended consumption path — see Step 6 for the standard workflow.
 
 ### Font weights
 
@@ -193,45 +201,54 @@ If you prefer to edit `_base.css` directly, the token names are `--font-size-f1`
 
 ---
 
-## Step 5 — Rebuild
+## Step 5 — Rebuild (local check)
 
 ```bash
 npm run build:css
 ```
 
-This produces `dist/style.css` inside the MODS tool directory. That file is used by the playground only — it is not what the host project imports.
+This produces `dist/style.css` inside the MODS tool directory for use by the playground. `npm run pack` (Step 6) runs this build automatically, so you only need to call this step directly when iterating inside the playground without publishing to the host yet.
 
 ---
 
 ## Step 6 — Pack to host project
 
 ```bash
-MODS_DEST=<path-to-mods-dir-in-host> npm run pack
+MODS_DEST=<path/to/host/styles/mods.css> npm run pack
 ```
 
-`MODS_DEST` is a path relative to the MODS tool directory. Examples:
+`MODS_DEST` is a **file path** (not a directory) relative to the MODS tool directory, pointing to where the compiled CSS should live in the host's tracked tree. Examples:
 
 ```bash
-# MODS tool at store/mods/, host mods/ dir at project root
-MODS_DEST=../../mods npm run pack
+# MODS tool at host/mods/, compiled CSS published to host/src/styles/mods.css
+MODS_DEST=../src/styles/mods.css npm run pack
 
-# MODS tool at mods/, host mods/ dir one level up
-MODS_DEST=../mods npm run pack
+# MODS tool at store/mods/, compiled CSS at project root styles/
+MODS_DEST=../../styles/mods.css npm run pack
 ```
 
-This copies the three source partials to `MODS_DEST`:
+The script:
+1. Runs `npm run build:css` to produce a fresh `dist/style.css`.
+2. Copies `dist/style.css` to `MODS_DEST` (creates parent directories if needed).
+3. Writes a token snapshot to `<MODS_DEST_dir>/mods-snapshot/` — see **Token snapshot** below.
+4. Warns if `MODS_DEST` is gitignored (the compiled CSS must reach CI).
+
+Run `pack` every time you change tokens and want the host to pick up the changes.
+
+### Token snapshot
+
+Alongside the compiled CSS, `pack` writes a `mods-snapshot/` folder:
 
 ```
-_base.css
-_components.css
-_semantic-tokens.css
+<MODS_DEST_dir>/
+  mods.css              ← compiled CSS (host imports this)
+  mods-snapshot/
+    _base.css           ← verbatim copy of src/_base.css at pack time
+    _semantic-tokens.css
+    README.md           ← restore instructions + agent prompt
 ```
 
-The host project's own Tailwind build processes these files — the `@theme` blocks in `_base.css` must be visible to the host's compiler so it can generate utility classes from the design tokens. **Never point the host at `dist/style.css`** — the pre-compiled output bypasses the host's build and no MODS-derived utilities will be generated.
-
-The script will warn you if the host `.gitignore` contains a rule that would hide the packed files from git.
-
-Run `pack` every time you rebuild after changing any source partial.
+The snapshot is git-tracked and survives a MODS tool deletion. If you re-clone MODS and need to restore your palette and token decisions, open `mods-snapshot/README.md` and follow the agent restore prompt there. The agent reads both the snapshot and the fresh source files, copies only USER EDITABLE values, and reports any tokens that are new or have been removed between versions.
 
 ---
 
@@ -239,46 +256,48 @@ Run `pack` every time you rebuild after changing any source partial.
 
 ### CSS import
 
-In the host project's CSS entry point (e.g. `globals.css`), import the three partials:
+In the host project's CSS entry point (e.g. `globals.css`), import the compiled CSS file published by `pack`:
 
 ```css
-@import './mods/_base.css';
-@import './mods/_semantic-tokens.css';
-@import './mods/_components.css';
+/* At the very top of globals.css — before @import "tailwindcss" */
+@import url('https://fonts.googleapis.com/css2?family=...');
+
+@import "tailwindcss";
+@import './styles/mods.css';   /* adjust path to match MODS_DEST */
 ```
 
-Adjust the path if `mods/` is nested differently relative to the host entry file.
+The Google Fonts `@import` must be the first line in the entry file. Do not rely on the one inside `mods/src/_base.css` — when `_base.css` is processed as part of a larger CSS pipeline, that `@import` lands after `@import "tailwindcss"` and is silently dropped by the CSS parser.
 
 ### Gitignore
 
-If the host `.gitignore` contains `mods` or `/mods`, the packed files will be invisible to git. Add negation rules immediately after that line:
+The MODS tool directory (`mods/`) must be gitignored so VS Code and host git do not treat it as a nested repository. The compiled CSS file at `MODS_DEST` must **not** be gitignored — it is what CI and production use.
 
 ```gitignore
-mods
-!mods/
-!mods/**
+# .gitignore in host project root
+mods/                   # hide the MODS tool tree
+# Do NOT add the MODS_DEST path here — e.g. src/styles/mods.css must be tracked
 ```
 
-The `pack` script checks for this automatically and prints the exact lines to add if needed.
+The `pack` script checks automatically and warns if `MODS_DEST` is being ignored.
 
 ### Proxy build script
 
-Add to the host project's `package.json` so the full MODS build-and-pack can be triggered from the host root:
+Add to the host project's `package.json` so pack can be triggered from the host root (no need to `cd mods/` first). `pack` already runs the build internally, so only one command is needed:
 
 ```json
 {
   "scripts": {
-    "build:mods": "npm --prefix <path-to-mods-tool> run build:css && MODS_DEST=<path-to-mods-dest> npm --prefix <path-to-mods-tool> run pack"
+    "build:mods": "MODS_DEST=<path-to-mods-dest> npm --prefix <path-to-mods-tool> run pack"
   }
 }
 ```
 
-Example for a project where the MODS tool lives at `store/mods/`:
+Example for a project where the MODS tool lives at `mods/` and the compiled CSS goes to `src/styles/mods.css`:
 
 ```json
 {
   "scripts": {
-    "build:mods": "npm --prefix store/mods run build:css && MODS_DEST=../../mods npm --prefix store/mods run pack"
+    "build:mods": "MODS_DEST=../src/styles/mods.css npm --prefix mods run pack"
   }
 }
 ```

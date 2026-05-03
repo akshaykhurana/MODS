@@ -26,8 +26,7 @@
 /* ===== PALETTE =====
    Raw RGB channels for every colour stop. The playground server regenerates
    this block in full on palette writes — it is delimited by the
-   /* ===== PALETTE ===== */ and /* ===== BASE VARS ===== */ markers below
-   and must not be deleted.
+   PALETTE and BASE VARS sentinel comments below and must not be deleted.
    ========================================================================== */
 
 :root {
@@ -279,11 +278,11 @@
   /* FONT FAMILIES — per role.
      The Google Fonts @import at the top of this file must be kept in sync
      with these values. Playground rewrites both on font changes. */
-  --font-family-display: 'Roboto', sans-serif;
-  --font-family-heading: 'Roboto', sans-serif;
-  --font-family-title:   'Roboto', sans-serif;
-  --font-family-body:    'Roboto', sans-serif;
-  --font-family-label:   'Roboto', sans-serif;
+  --font-display: 'Jost', sans-serif;
+  --font-heading: 'Jost', sans-serif;
+  --font-title:   'Jost', sans-serif;
+  --font-body:    'Jost', sans-serif;
+  --font-label:   'Jost', sans-serif;
 
   /* FONT WEIGHTS — per role.
      Body exposes separate regular and bold weights so .body-*-b and .body-*-i
