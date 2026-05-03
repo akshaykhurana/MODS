@@ -837,16 +837,16 @@
 
   <h3 class="pg-subsection-title">Links</h3>
   <div class="pg-type-row">
-    <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-high link">full report</a> for all the details on this topic.</div>
-    <div class="pg-type-meta">.link · inline · text-accent-high · underline fades at rest</div>
+    <div class="body-m text-high pg-type-sample">Read the <a class="text-accent-high link">full report</a> for all the details on this topic.</div>
+    <div class="pg-type-meta">.link · inline · text-high + text-accent-high · underline fades at rest</div>
   </div>
   <div class="pg-type-row">
     <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-medium link">full report</a> for all the details on this topic.</div>
-    <div class="pg-type-meta">.link · inline · text-accent-medium · underline fades at rest</div>
+    <div class="pg-type-meta">.link · inline · text-medium + text-accent-medium · underline fades at rest</div>
   </div>
   <div class="pg-type-row">
-    <div class="body-m text-medium pg-type-sample">Read the <a class="text-accent-low link">full report</a> for all the details on this topic.</div>
-    <div class="pg-type-meta">.link · inline · text-accent-low · underline fades at rest</div>
+    <div class="body-m text-low pg-type-sample">Read the <a class="text-accent-low link">full report</a> for all the details on this topic.</div>
+    <div class="pg-type-meta">.link · inline · text-low + text-accent-low · underline fades at rest</div>
   </div>
   <div class="pg-type-row">
     <div class="body-m text-medium pg-type-sample"><a class="text-accent-medium link-standalone">View all results →</a></div>
@@ -1140,42 +1140,6 @@
   </div>
   <div class="pg-comp-note">.btn-icon .btn-icon-sq .btn-icon-{xs|s|m|l|xl} .btn-icon-{variant}</div>
 
-  <!-- ---- Form Inputs ---- -->
-  <h3 class="pg-subsection-title">Form Inputs</h3>
-
-  <div class="pg-comp-label">Sizes — default state</div>
-  <div class="pg-form-cols">
-    <div class="pg-form-col">
-      <input class="input input-s" type="text" placeholder="Small input">
-      <div class="pg-form-note">.input .input-s</div>
-    </div>
-    <div class="pg-form-col">
-      <input class="input input-m" type="text" placeholder="Medium input">
-      <div class="pg-form-note">.input .input-m</div>
-    </div>
-    <div class="pg-form-col">
-      <input class="input input-l" type="text" placeholder="Large input">
-      <div class="pg-form-note">.input .input-l</div>
-    </div>
-  </div>
-
-  <div class="pg-comp-label" style="margin-top: 24px">States</div>
-  <div class="pg-form-cols">
-    <div class="pg-form-col">
-      <input class="input input-m input-error" type="text" value="Invalid value">
-      <div class="input-error-msg">This field has an error</div>
-      <div class="pg-form-note">.input-error + .input-error-msg</div>
-    </div>
-    <div class="pg-form-col">
-      <input class="input input-m input-success" type="text" value="Valid value">
-      <div class="pg-form-note">.input-success</div>
-    </div>
-    <div class="pg-form-col">
-      <input class="input input-m" type="text" placeholder="Disabled input" disabled>
-      <div class="pg-form-note">disabled</div>
-    </div>
-  </div>
-
   <!-- ---- Controls ---- -->
   <h3 class="pg-subsection-title">Controls</h3>
   <div class="pg-controls">
@@ -1381,6 +1345,127 @@
   </div>
   <div class="pg-comp-note">.toast .toast-{success|error|alert|neutral}</div>
 
+  <!-- ---- Inputs ---- -->
+  <h3 class="pg-subsection-title">Inputs</h3>
+
+  <div class="pg-comp-label">Sizes</div>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;margin-bottom:8px;">
+    <div class="field">
+      <label class="field-label" for="i-xs">Extra small</label>
+      <div class="input input-xs"><input class="input-field" id="i-xs" placeholder="Extra small input"></div>
+      <p class="input-hint">Label and hint are optional — omit .field / .field-label and .input-hint as needed</p>
+    </div>
+    <div class="field">
+      <label class="field-label" for="i-s">Small</label>
+      <div class="input input-s"><input class="input-field" id="i-s" placeholder="Small input"></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="i-m">Medium</label>
+      <div class="input input-m"><input class="input-field" id="i-m" placeholder="Medium input" required></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="i-l">Large</label>
+      <div class="input input-l"><input class="input-field" id="i-l" placeholder="Large input"></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="i-xl">Extra large</label>
+      <div class="input input-xl"><input class="input-field" id="i-xl" placeholder="Extra large input"></div>
+    </div>
+  </div>
+  <div class="pg-comp-note">.input .input-{xs|s|m|l|xl} &gt; .input-field &nbsp;·&nbsp; wrap in .field + .field-label for label &nbsp;·&nbsp; HTML required appends ' *' automatically</div>
+
+  <div class="pg-comp-label">Icon slots</div>
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:400px;margin-bottom:8px;">
+    <div class="input input-m">
+      <svg class="input-leading" width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM2 8a6 6 0 1 1 10.89 3.476l4.817 4.817a1 1 0 0 1-1.414 1.414l-4.816-4.816A6 6 0 0 1 2 8z" clip-rule="evenodd"/></svg>
+      <input class="input-field" placeholder="Leading icon">
+    </div>
+    <div class="input input-m">
+      <input class="input-field" placeholder="Trailing icon">
+      <svg class="input-trailing" width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0 0 16 4H4a2 2 0 0 0-1.997 1.884z"/><path d="m18 8.118-8 4-8-4V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.118z"/></svg>
+    </div>
+    <div class="input input-m">
+      <svg class="input-leading" width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0 1 10 0v2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm8-2v2H7V7a3 3 0 0 1 6 0z" clip-rule="evenodd"/></svg>
+      <input class="input-field" type="password" placeholder="Both slots">
+      <svg class="input-trailing" width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" clip-rule="evenodd"/></svg>
+    </div>
+  </div>
+  <div class="pg-comp-note">.input-leading · .input-field · .input-trailing</div>
+
+  <div class="pg-comp-label">States</div>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;margin-bottom:8px;">
+    <div class="field">
+      <label class="field-label" for="st-rest">Resting</label>
+      <div class="input input-m"><input class="input-field" id="st-rest" placeholder="Try hovering and clicking"></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="st-err">Error</label>
+      <div class="input input-m input-error"><input class="input-field" id="st-err" aria-invalid="true" aria-describedby="st-err-msg" value="invalid@"></div>
+      <p class="input-error-msg" id="st-err-msg">Enter a valid email address.</p>
+    </div>
+    <div class="field">
+      <label class="field-label" for="st-ro">Read-only</label>
+      <div class="input input-m"><input class="input-field" id="st-ro" readonly value="ACC-00421"></div>
+      <p class="input-hint">Value is visible and copyable but not editable. Submitted with the form.</p>
+    </div>
+    <div class="field">
+      <label class="field-label" for="st-dis">Disabled</label>
+      <div class="input input-m"><input class="input-field" id="st-dis" disabled value="Not available yet"></div>
+      <p class="input-hint">Field is inactive. Not submitted with the form.</p>
+    </div>
+  </div>
+  <div class="pg-comp-note">resting · .input-error + .input-error-msg · readonly · disabled — label colour tracks state automatically</div>
+
+  <!-- ---- Textarea ---- -->
+  <h3 class="pg-subsection-title">Textarea</h3>
+
+  <div class="pg-comp-label">Sizes</div>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;margin-bottom:8px;">
+    <div class="field">
+      <label class="field-label" for="ta-xs">Extra small</label>
+      <div class="textarea textarea-xs"><textarea class="textarea-field" id="ta-xs" placeholder="Extra small"></textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-s">Small</label>
+      <div class="textarea textarea-s"><textarea class="textarea-field" id="ta-s" placeholder="Small"></textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-m">Medium</label>
+      <div class="textarea textarea-m"><textarea class="textarea-field" id="ta-m" placeholder="Medium" required></textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-l">Large</label>
+      <div class="textarea textarea-l"><textarea class="textarea-field" id="ta-l" placeholder="Large"></textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-xl">Extra large</label>
+      <div class="textarea textarea-xl"><textarea class="textarea-field" id="ta-xl" placeholder="Extra large"></textarea></div>
+    </div>
+  </div>
+  <div class="pg-comp-note">.textarea .textarea-{xs|s|m|l|xl} &gt; .textarea-field</div>
+
+  <div class="pg-comp-label">States</div>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;margin-bottom:8px;">
+    <div class="field">
+      <label class="field-label" for="ta-rest">Resting</label>
+      <div class="textarea textarea-m"><textarea class="textarea-field" id="ta-rest" placeholder="Try hovering and clicking"></textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-err">Error</label>
+      <div class="textarea textarea-m input-error"><textarea class="textarea-field" id="ta-err" aria-invalid="true" aria-describedby="ta-err-msg">Some invalid content</textarea></div>
+      <p class="input-error-msg" id="ta-err-msg">Content exceeds the character limit.</p>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-ro">Read-only</label>
+      <div class="textarea textarea-m"><textarea class="textarea-field" id="ta-ro" readonly>This value cannot be changed.</textarea></div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="ta-dis">Disabled</label>
+      <div class="textarea textarea-m"><textarea class="textarea-field" id="ta-dis" disabled>Not available yet.</textarea></div>
+    </div>
+  </div>
+  <div class="pg-comp-note">resting · .input-error + .input-error-msg · readonly · disabled</div>
+
 </section>
 
 
@@ -1388,7 +1473,8 @@
 {
   "imports": {
     "colorparsley": "/node_modules/colorparsley/src/colorparsley.js",
-    "apca-w3": "/node_modules/apca-w3/src/apca-w3.js"
+    "apca-w3": "/node_modules/apca-w3/src/apca-w3.js",
+    "@material/material-color-utilities": "/node_modules/@material/material-color-utilities/index.js"
   }
 }
 </script>

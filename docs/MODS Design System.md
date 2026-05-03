@@ -86,6 +86,8 @@ The **neutral (n)** palette uses steps `0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60
 
 > **Generate palettes using Google's official Material Theme Builder Figma plugin.** The plugin produces a full tonal palette in the HCT colour space for any source hue. The step numbers map directly — `p10` is tone 10 of the primary palette from the plugin, `p40` is tone 40, and so on. Copy the HEX values from the plugin, convert to RGB channels, and drop them into `_base.css`. Do not use HSB or HSL to hand-pick the steps — those colour spaces are perceptually uneven and will produce mismatched contrast ratios across hues.
 
+The playground integrates the Google `@material/material-color-utilities` HCT library. Every palette swatch (primary, secondary, neutral, and meaning rows) displays all three colour formats side by side: **RGB** (space-separated channels, editable), **HEX** (read-only, derived from RGB), and **HCT** (hue · chroma · tone as integers, editable). Editing either RGB or HCT cross-converts live — the colour box, CSS variable, and all three display rows update instantly. Both formats also write dirty state so a subsequent Save will persist the change to `_base.css`.
+
 Additional accent palettes (`a10`–`a100`, `b10`–`b100` etc.) can be added per project but are not part of the starter.
 
 **Meaning colours** (error, alert, success) are not full 10-step palettes. They are two fixed values per meaning: a light-mode tone and a dark-mode tone, named by hue and step — `r30`/`r70`, `y30`/`y70`, `g30`/`g70`. The semantic token `--meaning-error` resolves to `r30` in light mode and `r70` in dark mode via the theme CSS variable swap.
@@ -284,61 +286,75 @@ Use these directly as `color` values — `color: var(--text-high)`. They are the
   --border-dark-color: var(--n10);
   --border-focus-dark-color: var(--p30);
 
-  /* Active aliases */
-  --border-color: var(--border-light-color);
-  --border-focus-color: var(--border-light-focus);
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --border-color:       var(--border-light-color);
+  --border-focus-color: var(--border-focus-light-color);
   /* Alpha + width scales live in _base.css */
 
   /* ---- Actions ---- */
-  /* All action colours are solid fills — no opacity.
+  /* All action fills are solid — no opacity.
      primary = brand-coloured interactive elements
-     secondary = subtle background for hover/pressed states
-     neutral = non-brand elements (toggles, unselected tabs) */
+     secondary = subtle background for hover/pressed states (ghost buttons)
+     neutral = non-brand elements (toggles, unselected tabs)
+     label/outline tokens use composed text emphasis vars (var(--text-high) etc.)
+     — dark-mode switching is free by construction */
 
   /* Base — light mode */
-  --action-primary-default-light-color:   var(--p40);
-  --action-primary-hover-light-color:     var(--p50);
-  --action-secondary-disabled-light-color:  var(--s70);
-  --action-secondary-default-light-color: var(--p80);
-  --action-secondary-hover-light-color:   var(--p90);
-  --action-secondary-pressed-light-color: var(--p80);
-  --action-neutral-default-light-color:   var(--n70);
-  --action-neutral-disabled-light-color:  var(--n50);
-  --action-neutral-filled-light-color:    var(--n40);
-
-  /* Base — dark mode */
-  --action-primary-default-dark-color:   var(--p80);
-  --action-primary-hover-dark-color:     var(--p70);
-  /* Base — light mode */
-  --action-primary-default-light-color:    var(--p70);
-  --action-primary-overlay-light-color:    var(--p80); /* brand tint composited on hover/pressed */
+  --action-primary-default-light-color:    var(--p40);
+  --action-primary-overlay-light-color:    var(--p60); /* brand tint composited on hover/pressed */
   --action-secondary-disabled-light-color: var(--s70);
   --action-secondary-default-light-color:  var(--p80);
-  --action-secondary-overlay-light-color:  var(--p80);
-  --action-neutral-default-light-color:    var(--n70);
+  --action-secondary-overlay-light-color:  var(--p80); /* brand tint for secondary/tertiary overlay */
+  --action-neutral-default-light-color:    var(--n30);
   --action-neutral-disabled-light-color:   var(--n50);
-  --action-neutral-filled-light-color:     var(--n40);
+  --action-neutral-filled-light-color:     var(--n60);
+  /* Button labels & outlines — light mode */
+  --action-primary-label-light-color:              var(--text-invert-high);
+  --action-primary-label-disabled-light-color:     var(--text-invert-medium);
+  --action-secondary-outline-light-color:          var(--text-high);
+  --action-secondary-label-light-color:            var(--text-high);
+  --action-secondary-outline-disabled-light-color: var(--text-disabled);
+  --action-secondary-label-disabled-light-color:   var(--text-disabled);
+  --action-tertiary-label-light-color:             var(--text-high);
+  --action-tertiary-label-disabled-light-color:    var(--text-disabled);
 
   /* Base — dark mode */
-  --action-primary-default-dark-color:    var(--p60);
-  --action-primary-overlay-dark-color:    var(--p80);
+  --action-primary-default-dark-color:    var(--p85);
+  --action-primary-overlay-dark-color:    var(--p90);
   --action-secondary-disabled-dark-color: var(--s30);
   --action-secondary-default-dark-color:  var(--p50);
   --action-secondary-overlay-dark-color:  var(--p80);
-  --action-neutral-default-dark-color:    var(--n60);
-  --action-neutral-disabled-dark-color:   var(--n70);
-  --action-neutral-filled-dark-color:     var(--n80);
+  --action-neutral-default-dark-color:    var(--n40);
+  --action-neutral-disabled-dark-color:   var(--n30);
+  --action-neutral-filled-dark-color:     var(--n20);
+  /* Button labels & outlines — dark mode */
+  --action-primary-label-dark-color:              var(--text-invert-high);
+  --action-primary-label-disabled-dark-color:     var(--text-invert-disabled);
+  --action-secondary-outline-dark-color:          var(--text-high);
+  --action-secondary-label-dark-color:            var(--text-high);
+  --action-secondary-outline-disabled-dark-color: var(--text-disabled);
+  --action-secondary-label-disabled-dark-color:   var(--text-disabled);
+  --action-tertiary-label-dark-color:             var(--text-high);
+  --action-tertiary-label-disabled-dark-color:    var(--text-disabled);
 
-  /* Active aliases */
-  --action-primary-default-color:    var(--action-light-primary-default);
-  --action-primary-overlay-color:    var(--action-light-primary-overlay);   /* brand tint overlay */
-  --action-secondary-disabled-color: var(--action-light-secondary-disabled);
-  --action-secondary-default-color:  var(--action-light-secondary-default);
-  --action-secondary-overlay-color:  var(--action-light-secondary-overlay); /* brand tint overlay */
-  --action-neutral-default-color:    var(--action-light-neutral-default);
-  --action-neutral-disabled-color:   var(--action-light-neutral-disabled);
-  --action-neutral-filled-color:     var(--action-light-neutral-filled);
-  /* Overlay alpha — mode-independent */
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --action-primary-default-color:    var(--action-primary-default-light-color);
+  --action-primary-overlay-color:    var(--action-primary-overlay-light-color);   /* brand tint overlay — hover/pressed via alpha */
+  --action-secondary-disabled-color: var(--action-secondary-disabled-light-color);
+  --action-secondary-default-color:  var(--action-secondary-default-light-color);
+  --action-secondary-overlay-color:  var(--action-secondary-overlay-light-color); /* brand tint overlay — hover/pressed via alpha */
+  --action-neutral-default-color:    var(--action-neutral-default-light-color);
+  --action-neutral-disabled-color:   var(--action-neutral-disabled-light-color);
+  --action-neutral-filled-color:     var(--action-neutral-filled-light-color);
+  --action-primary-label-color:              var(--action-primary-label-light-color);
+  --action-primary-label-disabled-color:     var(--action-primary-label-disabled-light-color);
+  --action-secondary-outline-color:          var(--action-secondary-outline-light-color);
+  --action-secondary-label-color:            var(--action-secondary-label-light-color);
+  --action-secondary-outline-disabled-color: var(--action-secondary-outline-disabled-light-color);
+  --action-secondary-label-disabled-color:   var(--action-secondary-label-disabled-light-color);
+  --action-tertiary-label-color:             var(--action-tertiary-label-light-color);
+  --action-tertiary-label-disabled-color:    var(--action-tertiary-label-disabled-light-color);
+  /* Overlay alpha — mode-independent; defined in _base.css */
   --action-overlay-hover-global-alpha:   0.12;
   --action-overlay-pressed-global-alpha: 0.22;
 
@@ -353,10 +369,10 @@ Use these directly as `color` values — `color: var(--text-high)`. They are the
   --meaning-alert-dark-color:   var(--y70);
   --meaning-success-dark-color: var(--g70);
 
-  /* Active aliases */
-  --meaning-error-color:   var(--meaning-light-error);
-  --meaning-alert-color:   var(--meaning-light-alert);
-  --meaning-success-color: var(--meaning-light-success);
+  /* Active aliases — point to light set; .dark {} switches to dark set */
+  --meaning-error-color:   var(--meaning-error-light-color);
+  --meaning-alert-color:   var(--meaning-alert-light-color);
+  --meaning-success-color: var(--meaning-success-light-color);
 
   /* ---- Information Visualisation ---- */
   /* 9 chart colours. Applied at 81% opacity: rgb(var(--chart-1) / var(--chart-alpha))
@@ -380,10 +396,10 @@ Text uses a single colour alias per context (`--text-color`, `--text-accent-colo
 
 | Emphasis | Colour var | Alpha var | Light | Dark |
 |---|---|---|---|---|
-| High (icons, highest contrast) | `--text-color` | `--text-alpha-high` | 1.0 | 1.0 |
+| High (icons, highest contrast) | `--text-color` | `--text-high-alpha` | 1.0 | 1.0 |
 | Medium (headings) | `--text-color` | `--text-medium-alpha` | 0.89 | 0.96 |
-| Low (body copy) | `--text-color` | `--text-alpha-low` | 0.60 | 0.77 |
-| Disabled (placeholders) | `--text-color` | `--text-alpha-disabled` | 0.38 | 0.59 |
+| Low (body copy) | `--text-color` | `--text-low-alpha` | 0.60 | 0.77 |
+| Disabled (placeholders) | `--text-color` | `--text-disabled-alpha` | 0.38 | 0.59 |
 | Accent (links, highlights) | `--text-accent-color` | `--text-accent-alpha` | 0.85 | 0.95 |
 | On inverted surfaces | `--text-invert-color` / `--text-invert-accent-color` | same alpha scale | — | — |
 
@@ -464,6 +480,8 @@ Usage in Tailwind: `bg-brand-main`, `text-medium`, `border-all border-medium`, `
 #### Action token usage summary
 
 Hover and pressed states use a **state layer overlay** model. A brand-tinted overlay colour (`action-primary-overlay` / `action-secondary-overlay`) is composited on top of the base surface at two shared alpha values — one for hover, one for pressed. This means adding a new button variant requires only a new default colour; hover/pressed are automatic.
+
+**Disabled buttons suppress all overlays.** Every `:disabled` rule explicitly sets `background-image: none` so that `:hover` and `:active` overlay rules — which have higher specificity in source order — cannot bleed through. Disabled buttons must show no visual response to pointer interaction.
 
 | Token | States | Usage |
 |---|---|---|
@@ -767,18 +785,21 @@ Three component classes handle all inline hyperlink use cases. They are **decora
 
 | Class | Colour default | Underline at rest | Underline on hover/focus |
 |---|---|---|---|
-| `.link` | `text-accent-medium` | Always visible, 40% alpha | Full `currentColor` |
-| `.link-standalone` | `text-accent-medium` | None | Full `currentColor` |
-| `.link-subtle` | None — inherits surrounding text | Always solid `currentColor` | No change |
+| `.link` | None — pair with `text-accent-*` | Always visible, 40% alpha | Full `currentColor` |
+| `.link-standalone` | None — pair with `text-accent-*` | None | Full `currentColor` |
+| `.link-subtle` | None — pair with `text-*` | Always solid `currentColor` | No change |
 
 ### Usage pattern
 
 ```html
-<!-- Inline link — matches body emphasis -->
+<!-- Inline link — high emphasis context -->
+<p class="text-high">See <a class="text-accent-high link">related work</a>.</p>
+
+<!-- Inline link — medium emphasis context -->
 <p class="text-medium">Read the <a class="text-accent-medium link">full report</a> for details.</p>
 
-<!-- Inline link — high emphasis heading context -->
-<p class="text-high">See <a class="text-accent-high link">related work</a>.</p>
+<!-- Inline link — low emphasis context -->
+<p class="text-low">Updated <a class="text-accent-low link">12 April 2026</a>.</p>
 
 <!-- Standalone link -->
 <a class="text-accent-medium link-standalone">View all results →</a>
@@ -789,10 +810,10 @@ Three component classes handle all inline hyperlink use cases. They are **decora
 
 ### Rules
 
-- **`.link`** — use inside sentences and paragraphs. Compose with `text-accent-high`, `text-accent-medium`, or `text-accent-low` to match surrounding text emphasis. Default is `text-accent-medium`.
-- **`.link-standalone`** — use for links that stand alone outside body text (e.g. "View all →" after a card, resource links in footers). No underline at rest; hover reveals it.
-- **`.link-subtle`** — use when accent colour would be visually overwhelming in dense text. No colour default — must always be composed with a `text-*` utility. Always-solid underline is mandatory since it is the only visual differentiator from surrounding text.
-- **Never use `.link-subtle` without a `text-*` companion class** — without colour context there is no visual distinction between link and plain text.
+- **`.link`** — use inside sentences and paragraphs. Always pair with `text-accent-high`, `text-accent-medium`, or `text-accent-low` to match the surrounding body text emphasis (`text-high`, `text-medium`, or `text-low`). No default colour.
+- **`.link-standalone`** — use for links that stand alone outside body text (e.g. "View all →" after a card, resource links in footers). No underline at rest; hover reveals it. Pair with a `text-accent-*` utility. No default colour.
+- **`.link-subtle`** — use when accent colour would be visually overwhelming in dense text. Pair with the same `text-*` utility as the surrounding text. Always-solid underline is mandatory since it is the only visual differentiator from surrounding text.
+- **Never use any link class without a colour companion** — without an explicit `text-accent-*` (or `text-*` for `.link-subtle`), there is no colour and no visual distinction from plain text.
 - **No visited state in base** — projects that need visited styling (documentation sites, editorial) add `:visited` rules themselves.
 - **Focus**: all three classes use the standard `2px solid --border-focus-color` outline with `outline-offset: 2px`, consistent with buttons and form controls.
 
@@ -981,11 +1002,11 @@ At `scr-l`, a component steps up one height tier and one shape tier simultaneous
 
 | Shape token | Base token | Radius | Component height | Sample components |
 |---|---|---|---|---|
-| `--shape-xxs` | `sh16` | 2px | 16px | checkboxes, radios |
+| `--shape-xxs` | `sh16` | 2px | 16px | checkboxes, radios, `.input-xs` |
 | `--shape-xs` | `sh32` | 4px | 32px | `.btn-xs`, `.btn-icon-xs`, `.input-s`, `.chip` |
 | `--shape-s` | `sh40` | 5px | 40px | `.btn-s`, `.btn-icon-s`, `.input-m` |
 | `--shape-m` | `sh48` | 6px | 48px | `.btn-m`, `.btn-icon-m`, `.input-l` |
-| `--shape-l` | `sh56` | 7px | 56px | `.btn-l`, `.btn-icon-l` |
+| `--shape-l` | `sh56` | 7px | 56px | `.btn-l`, `.btn-icon-l`, `.input-xl` |
 | `--shape-xl` | `sh64` | 8px | 64px | `.btn-xl`, `.btn-icon-xl` |
 | `--shape-xxl` | `sh72` | 9px | 72px | `.btn-xl` at scr-l, `.btn-icon-xl` at scr-l |
 | `--shape-full` | `sh-full` | 9999px | any | chips, badges, radios, toggles, icon buttons (default) |
@@ -1047,19 +1068,19 @@ Button sizes follow the global scr-l rule — each size steps up one level at 19
 
 | Class | Mobile–scr-s | scr-l | Padding | Label class | Radius |
 |---|---|---|---|---|---|
-| `.btn-xs` | 32px (`g4`) | 40px (`g5`) | `px-g2h` | `.label-s` | `--shape-xs` → `--shape-s` |
+| `.btn-xs` | 32px (`g4`) | 40px (`g5`) | `px-g2h` | `.label-xs` | `--shape-xs` → `--shape-s` |
 | `.btn-s` | 40px (`g5`) | 48px (`g6`) | `px-g3` | `.label-s` | `--shape-s` → `--shape-m` |
 | `.btn-m` | 48px (`g6`) | 56px (`g7`) | `px-g4` | `.label-m` | `--shape-m` → `--shape-l` |
 | `.btn-l` | 56px (`g7`) | 64px (`g8`) | `px-g4` | `.label-l` | `--shape-l` → `--shape-xl` |
-| `.btn-xl` | 64px (`g8`) | 72px (`g9`) | `px-g5` | `.label-l` | `--shape-xl` → `--shape-xxl` |
+| `.btn-xl` | 64px (`g8`) | 72px (`g9`) | `px-g5` | — (f6/lb6, no named class) | `--shape-xl` → `--shape-xxl` |
 
 | Class | Description |
 |---|---|
 | `.btn` | Base: `w-fit flex flex-row place-items-center` + transition |
 | `.btn-tight` | Collapses `px` to 0; expands to full padding on hover/focus |
-| `.btn-primary` | Brand fill (`action-primary-default`), inverted text, `shadow-level2`; hover/pressed → `action-primary-overlay` composited at `--action-overlay-alpha-hover/pressed` |
-| `.btn-secondary` | Transparent, `text-high` border + label (`action-secondary-outline-color` = `action-secondary-label-color`); disabled → `text-disabled`; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
-| `.btn-tertiary` | Text only; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
+| `.btn-primary` | Brand fill (`action-primary-default`), inverted text, `shadow-level2`; hover/pressed → `action-primary-overlay` composited at `--action-overlay-alpha-hover/pressed`; disabled → flat fill, no overlay, no shadow |
+| `.btn-secondary` | Transparent, `text-high` border + label (`action-secondary-outline-color` = `action-secondary-label-color`); disabled → `text-disabled` border + label, no overlay; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
+| `.btn-tertiary` | Text only; hover/pressed → `action-secondary-overlay` composited at overlay alpha; disabled → `text-disabled` label, no overlay |
 
 ### Icon buttons
 
@@ -1077,9 +1098,9 @@ Icon buttons are square buttons with no text, typically used in circular form. H
 |---|---|
 | `.btn-icon` | Base: `flex items-center justify-center` + transition |
 | `.btn-icon-sq` | Square radius modifier — overrides `rounded-full` with the size's square radius (see table above) |
-| `.btn-icon-primary` | `action-primary-default` bg; hover/pressed → `action-primary-overlay` at overlay alpha |
-| `.btn-icon-secondary` | Transparent with brand border; hover/pressed → `action-secondary-overlay` at overlay alpha |
-| `.btn-icon-tertiary` | No background; hover/pressed → `action-secondary-overlay` at overlay alpha |
+| `.btn-icon-primary` | `action-primary-default` bg; hover/pressed → `action-primary-overlay` at overlay alpha; disabled → flat disabled fill, no overlay |
+| `.btn-icon-secondary` | Transparent with brand border; hover/pressed → `action-secondary-overlay` at overlay alpha; disabled → disabled border + label, no overlay |
+| `.btn-icon-tertiary` | No background; hover/pressed → `action-secondary-overlay` at overlay alpha; disabled → `text-disabled` label, no overlay |
 
 ### Typography classes
 
@@ -1087,8 +1108,8 @@ Responsive size mapping — three change points: `tab-s`, `scr-s`, `scr-l`.
 
 | Role | Class | Mobile | `tab-s` | `scr-s` | `scr-l` | Leading | Font var |
 |---|---|---|---|---|---|---|---|
-| Display Hero | `.d1` | f8 | f8 | f11 | f13 | `ld` | `--font-display` |
-| Display Medium | `.d2` | f8 | f10 | f12 | f14 | `ld` | `--font-display` |
+| Display Hero | `.d1` | f8 | f10 | f12 | f14 | `ld` | `--font-display` |
+| Display Medium | `.d2` | f8 | f8 | f11 | f13 | `ld` | `--font-display` |
 | Display Small | `.d3` | f7 | f8 | f11 | f12 | `ld` | `--font-display` |
 | Heading Large | `.h1` | f8 | f9 | f10 | f11 | `lt` | `--font-heading` |
 | Heading Medium | `.h2` | f7 | f8 | f9 | f10 | `lt` | `--font-heading` |
@@ -1105,6 +1126,7 @@ Responsive size mapping — three change points: `tab-s`, `scr-s`, `scr-l`.
 | Label Large | `.label-l` | f5 | f5 | f5 | f6 | `lb` | `--font-label` |
 | Label Medium | `.label-m` | f4 | f4 | f4 | f5 | `lb` | `--font-label` |
 | Label Small | `.label-s` | f3 | f3 | f3 | f4 | `lb` | `--font-label` |
+| Label Extra Small | `.label-xs` | f2 | f2 | f2 | f3 | `lb` | `--font-label` |
 | Overline XL | `.overline-xl` | f3 | f4 | f5 | f6 | `lb` | `--font-label` |
 | Overline Large | `.overline-l` | f3 | f3 | f3 | f4 | `lb` | `--font-label` |
 | Overline Medium | `.overline-m` | f2 | f2 | f2 | f3 | `lb` | `--font-label` |
@@ -1114,21 +1136,127 @@ All display/heading/title classes: weight 700. All body classes: weight 400. All
 
 ### Form inputs
 
-All input components share a base height scale that follows the global scr-l rule.
+`.input` is a **wrapper `<div>`**. The bare `<input>` element goes inside as `.input-field`. Optional `.input-leading` / `.input-trailing` slots hold icons, prefixes, or spinners. When no slots are needed, omit them — no markup penalty.
 
-| Class | Mobile–scr-s | scr-l | Radius | Label class |
-|---|---|---|---|---|
-| `.input-s` | 32px | 40px | `--shape-xs` → `--shape-s` | `.label-s` |
-| `.input-m` | 40px | 48px | `--shape-s` → `--shape-m` | `.label-m` |
-| `.input-l` | 48px | 56px | `--shape-m` → `--shape-l` | `.label-l` |
+```html
+<!-- Minimal (no icons) -->
+<div class="input input-m">
+  <input class="input-field" placeholder="Write here">
+</div>
+
+<!-- With icon slots -->
+<div class="input input-m">
+  <svg class="input-leading">...</svg>
+  <input class="input-field" placeholder="Search">
+  <svg class="input-trailing">...</svg>
+</div>
+```
+
+**Background**: always `action-neutral-filled-color` — no empty/populated flip.
+**Known limitation**: browser autofill overrides the background colour. Not patched in v1.
+
+#### Size classes
+
+| Class | Mobile–scr-s | scr-l | Radius |
+|---|---|---|---|
+| `.input-xs` | 24px | 32px | `--shape-xxs` → `--shape-xs` |
+| `.input-s` | 32px | 40px | `--shape-xs` → `--shape-s` |
+| `.input-m` | 40px | 48px | `--shape-s` → `--shape-m` |
+| `.input-l` | 48px | 56px | `--shape-m` → `--shape-l` |
+| `.input-xl` | 56px | 64px | `--shape-l` → `--shape-xl` |
+
+#### State rules
+
+| Class / selector | Description |
+|---|---|
+| `.input` | Wrapper: `flex items-center gap-g1 px-g2`, `action-neutral-filled` bg, `border-medium` at rest |
+| `.input-field` | Inner `<input>`: `flex: 1`, transparent bg, `font: inherit`, `color: inherit` |
+| `.input-leading` / `.input-trailing` | Icon slots: `flex shrink-0`, inherit colour from wrapper |
+| hover | `border-high-alpha`. Suppressed when disabled, read-only, or error |
+| `.input-error` | `meaning-error` border at rest. Source-order before focus rule so focus can override while active |
+| `:focus-within` | `border-focus` + `shadow-level1-inner`. Not applied when read-only or disabled |
+| `:has(.input-field:disabled)` | `action-secondary-disabled` bg, `text-disabled-alpha`, `pointer-events: none` |
+| `:has(.input-field:read-only)` | `action-secondary-disabled` bg, `text-medium` (full opacity), `cursor: text`. No hover/focus affordances |
+
+#### Below-field elements
 
 | Class | Description |
 |---|---|
-| `.input` | Base: `w-full flex items-center` + border + transition. Uses `border-medium` at rest. |
-| `.input:focus` | `border-focus` colour, no size change |
-| `.input:disabled` | `text-low` colour, `action-secondary-disabled` bg, no pointer events |
-| `.input-error` | `meaning-error` border; add `.input-error-msg` below for error text |
-| `.input-success` | `meaning-success` border |
+| `.input-error-msg` | Red error text below the field. Add `aria-invalid="true"` to `.input-field` and wire `aria-describedby` to this element's `id` |
+| `.input-hint` | Persistent neutral helper text below the field. `text-medium`. Automatically hidden via sibling selector if `.input-error` is also present |
+
+Hint and error are mutually exclusive by convention — swap them at validation time.
+
+---
+
+### Textarea
+
+`.textarea` is a **wrapper `<div>` with `display: block`** (not flex — required for `resize: vertical` to work naturally). The bare `<textarea>` goes inside as `.textarea-field`. No icon slots.
+
+```html
+<div class="textarea textarea-m">
+  <textarea class="textarea-field" placeholder="Write here"></textarea>
+</div>
+```
+
+All state rules mirror `.input` exactly: hover, focus + inner shadow, disabled, read-only, error.
+
+#### Size classes
+
+| Class | Min-height (mobile) | Min-height (scr-l) | Radius |
+|---|---|---|---|
+| `.textarea-xs` | 24px | 32px | `--shape-xxs` → `--shape-xs` |
+| `.textarea-s` | 32px | 40px | `--shape-xs` → `--shape-s` |
+| `.textarea-m` | 40px | 48px | `--shape-s` → `--shape-m` |
+| `.textarea-l` | 48px | 56px | `--shape-m` → `--shape-l` |
+| `.textarea-xl` | 56px | 64px | `--shape-l` → `--shape-xl` |
+
+`.textarea-field` uses `resize: vertical` — users can drag to expand. Min-height is the floor.
+
+---
+
+### Field wrapper
+
+`.field` is an optional structural wrapper that pairs a label with an input or textarea. `.input` / `.textarea` work standalone without it.
+
+```html
+<div class="field">
+  <label class="field-label" for="email">Email</label>
+  <div class="input input-m">
+    <input class="input-field" id="email" placeholder="you@example.com" required>
+  </div>
+  <span class="input-hint" id="email-hint">We'll never share your email</span>
+</div>
+```
+
+| Class | Description |
+|---|---|
+| `.field` | `flex-col`. No gap — uses margins on children for different label/hint spacing |
+| `.field-label` | `text-medium`. `margin-bottom: g0h` (tight — label belongs to its field). No typography set — inferred from input size via `:has()` |
+
+#### Label auto-sizing
+
+The label picks up body type automatically based on the size class of the contained input or textarea. No size class needed on the label itself.
+
+| Input size | Label typography |
+|---|---|
+| `.input-xs` / `.textarea-xs` | `body-xxs` (f1 → f2 at scr-l) |
+| `.input-s` / `.textarea-s` | `body-xs` (f2 → f3 at scr-l) |
+| `.input-m` / `.textarea-m` | `body-s` (f3 → f4 at scr-l) |
+| `.input-l` / `.textarea-l` | `body-m` (f4 → f5 at scr-l) |
+| `.input-xl` / `.textarea-xl` | `body-l` (f5 → f6 at scr-l) |
+
+#### Required asterisk
+
+No extra class needed. `.field:has(:required) .field-label::after` appends a red `*` automatically when the inner `<input>` or `<textarea>` has the HTML `required` attribute.
+
+#### Label state rules
+
+| Condition | Label colour |
+|---|---|
+| `.input-field:disabled` or `.textarea-field:disabled` inside `.field` | `text-disabled-alpha` (dimmed) |
+| `.input-field:read-only` or `.textarea-field:read-only` inside `.field` | `text-disabled-alpha` (dimmed) |
+| `.input-error` inside `.field` | `meaning-error` (red) |
 
 ### Checkboxes and radios
 

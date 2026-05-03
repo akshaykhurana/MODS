@@ -258,22 +258,6 @@
     letter-spacing: var(--letter-spacing-display);
     font-size: var(--font-size-f8);
     line-height: var(--line-height-ld8);
-    @media (min-width: 1280px) {
-      font-size: var(--font-size-f11);
-      line-height: var(--line-height-ld11);
-    }
-    @media (min-width: 1920px) {
-      font-size: var(--font-size-f13);
-      line-height: var(--line-height-ld13);
-    }
-  }
-
-  .d2 {
-    font-family: var(--font-display);
-    font-weight: var(--font-weight-display);
-    letter-spacing: var(--letter-spacing-display);
-    font-size: var(--font-size-f8);
-    line-height: var(--line-height-ld8);
     @media (min-width: 768px) {
       font-size: var(--font-size-f10);
       line-height: var(--line-height-ld10);
@@ -285,6 +269,22 @@
     @media (min-width: 1920px) {
       font-size: var(--font-size-f14);
       line-height: var(--line-height-ld14);
+    }
+  }
+
+  .d2 {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-display);
+    letter-spacing: var(--letter-spacing-display);
+    font-size: var(--font-size-f8);
+    line-height: var(--line-height-ld8);
+    @media (min-width: 1280px) {
+      font-size: var(--font-size-f11);
+      line-height: var(--line-height-ld11);
+    }
+    @media (min-width: 1920px) {
+      font-size: var(--font-size-f13);
+      line-height: var(--line-height-ld13);
     }
   }
 
@@ -778,6 +778,7 @@
   }
   .btn-primary:disabled {
     background-color: rgb(var(--action-secondary-disabled-color));
+    background-image: none;
     color: var(--action-primary-label-disabled-color);
     box-shadow: none;
     cursor: not-allowed;
@@ -800,6 +801,7 @@
   }
   .btn-secondary:disabled {
     background-color: transparent;
+    background-image: none;
     border-color: var(--action-secondary-outline-disabled-color);
     color: var(--action-secondary-label-disabled-color);
     cursor: not-allowed;
@@ -821,6 +823,7 @@
   }
   .btn-tertiary:disabled {
     background-color: transparent;
+    background-image: none;
     color: var(--action-tertiary-label-disabled-color);
     cursor: not-allowed;
   }
@@ -896,6 +899,7 @@
   .btn-icon-primary:active { background-image: linear-gradient(rgb(var(--action-primary-overlay-color) / var(--action-overlay-pressed-global-alpha)), rgb(var(--action-primary-overlay-color) / var(--action-overlay-pressed-global-alpha))); }
   .btn-icon-primary:disabled {
     background-color: rgb(var(--action-secondary-disabled-color));
+    background-image: none;
     cursor: not-allowed;
   }
 
@@ -908,6 +912,7 @@
   .btn-icon-secondary:focus-visible { outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha)); outline-offset: 2px; }
   .btn-icon-secondary:active { background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-pressed-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-pressed-global-alpha))); }
   .btn-icon-secondary:disabled {
+    background-image: none;
     border-color: rgb(var(--action-secondary-disabled-color));
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
     cursor: not-allowed;
@@ -921,6 +926,7 @@
   .btn-icon-tertiary:focus-visible { outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha)); outline-offset: 2px; }
   .btn-icon-tertiary:active { background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-pressed-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-pressed-global-alpha))); }
   .btn-icon-tertiary:disabled {
+    background-image: none;
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
     cursor: not-allowed;
   }
@@ -928,63 +934,298 @@
 
   /* ========================================================================
      FORM INPUTS
+     .input is a wrapper <div>. The bare <input> goes inside as .input-field.
+     Optional .input-leading / .input-trailing slots for icons, prefixes, spinners.
      ======================================================================== */
 
+  /* --- Wrapper --- */
   .input {
     width: 100%;
     display: flex;
     align-items: center;
+    gap: var(--spacing-g1);
     border: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
-    background-color: rgb(var(--surfaces-l1-color) / var(--surfaces-global-alpha));
+    background-color: rgb(var(--action-neutral-filled-color));
     color: rgb(var(--text-color) / var(--text-medium-alpha));
     padding-inline: var(--spacing-g2);
     outline: none;
-    transition: all 150ms;
+    transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
   }
-  .input::placeholder {
+
+  /* --- Inner field --- */
+  .input-field {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+  }
+  .input-field::placeholder {
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
   }
-  .input:focus,
-  .input:focus-within {
-    border-color: rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+
+  /* --- Icon slots --- */
+  .input-leading,
+  .input-trailing {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: inherit;
   }
-  .input:disabled {
+
+  /* --- States — order matters: error before focus so focus can override --- */
+
+  /* Hover — suppressed on disabled, read-only, and error */
+  .input:not(:has(.input-field:disabled)):not(:has(.input-field:read-only)):not(.input-error):hover {
+    border-color: rgb(var(--border-color) / var(--border-high-alpha));
+  }
+
+  /* Error resting border */
+  .input-error {
+    border-color: rgb(var(--meaning-error-color));
+  }
+
+  /* Focus — overrides error border while active; restores on blur */
+  .input:focus-within:not(:has(.input-field:read-only)):not(:has(.input-field:disabled)) {
+    border-color: rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    box-shadow: var(--shadow-level1-inner);
+  }
+
+  /* Disabled */
+  .input:has(.input-field:disabled) {
     background-color: rgb(var(--action-secondary-disabled-color));
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
     pointer-events: none;
+    box-shadow: none;
   }
-  .input-error {
-    border-color: rgb(var(--meaning-error-color)) !important;
+
+  /* Read-only — disabled bg, full-opacity text, no interactive affordances */
+  .input:has(.input-field:read-only) {
+    background-color: rgb(var(--action-secondary-disabled-color));
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    cursor: text;
   }
+
+  /* --- Below-field text --- */
   .input-error-msg {
     color: rgb(var(--meaning-error-color));
-    margin-top: var(--spacing-g0h);
-    font-family: var(--font-label);
-    font-weight: var(--font-weight-label);
+    margin-top: var(--spacing-g1);
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
     font-size: var(--font-size-f3);
     line-height: var(--line-height-lb3);
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
   }
-  .input-success {
-    border-color: rgb(var(--meaning-success-color)) !important;
+  .input-hint {
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    margin-top: var(--spacing-g1);
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    font-size: var(--font-size-f3);
+    line-height: var(--line-height-lb3);
+    @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
   }
+  /* Safety net: hide hint if error is also rendered */
+  .input-error ~ .input-hint { display: none; }
 
+  /* --- Size classes --- */
+  .input-xs {
+    height: var(--spacing-g3);
+    border-radius: var(--shape-xxs);
+    @media (min-width: 1920px) { height: var(--spacing-g4); border-radius: var(--shape-xs); }
+  }
   .input-s {
     height: var(--spacing-g4);
     border-radius: var(--shape-xs);
     @media (min-width: 1920px) { height: var(--spacing-g5); border-radius: var(--shape-s); }
   }
-
   .input-m {
     height: var(--spacing-g5);
     border-radius: var(--shape-s);
     @media (min-width: 1920px) { height: var(--spacing-g6); border-radius: var(--shape-m); }
   }
-
   .input-l {
     height: var(--spacing-g6);
     border-radius: var(--shape-m);
     @media (min-width: 1920px) { height: var(--spacing-g7); border-radius: var(--shape-l); }
+  }
+  .input-xl {
+    height: var(--spacing-g7);
+    border-radius: var(--shape-l);
+    @media (min-width: 1920px) { height: var(--spacing-g8); border-radius: var(--shape-xl); }
+  }
+
+  /* ========================================================================
+     TEXTAREA
+     .textarea is a wrapper <div> (display: block — not flex, so resize works).
+     The bare <textarea> goes inside as .textarea-field.
+     No icon slots — not applicable to multiline.
+     ======================================================================== */
+
+  /* --- Wrapper --- */
+  .textarea {
+    width: 100%;
+    display: block;
+    border: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
+    background-color: rgb(var(--action-neutral-filled-color));
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    padding-inline: var(--spacing-g2);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
+  }
+
+  /* --- Inner field --- */
+  .textarea-field {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    resize: vertical;
+  }
+  .textarea-field::placeholder {
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+  }
+
+  /* --- States — same order as .input --- */
+
+  .textarea:not(:has(.textarea-field:disabled)):not(:has(.textarea-field:read-only)):not(.input-error):hover {
+    border-color: rgb(var(--border-color) / var(--border-high-alpha));
+  }
+  .textarea.input-error {
+    border-color: rgb(var(--meaning-error-color));
+  }
+  .textarea:focus-within:not(:has(.textarea-field:read-only)):not(:has(.textarea-field:disabled)) {
+    border-color: rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    box-shadow: var(--shadow-level1-inner);
+  }
+  .textarea:has(.textarea-field:disabled) {
+    background-color: rgb(var(--action-secondary-disabled-color));
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    pointer-events: none;
+    box-shadow: none;
+  }
+  .textarea:has(.textarea-field:read-only) {
+    background-color: rgb(var(--action-secondary-disabled-color));
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    cursor: text;
+  }
+
+  /* --- Size classes --- */
+  .textarea-xs {
+    min-height: var(--spacing-g3);
+    border-radius: var(--shape-xxs);
+    padding-block: var(--spacing-g0h);
+    @media (min-width: 1920px) { min-height: var(--spacing-g4); border-radius: var(--shape-xs); }
+  }
+  .textarea-s {
+    min-height: var(--spacing-g4);
+    border-radius: var(--shape-xs);
+    padding-block: var(--spacing-g1);
+    @media (min-width: 1920px) { min-height: var(--spacing-g5); border-radius: var(--shape-s); }
+  }
+  .textarea-m {
+    min-height: var(--spacing-g5);
+    border-radius: var(--shape-s);
+    padding-block: var(--spacing-g1);
+    @media (min-width: 1920px) { min-height: var(--spacing-g6); border-radius: var(--shape-m); }
+  }
+  .textarea-l {
+    min-height: var(--spacing-g6);
+    border-radius: var(--shape-m);
+    padding-block: var(--spacing-g1h);
+    @media (min-width: 1920px) { min-height: var(--spacing-g7); border-radius: var(--shape-l); }
+  }
+  .textarea-xl {
+    min-height: var(--spacing-g7);
+    border-radius: var(--shape-l);
+    padding-block: var(--spacing-g2);
+    @media (min-width: 1920px) { min-height: var(--spacing-g8); border-radius: var(--shape-xl); }
+  }
+
+  /* ========================================================================
+     FIELD WRAPPER
+     Optional wrapper that pairs a label with an input or textarea.
+     .input / .textarea work standalone — .field is opt-in.
+     ======================================================================== */
+
+  .field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .field-label {
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    margin-bottom: var(--spacing-g0h);
+  }
+
+  /* Label sizing — body type auto-tracks input/textarea size */
+  .field:has(.input-xs, .textarea-xs) .field-label {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
+    font-size: var(--font-size-f1);
+    line-height: var(--line-height-lb1);
+    @media (min-width: 1920px) { font-size: var(--font-size-f2); line-height: var(--line-height-lb2); }
+  }
+  .field:has(.input-s, .textarea-s) .field-label {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
+    font-size: var(--font-size-f2);
+    line-height: var(--line-height-lb2);
+    @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
+  }
+  .field:has(.input-m, .textarea-m) .field-label {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
+    font-size: var(--font-size-f3);
+    line-height: var(--line-height-lb3);
+    @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
+  }
+  .field:has(.input-l, .textarea-l) .field-label {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
+  }
+  .field:has(.input-xl, .textarea-xl) .field-label {
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    letter-spacing: var(--letter-spacing-body);
+    font-size: var(--font-size-f5);
+    line-height: var(--line-height-lb5);
+    @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
+  }
+
+  /* Required asterisk — auto-detected from HTML required attribute */
+  .field:has(:required) .field-label::after {
+    content: ' *';
+    color: rgb(var(--meaning-error-color));
+  }
+
+  /* Label state — dims on disabled/read-only, red on error */
+  .field:has(.input-field:disabled) .field-label,
+  .field:has(.textarea-field:disabled) .field-label {
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+  }
+  .field:has(.input-field:read-only) .field-label,
+  .field:has(.textarea-field:read-only) .field-label {
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+  }
+  .field:has(.input-error) .field-label {
+    color: rgb(var(--meaning-error-color));
   }
 
 
@@ -1560,10 +1801,11 @@
      Decoration-only — colour comes from composing text-accent-* or text-* utilities.
 
      .link           — inline links inside body text.
-                       Default colour: text-accent-medium (overridden by any text-accent-* utility).
+                       No default colour — always pair with a text-accent-* utility.
                        Underline always visible; reduced alpha at rest, full currentColor on hover.
      .link-standalone — standalone links outside body text.
-                       Same default colour. No underline at rest; appears on hover/focus.
+                       No default colour — always pair with a text-accent-* utility.
+                       No underline at rest; appears on hover/focus.
      .link-subtle    — links in dense text where accent colour would overwhelm.
                        No default colour — fully inherits surrounding text-* utility.
                        Always-solid underline (colour alone is not enough to distinguish from text).
@@ -1571,13 +1813,11 @@
      Usage:
        <p class="text-medium">Read the <a class="text-accent-medium link">full report</a>.</p>
        <a class="text-accent-medium link-standalone">View all results</a>
-       <p class="text-low">Source: <a class="text-low link-subtle">Wikipedia</a></p>
 
      color-mix() requires Chrome 111+, Firefox 113+, Safari 16.2+ — same baseline as Tailwind v4.
      ======================================================================== */
 
   .link {
-    color: rgb(var(--text-accent-color) / var(--text-accent-medium-alpha));
     text-decoration: underline;
     text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
     text-underline-offset: 2px;
@@ -1595,7 +1835,6 @@
   }
 
   .link-standalone {
-    color: rgb(var(--text-accent-color) / var(--text-accent-medium-alpha));
     text-decoration: none;
     text-underline-offset: 2px;
     cursor: pointer;

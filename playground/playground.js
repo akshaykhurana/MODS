@@ -1,4 +1,22 @@
 import { APCAcontrast, sRGBtoY } from 'apca-w3';
+import { Hct, argbFromRgb, redFromArgb, greenFromArgb, blueFromArgb } from '@material/material-color-utilities';
+
+// ── HCT conversion helpers ─────────────────────────────────────────────
+function rgbStrToHex(rgbStr) {
+  const [r, g, b] = rgbStr.trim().split(/\s+/).map(Number);
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+function rgbStrToHct(rgbStr) {
+  const [r, g, b] = rgbStr.trim().split(/\s+/).map(Number);
+  const hct = Hct.fromInt(argbFromRgb(r, g, b));
+  return { h: Math.round(hct.hue), c: Math.round(hct.chroma), t: Math.round(hct.tone) };
+}
+
+function hctToRgbStr(h, c, t) {
+  const argb = Hct.from(h, c, t).toInt();
+  return `${redFromArgb(argb)} ${greenFromArgb(argb)} ${blueFromArgb(argb)}`;
+}
 
 /* =====================================================================
    PLAYGROUND EDITOR — live palette + semantic token editing
@@ -65,13 +83,21 @@ function buildTextSelectOptions(selectedVar) {
 
 // ── Palette swatch rendering ──────────────────────────────────────────
 function makeSwatch(name, val) {
+  const hex = rgbStrToHex(val);
+  const hct = rgbStrToHct(val);
   return `<div class="pg-swatch" data-var="--${name}">` +
     `<div class="pg-swatch-color" style="background:rgb(${val})"></div>` +
     `<div class="pg-swatch-name">${name}</div>` +
     `<div class="pg-swatch-edit">` +
       `<span class="pg-swatch-val">${val}</span>` +
-      `<button class="pg-swatch-pencil" title="Edit">&#9998;</button>` +
+      `<button class="pg-swatch-pencil" title="Edit RGB">&#9998;</button>` +
       `<input class="pg-swatch-input" type="text" spellcheck="false">` +
+    `</div>` +
+    `<div class="pg-swatch-hex">${hex}</div>` +
+    `<div class="pg-swatch-hct-edit">` +
+      `<span class="pg-swatch-hct-val">${hct.h} ${hct.c} ${hct.t}</span>` +
+      `<button class="pg-swatch-hct-pencil" title="Edit HCT">&#9998;</button>` +
+      `<input class="pg-swatch-hct-input" type="text" spellcheck="false">` +
     `</div>` +
     `<button class="pg-swatch-delete" data-name="${name}" title="Delete">&times;</button>` +
   `</div>`;
@@ -463,6 +489,11 @@ function commitPencil(input) {
   markDirty(swatch);
   updateSaveBar();
   rebuildAPCA();
+  // Refresh derived HEX and HCT displays
+  const hexEl = swatch.querySelector('.pg-swatch-hex');
+  if (hexEl) hexEl.textContent = rgbStrToHex(raw);
+  const hctValEl = swatch.querySelector('.pg-swatch-hct-val');
+  if (hctValEl) { const hct = rgbStrToHct(raw); hctValEl.textContent = `${hct.h} ${hct.c} ${hct.t}`; }
   input.style.display   = 'none';
   valSpan.style.display = '';
   pencil.style.display  = '';
@@ -477,6 +508,63 @@ function cancelPencil(input) {
   input.style.display   = 'none';
   valSpan.style.display = '';
   pencil.style.display  = '';
+}
+
+// ── HCT pencil helpers ────────────────────────────────────────────────
+function openHctPencil(btn) {
+  const swatch    = btn.closest('.pg-swatch');
+  const hctVal    = swatch.querySelector('.pg-swatch-hct-val');
+  const hctInput  = swatch.querySelector('.pg-swatch-hct-input');
+  hctVal.style.display   = 'none';
+  btn.style.display      = 'none';
+  hctInput.value         = hctVal.textContent.trim();
+  hctInput.style.display = 'block';
+  hctInput.focus();
+  hctInput.select();
+}
+
+function cancelHctPencil(input) {
+  const swatch    = input.closest('.pg-swatch');
+  if (!swatch) return;
+  const hctVal    = swatch.querySelector('.pg-swatch-hct-val');
+  const hctPencil = swatch.querySelector('.pg-swatch-hct-pencil');
+  input.classList.remove('invalid');
+  input.style.display     = 'none';
+  hctVal.style.display    = '';
+  hctPencil.style.display = '';
+}
+
+function commitHctPencil(input) {
+  const swatch    = input.closest('.pg-swatch');
+  if (!swatch) return;
+  const varName   = swatch.dataset.var;
+  const bareKey   = varName.replace(/^--/, '');
+  const hctVal    = swatch.querySelector('.pg-swatch-hct-val');
+  const hctPencil = swatch.querySelector('.pg-swatch-hct-pencil');
+  const parts     = input.value.trim().split(/\s+/).map(Number);
+  const valid     = parts.length === 3 && !parts.some(isNaN) &&
+                    parts[0] >= 0 && parts[0] <= 360 &&
+                    parts[1] >= 0 && parts[1] <= 120 &&
+                    parts[2] >= 0 && parts[2] <= 100;
+  if (!valid) { input.classList.add('invalid'); return; }
+  input.classList.remove('invalid');
+  const [h, c, t] = parts;
+  const raw = hctToRgbStr(h, c, t);
+  // Round-trip HCT through the converted RGB to avoid drift
+  const roundTripped = rgbStrToHct(raw);
+  document.documentElement.style.setProperty(varName, raw);
+  swatch.querySelector('.pg-swatch-color').style.background = `rgb(${raw})`;
+  swatch.querySelector('.pg-swatch-val').textContent = raw;
+  swatch.querySelector('.pg-swatch-hex').textContent = rgbStrToHex(raw);
+  hctVal.textContent = `${roundTripped.h} ${roundTripped.c} ${roundTripped.t}`;
+  localPalette[bareKey] = raw;
+  if (paletteMode !== 'full') dirtyPalette.set(bareKey, raw);
+  markDirty(swatch);
+  updateSaveBar();
+  rebuildAPCA();
+  input.style.display     = 'none';
+  hctVal.style.display    = '';
+  hctPencil.style.display = '';
 }
 
 // ── Add / Delete handlers ─────────────────────────────────────────────
@@ -539,19 +627,26 @@ function handleAdd(form) {
 
 // ── Event delegation — palette row actions ────────────────────────────
 document.addEventListener('click', e => {
-  if (e.target.matches('.pg-swatch-pencil'))      { openPencil(e.target); }
-  else if (e.target.matches('.pg-swatch-delete')) { handleDelete(e.target.dataset.name); }
-  else if (e.target.matches('.pg-add-tile'))      { openAddForm(e.target); }
-  else if (e.target.matches('.pg-add-confirm'))   { handleAdd(e.target.closest('.pg-add-form')); }
-  else if (e.target.matches('.pg-add-cancel'))    { cancelAdd(e.target.closest('.pg-add-form')); }
+  if (e.target.matches('.pg-swatch-pencil'))          { openPencil(e.target); }
+  else if (e.target.matches('.pg-swatch-hct-pencil')) { openHctPencil(e.target); }
+  else if (e.target.matches('.pg-swatch-delete'))     { handleDelete(e.target.dataset.name); }
+  else if (e.target.matches('.pg-add-tile'))          { openAddForm(e.target); }
+  else if (e.target.matches('.pg-add-confirm'))       { handleAdd(e.target.closest('.pg-add-form')); }
+  else if (e.target.matches('.pg-add-cancel'))        { cancelAdd(e.target.closest('.pg-add-form')); }
 });
 document.addEventListener('focusout', e => {
-  if (e.target.matches('.pg-swatch-input')) { commitPencil(e.target); }
+  if (e.target.matches('.pg-swatch-input'))     { commitPencil(e.target); }
+  if (e.target.matches('.pg-swatch-hct-input')) { commitHctPencil(e.target); }
 });
 document.addEventListener('keydown', e => {
-  if (!e.target.matches('.pg-swatch-input')) return;
-  if (e.key === 'Enter')  { e.preventDefault(); commitPencil(e.target); }
-  if (e.key === 'Escape') { e.preventDefault(); cancelPencil(e.target); }
+  if (e.target.matches('.pg-swatch-input')) {
+    if (e.key === 'Enter')  { e.preventDefault(); commitPencil(e.target); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelPencil(e.target); }
+  }
+  if (e.target.matches('.pg-swatch-hct-input')) {
+    if (e.key === 'Enter')  { e.preventDefault(); commitHctPencil(e.target); }
+    if (e.key === 'Escape') { e.preventDefault(); cancelHctPencil(e.target); }
+  }
 });
 
 // ── Live token target helper ────────────────────────────────────────

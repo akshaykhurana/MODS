@@ -147,15 +147,15 @@
   --action-secondary-overlay-light-color:  var(--p80); /* brand tint for secondary/tertiary overlay */
   --action-neutral-default-light-color:    var(--n30);
   --action-neutral-disabled-light-color:   var(--n50);
-  --action-neutral-filled-light-color:     var(--n60);
+  --action-neutral-filled-light-color:     var(--n99);
   /* Button labels & outlines — light mode */
   --action-primary-label-light-color:              var(--text-invert-high);
   --action-primary-label-disabled-light-color:     var(--text-invert-medium);
-  --action-secondary-outline-light-color:          var(--text-high);
-  --action-secondary-label-light-color:            var(--text-high);
+  --action-secondary-outline-light-color:          var(--text-low);
+  --action-secondary-label-light-color:            var(--text-low);
   --action-secondary-outline-disabled-light-color: var(--text-disabled);
   --action-secondary-label-disabled-light-color:   var(--text-disabled);
-  --action-tertiary-label-light-color:             var(--text-high);
+  --action-tertiary-label-light-color:             var(--text-low);
   --action-tertiary-label-disabled-light-color:    var(--text-disabled);
 
   /* Base — dark mode */
