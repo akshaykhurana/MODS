@@ -265,7 +265,7 @@ async function loadConfig() {
       const sel = document.getElementById('shadow-color-select');
       if (sel) sel.innerHTML = buildSelectOptions(shadowColor);
     }
-    ['umbra', 'penumbra', 'ambient'].forEach(layer => {
+    ['umbra', 'penumbra', 'ambient', 'inner'].forEach(layer => {
       const v = semanticConfig.rawValues && semanticConfig.rawValues[`--shadow-${layer}-global-alpha`];
       if (v) { const i = document.getElementById(`shadow-${layer}-global-alpha`); if (i) i.value = v; }
     });
@@ -719,8 +719,8 @@ async function loadPalette() {
     });
   }
 
-  // Shadow alpha inputs — umbra, penumbra, ambient
-  ['umbra', 'penumbra', 'ambient'].forEach(layer => {
+  // Shadow alpha inputs — umbra, penumbra, ambient, inner
+  ['umbra', 'penumbra', 'ambient', 'inner'].forEach(layer => {
     new TokenInput(document.getElementById(`shadow-${layer}-global-alpha`), `--shadow-${layer}-global-alpha`);
   });
 })();
@@ -1043,12 +1043,11 @@ function rebuildAPCA() {
   const secondaryDefaultRGB = resolveToRGB('rgb(var(--action-secondary-default-color))');
   const secondaryOverlayRGB = resolveToRGB('rgb(var(--action-secondary-overlay-color))');
   const actionTokens = [
-    { label: 'primary-default',         rgb: primaryDefaultRGB,  alpha: 1 },
-    { label: 'primary-overlay (hover)',  rgb: compositeRGB(primaryOverlayRGB, aOverlayHover, primaryDefaultRGB),  alpha: 1 },
-    { label: 'primary-overlay (pressed)',rgb: compositeRGB(primaryOverlayRGB, aOverlayPressed, primaryDefaultRGB), alpha: 1 },
-    { label: 'secondary-disabled',      rgb: resolveToRGB('rgb(var(--action-secondary-disabled-color))'), alpha: 1 },
-    { label: 'secondary-default',       rgb: secondaryDefaultRGB, alpha: 1 },
-    { label: 'secondary-overlay (hover)',  rgb: compositeRGB(secondaryOverlayRGB, aOverlayHover, secondaryDefaultRGB),  alpha: 1 },
+    { label: 'primary-default',          rgb: primaryDefaultRGB,  alpha: 1 },
+    { label: 'primary-overlay (hover)',   rgb: compositeRGB(primaryOverlayRGB, aOverlayHover, primaryDefaultRGB),   alpha: 1 },
+    { label: 'primary-overlay (pressed)', rgb: compositeRGB(primaryOverlayRGB, aOverlayPressed, primaryDefaultRGB), alpha: 1 },
+    { label: 'secondary-default',         rgb: secondaryDefaultRGB, alpha: 1 },
+    { label: 'secondary-overlay (hover)',  rgb: compositeRGB(secondaryOverlayRGB, aOverlayHover, secondaryDefaultRGB),   alpha: 1 },
     { label: 'secondary-overlay (pressed)',rgb: compositeRGB(secondaryOverlayRGB, aOverlayPressed, secondaryDefaultRGB), alpha: 1 },
   ];
 

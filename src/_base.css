@@ -145,9 +145,10 @@
   --shadow-umbra-global-alpha:    0.09;
   --shadow-penumbra-global-alpha: 0.03;
   --shadow-ambient-global-alpha:  0.06;
+  --shadow-inner-global-alpha:    0.09;
 
   /* TEXT ALPHA — emphasis scale (MD-derived). Light + dark sets tuned independently. */
-  --text-high-light-alpha:          1;
+  --text-high-light-alpha:          0.83;
   --text-medium-light-alpha:        0.66;
   --text-low-light-alpha:           0.51;
   --text-disabled-light-alpha:      0.26;
@@ -156,7 +157,7 @@
   --text-accent-medium-light-alpha: 0.82;
   --text-accent-low-light-alpha:    0.63;
 
-  --text-high-dark-alpha:          0.91;
+  --text-high-dark-alpha:          0.95;
   --text-medium-dark-alpha:        0.84;
   --text-low-dark-alpha:           0.72;
   --text-disabled-dark-alpha:      0.46;
@@ -340,6 +341,9 @@
   --shadow-l5-ambient-offset-y:  4px;  --shadow-l5-ambient-blur:  64px; --shadow-l5-ambient-spread:  0px;
   --shadow-l5-penumbra-offset-y: 6px;  --shadow-l5-penumbra-blur: 20px; --shadow-l5-penumbra-spread: 0px;
 
+  /* Level 1 Inner (inset) — single layer, no multi-source modelling needed */
+  --shadow-l1-inner-offset-y: 2px;  --shadow-l1-inner-blur: 4px;  --shadow-l1-inner-spread: 0px;
+
 }
 
 
@@ -459,6 +463,10 @@
     0px var(--shadow-l1-umbra-offset-y)    var(--shadow-l1-umbra-blur)    var(--shadow-l1-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),
     0px var(--shadow-l1-ambient-offset-y)  var(--shadow-l1-ambient-blur)  var(--shadow-l1-ambient-spread)  rgb(var(--shadow-color) / var(--shadow-ambient-global-alpha)),
     0px var(--shadow-l1-penumbra-offset-y) var(--shadow-l1-penumbra-blur) var(--shadow-l1-penumbra-spread) rgb(var(--shadow-color) / var(--shadow-penumbra-global-alpha));
+
+  --shadow-level1-inner:
+    inset 0px var(--shadow-l1-inner-offset-y) var(--shadow-l1-inner-blur) var(--shadow-l1-inner-spread)
+      rgb(var(--shadow-color) / var(--shadow-inner-global-alpha));
 
   --shadow-level2:
     0px var(--shadow-l2-umbra-offset-y)    var(--shadow-l2-umbra-blur)    var(--shadow-l2-umbra-spread)    rgb(var(--shadow-color) / var(--shadow-umbra-global-alpha)),

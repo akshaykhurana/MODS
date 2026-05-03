@@ -415,6 +415,8 @@
     <input id="shadow-penumbra-global-alpha" type="text" value="0.04" spellcheck="false" class="pg-token-input">
     <span class="pg-token-label">Ambient</span>
     <input id="shadow-ambient-global-alpha" type="text" value="0.06" spellcheck="false" class="pg-token-input">
+    <span class="pg-token-label">Inner</span>
+    <input id="shadow-inner-global-alpha" type="text" value="0.09" spellcheck="false" class="pg-token-input">
   </div>
 
   <div class="pg-swatch-row" style="padding-bottom:24px;gap:16px;">
@@ -431,6 +433,11 @@
       <div class="pg-swatch-sub">--surfaces-l1<br>--shadow-level1</div>
       <select class="pg-swatch-select" data-var="--surfaces-l1-color" data-mode="light"></select>
       <select class="pg-swatch-select" data-var="--surfaces-l1-color" data-mode="dark"></select>
+    </div>
+    <div class="pg-swatch pg-elev-swatch pg-elev-l1-inner">
+      <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l1-color) / var(--surfaces-global-alpha))"></div>
+      <div class="pg-swatch-name">l1 inner</div>
+      <div class="pg-swatch-sub">--shadow-level1-inner</div>
     </div>
     <div class="pg-swatch pg-elev-swatch pg-elev-l2" data-var="--surfaces-l2-color">
       <div class="pg-swatch-color" style="background:rgb(var(--surfaces-l2-color) / var(--surfaces-global-alpha))"></div>
@@ -1012,8 +1019,8 @@
   <div class="pg-btn-token-controls">
     <div class="pg-btn-token-row">
       <span class="pg-btn-token-label">Outline</span>
-      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="light"></select>
-      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="dark"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="light" data-options="text"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-color" data-mode="dark" data-options="text"></select>
     </div>
     <div class="pg-btn-token-row">
       <span class="pg-btn-token-label">Label</span>
@@ -1022,8 +1029,8 @@
     </div>
     <div class="pg-btn-token-row">
       <span class="pg-btn-token-label">Outline (disabled)</span>
-      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="light"></select>
-      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="dark"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="light" data-options="text"></select>
+      <select class="pg-swatch-select pg-token-select" data-var="--action-secondary-outline-disabled-color" data-mode="dark" data-options="text"></select>
     </div>
     <div class="pg-btn-token-row">
       <span class="pg-btn-token-label">Label (disabled)</span>

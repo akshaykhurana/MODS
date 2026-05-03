@@ -425,6 +425,7 @@ body {
   border-radius: 8px;
 }
 .pg-elev-swatch.pg-elev-l1 .pg-swatch-color { box-shadow: var(--shadow-level1); }
+.pg-elev-swatch.pg-elev-l1-inner .pg-swatch-color { box-shadow: var(--shadow-level1-inner); }
 .pg-elev-swatch.pg-elev-l2 .pg-swatch-color { box-shadow: var(--shadow-level2); }
 .pg-elev-swatch.pg-elev-l3 .pg-swatch-color { box-shadow: var(--shadow-level3); }
 .pg-elev-swatch.pg-elev-l4 .pg-swatch-color { box-shadow: var(--shadow-level4); }
@@ -432,6 +433,10 @@ body {
 body.dark .pg-elev-swatch .pg-swatch-color {
   box-shadow: none;
   border-color: rgb(var(--border-color) / var(--border-low-alpha));
+}
+body.dark .pg-elev-swatch.pg-elev-l1-inner .pg-swatch-color {
+  box-shadow: var(--shadow-level1-inner);
+  border-color: transparent;
 }
 
 /* --- Components layout --- */

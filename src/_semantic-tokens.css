@@ -140,8 +140,8 @@
      ========================================================================== */
 
   /* Base — light mode */
-  --action-primary-default-light-color:    var(--p50);
-  --action-primary-overlay-light-color:    var(--p40); /* brand tint composited on hover/pressed */
+  --action-primary-default-light-color:    var(--p40);
+  --action-primary-overlay-light-color:    var(--p60); /* brand tint composited on hover/pressed */
   --action-secondary-disabled-light-color: var(--s70);
   --action-secondary-default-light-color:  var(--p80);
   --action-secondary-overlay-light-color:  var(--p80); /* brand tint for secondary/tertiary overlay */
@@ -149,17 +149,17 @@
   --action-neutral-disabled-light-color:   var(--n50);
   --action-neutral-filled-light-color:     var(--n60);
   /* Button labels & outlines — light mode */
-  --action-primary-label-light-color:              var(--text-invert-medium);
-  --action-primary-label-disabled-light-color:     var(--text-invert-disabled);
-  --action-secondary-outline-light-color:          var(--s10);
+  --action-primary-label-light-color:              var(--text-invert-high);
+  --action-primary-label-disabled-light-color:     var(--text-invert-medium);
+  --action-secondary-outline-light-color:          var(--text-high);
   --action-secondary-label-light-color:            var(--text-high);
-  --action-secondary-outline-disabled-light-color: var(--s70);
+  --action-secondary-outline-disabled-light-color: var(--text-disabled);
   --action-secondary-label-disabled-light-color:   var(--text-disabled);
   --action-tertiary-label-light-color:             var(--text-high);
   --action-tertiary-label-disabled-light-color:    var(--text-disabled);
 
   /* Base — dark mode */
-  --action-primary-default-dark-color:    var(--p80);
+  --action-primary-default-dark-color:    var(--p85);
   --action-primary-overlay-dark-color:    var(--p90);
   --action-secondary-disabled-dark-color: var(--s30);
   --action-secondary-default-dark-color:  var(--p50);
@@ -170,9 +170,9 @@
   /* Button labels & outlines — dark mode */
   --action-primary-label-dark-color:              var(--text-invert-high);
   --action-primary-label-disabled-dark-color:     var(--text-invert-disabled);
-  --action-secondary-outline-dark-color:          var(--s60);
+  --action-secondary-outline-dark-color:          var(--text-high);
   --action-secondary-label-dark-color:            var(--text-high);
-  --action-secondary-outline-disabled-dark-color: var(--s30);
+  --action-secondary-outline-disabled-dark-color: var(--text-disabled);
   --action-secondary-label-disabled-dark-color:   var(--text-disabled);
   --action-tertiary-label-dark-color:             var(--text-high);
   --action-tertiary-label-disabled-dark-color:    var(--text-disabled);

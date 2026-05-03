@@ -785,7 +785,7 @@
 
   .btn-secondary {
     background-color: transparent;
-    border: 1.5px solid rgb(var(--action-secondary-outline-color) / var(--text-disabled-alpha));
+    border: 1.5px solid var(--action-secondary-outline-color);
     color: var(--action-secondary-label-color);
   }
   .btn-secondary:hover {
@@ -800,7 +800,7 @@
   }
   .btn-secondary:disabled {
     background-color: transparent;
-    border-color: rgb(var(--action-secondary-outline-disabled-color));
+    border-color: var(--action-secondary-outline-disabled-color);
     color: var(--action-secondary-label-disabled-color);
     cursor: not-allowed;
   }

@@ -13,7 +13,7 @@ The same pattern governs every part of the system.
 | **Colour** | `p10`–`p100`, `s10`–`s100`, `n10`–`n100` | `--brand-main-color`, `--text-color`, `--surfaces-base-color` |
 | **Typography size** | `f1`–`f15` | `.h1`, `.body-m`, `.label-m` |
 | **Typography leading** | `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15` | baked into Semantic component classes |
-| **Elevation** | `level0`–`level5`, `shadow-level1`–`shadow-level5` | component classes (to be defined per project) |
+| **Elevation** | `level0`–`level5`, `shadow-level1`–`shadow-level5`, `shadow-level1-inner` | component classes (to be defined per project) |
 | **Spacing** | `g0`–`g25` + half-steps | `p-g3`, `gap-g2`, `.gap-default` |
 | **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xxs`–`--shape-xxl`, `--shape-full` |
 
@@ -475,7 +475,7 @@ Hover and pressed states use a **state layer overlay** model. A brand-tinted ove
 | `action-secondary-label-color` / `action-secondary-label-disabled-color` | — | Label colour on secondary buttons (default + disabled) |
 | `action-tertiary-label-color` / `action-tertiary-label-disabled-color` | — | Label colour on tertiary/ghost buttons (default + disabled) |
 
-Label and outline tokens accept either a composed text emphasis var (`var(--text-invert-high)`) or a raw palette step (`var(--s60)`). Using a composed var means the label colour automatically follows both the text colour token and the emphasis alpha — dark-mode switching is free. The playground label dropdowns list the 8 composed vars only; outline dropdowns remain on palette steps.
+Label and outline tokens both use composed text emphasis vars (`var(--text-high)`, `var(--text-disabled)`, etc.). This means outline colour, label colour, and emphasis alpha all resolve from the same chain — dark-mode switching is free and outline/label stay in sync by construction. The playground outline and label dropdowns both list the text emphasis vars only.
 
 | Alpha token | Default | Role |
 |---|---|---|
@@ -833,11 +833,12 @@ Layer order within each `shadow-level*` token: **umbra first, ambient second, pe
 
 All three layers share the same colour: `--shadow-color` (default `p30`, raw RGB channels from `_base.css`). Only the geometry (offsets and blur) and the per-layer alphas differ. This means you can change the shadow tint globally by editing `--shadow-color` in one place, and tune darkness per-layer via the three alpha vars.
 
-> **Dark mode**: shadows are not rendered in dark mode. Elevation is communicated entirely through surface lightness. The `shadow-level*` tokens are defined but their visual effect is suppressed — do not apply them in dark mode.
+> **Dark mode**: shadows are not rendered in dark mode. Elevation is communicated entirely through surface lightness. The `shadow-level*` tokens are defined but their visual effect is suppressed — do not apply them in dark mode. Exception: `shadow-level1-inner` is an inset shadow for recessed interactive elements (inputs, toggles) and remains visible in dark mode.
 
 | Token | Paired surface |
 |---|---|
 | `shadow-level1` | `level1` |
+| `shadow-level1-inner` | `level1` — inset well shadow for inputs, toggles, and other recessed controls. Single-layer inset using `--shadow-inner-global-alpha`. Stays visible in dark mode. |
 | `shadow-level2` | `level2`, `level2a` |
 | `shadow-level3` | `level3` |
 | `shadow-level4` | `level4` |
@@ -1057,7 +1058,7 @@ Button sizes follow the global scr-l rule — each size steps up one level at 19
 | `.btn` | Base: `w-fit flex flex-row place-items-center` + transition |
 | `.btn-tight` | Collapses `px` to 0; expands to full padding on hover/focus |
 | `.btn-primary` | Brand fill (`action-primary-default`), inverted text, `shadow-level2`; hover/pressed → `action-primary-overlay` composited at `--action-overlay-alpha-hover/pressed` |
-| `.btn-secondary` | Transparent, `text-disabled` border + label; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
+| `.btn-secondary` | Transparent, `text-high` border + label (`action-secondary-outline-color` = `action-secondary-label-color`); disabled → `text-disabled`; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
 | `.btn-tertiary` | Text only; hover/pressed → `action-secondary-overlay` composited at overlay alpha |
 
 ### Icon buttons
