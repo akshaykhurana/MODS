@@ -105,7 +105,9 @@ The playground provides live dropdowns for all semantic colour tokens — no nee
 
 Palette swatches show an **in-use** tag on any step that is currently referenced by at least one semantic token. This makes it easy to see at a glance which steps are load-bearing and which are free to reassign.
 
-Button label and outline colours (primary label, secondary outline + label, tertiary label, and all disabled variants) have their own dropdown rows in the **Actions** panel, covering both light and dark modes.
+Button label and outline colours (primary label, secondary outline + label, tertiary label, and all disabled variants) have their own dropdown rows in the **Actions** panel, covering both light and dark modes. **Label dropdowns** offer the 8 pre-composed text emphasis vars only — `text-high`, `text-medium`, `text-low`, `text-disabled`, `text-invert-high`, `text-invert-medium`, `text-invert-low`, `text-invert-disabled`. These vars combine a text colour alias with an emphasis alpha and auto-switch in dark mode. **Outline dropdowns** remain on palette steps.
+
+**Cross-category alias preservation.** When the server reads `_semantic-tokens.css` to populate dropdowns, it resolves alias chains to their leaf value — but stops when it encounters a semantic active alias from a different category. This means if you save `action-primary-label-light-color: var(--text-invert-high)`, the dropdown will reload showing `text-invert-high`, not the raw palette step it ultimately resolves to.
 
 ---
 

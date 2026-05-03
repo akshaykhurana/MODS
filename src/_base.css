@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap');
 
 /* ==========================================================================
    _base.css
@@ -147,7 +147,7 @@
   --shadow-ambient-global-alpha:  0.06;
 
   /* TEXT ALPHA — emphasis scale (MD-derived). Light + dark sets tuned independently. */
-  --text-high-light-alpha:          0.83;
+  --text-high-light-alpha:          1;
   --text-medium-light-alpha:        0.66;
   --text-low-light-alpha:           0.51;
   --text-disabled-light-alpha:      0.26;
@@ -156,7 +156,7 @@
   --text-accent-medium-light-alpha: 0.82;
   --text-accent-low-light-alpha:    0.63;
 
-  --text-high-dark-alpha:          0.96;
+  --text-high-dark-alpha:          0.91;
   --text-medium-dark-alpha:        0.84;
   --text-low-dark-alpha:           0.72;
   --text-disabled-dark-alpha:      0.46;
@@ -166,8 +166,8 @@
   --text-accent-low-dark-alpha:    0.89;
 
   /* ACTION OVERLAY — alphas for hover/pressed brand-tinted layer (mode-independent) */
-  --action-overlay-hover-global-alpha:   0.36;
-  --action-overlay-pressed-global-alpha: 0.16;
+  --action-overlay-hover-global-alpha:   0.3;
+  --action-overlay-pressed-global-alpha: 0.15;
 
   /* BORDER — alpha + width scales */
   --border-high-light-alpha:   0.48;
@@ -199,12 +199,12 @@
 
   /* LETTER SPACING — per role, em-based so tracking scales with font size.
      Playground accepts plain percentages (5 → 0.05em). */
-  --letter-spacing-display:  0em;
-  --letter-spacing-heading:  0em;
-  --letter-spacing-title:    0em;
+  --letter-spacing-display:  -0.025em;
+  --letter-spacing-heading:  -0.025em;
+  --letter-spacing-title:    -0.02em;
   --letter-spacing-body:     0em;
   --letter-spacing-label:    0em;
-  --letter-spacing-overline: 0.167em; /* ~2px at f3 (12px) */
+  --letter-spacing-overline: 0.15em; /* ~2px at f3 (12px) */
 
 }
 
@@ -288,11 +288,12 @@
      Body exposes separate regular and bold weights so .body-*-b and .body-*-i
      can use different values. Display / Heading / Title are always their bold
      weight. Label/Overline uses a single semi-bold weight. */
-  --font-weight-display:      700;
-  --font-weight-heading:      700;
-  --font-weight-title:        700;
+  --font-weight-display:      800;
+  --font-weight-heading:      800;
+  --font-weight-title:        800;
   --font-weight-body-regular: 400;
-  --font-weight-body-bold:    700;
+  --font-weight-body-bold:    600;
+  --font-weight-body-italic:  400;
   --font-weight-label:        600;
 
 }

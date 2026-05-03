@@ -761,7 +761,7 @@
 
   .btn-primary {
     background-color: rgb(var(--action-primary-default-color));
-    color: rgb(var(--action-primary-label-color) / var(--text-medium-alpha));
+    color: var(--action-primary-label-color);
     box-shadow: var(--shadow-level2);
   }
   .btn-primary:hover {
@@ -778,7 +778,7 @@
   }
   .btn-primary:disabled {
     background-color: rgb(var(--action-secondary-disabled-color));
-    color: rgb(var(--action-primary-label-disabled-color) / var(--text-disabled-alpha));
+    color: var(--action-primary-label-disabled-color);
     box-shadow: none;
     cursor: not-allowed;
   }
@@ -786,7 +786,7 @@
   .btn-secondary {
     background-color: transparent;
     border: 1.5px solid rgb(var(--action-secondary-outline-color) / var(--text-disabled-alpha));
-    color: rgb(var(--action-secondary-label-color) / var(--text-disabled-alpha));
+    color: var(--action-secondary-label-color);
   }
   .btn-secondary:hover {
     background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)));
@@ -801,13 +801,13 @@
   .btn-secondary:disabled {
     background-color: transparent;
     border-color: rgb(var(--action-secondary-outline-disabled-color));
-    color: rgb(var(--action-secondary-label-disabled-color) / var(--text-disabled-alpha));
+    color: var(--action-secondary-label-disabled-color);
     cursor: not-allowed;
   }
 
   .btn-tertiary {
     background-color: transparent;
-    color: rgb(var(--action-tertiary-label-color) / var(--text-medium-alpha));
+    color: var(--action-tertiary-label-color);
   }
   .btn-tertiary:hover {
     background-image: linear-gradient(rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)), rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)));
@@ -821,7 +821,7 @@
   }
   .btn-tertiary:disabled {
     background-color: transparent;
-    color: rgb(var(--action-tertiary-label-disabled-color) / var(--text-disabled-alpha));
+    color: var(--action-tertiary-label-disabled-color);
     cursor: not-allowed;
   }
 
@@ -999,7 +999,7 @@
     width: 16px;
     height: 16px;
     border: 1.5px solid rgb(var(--border-color) / var(--border-medium-alpha));
-    border-radius: var(--shape-control);
+    border-radius: var(--shape-xxs);
     background-color: transparent;
     transition: background-color 150ms, border-color 150ms;
   }

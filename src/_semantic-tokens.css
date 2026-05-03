@@ -70,11 +70,11 @@
   /* Base — light mode */
   --text-light-color:          var(--s10);
   --text-accent-light-color:   var(--p30);
-  --text-invert-light-color:   var(--s60);
+  --text-invert-light-color:   var(--s95);
   --text-invert-accent-light-color: var(--p85);
 
   /* Base — dark mode */
-  --text-dark-color:           var(--s60);
+  --text-dark-color:           var(--s95);
   --text-accent-dark-color:    var(--p85);
   --text-invert-dark-color:    var(--s10);
   --text-invert-accent-dark-color:  var(--p30);
@@ -94,6 +94,18 @@
   --text-accent-high-alpha:   var(--text-accent-high-light-alpha);
   --text-accent-medium-alpha: var(--text-accent-medium-light-alpha);
   --text-accent-low-alpha:    var(--text-accent-low-light-alpha);
+
+  /* Composed emphasis vars — colour × alpha pre-composed.
+     Reference these directly as color values: color: var(--text-high)
+     Auto-switch in dark mode because both --text-color and --text-*-alpha already switch. */
+  --text-high:             rgb(var(--text-color) / var(--text-high-alpha));
+  --text-medium:           rgb(var(--text-color) / var(--text-medium-alpha));
+  --text-low:              rgb(var(--text-color) / var(--text-low-alpha));
+  --text-disabled:         rgb(var(--text-color) / var(--text-disabled-alpha));
+  --text-invert-high:      rgb(var(--text-invert-color) / var(--text-high-alpha));
+  --text-invert-medium:    rgb(var(--text-invert-color) / var(--text-medium-alpha));
+  --text-invert-low:       rgb(var(--text-invert-color) / var(--text-low-alpha));
+  --text-invert-disabled:  rgb(var(--text-invert-color) / var(--text-disabled-alpha));
 
 
   /* ==========================================================================
@@ -128,7 +140,7 @@
      ========================================================================== */
 
   /* Base — light mode */
-  --action-primary-default-light-color:    var(--p70);
+  --action-primary-default-light-color:    var(--p50);
   --action-primary-overlay-light-color:    var(--p40); /* brand tint composited on hover/pressed */
   --action-secondary-disabled-light-color: var(--s70);
   --action-secondary-default-light-color:  var(--p80);
@@ -137,18 +149,18 @@
   --action-neutral-disabled-light-color:   var(--n50);
   --action-neutral-filled-light-color:     var(--n60);
   /* Button labels & outlines — light mode */
-  --action-primary-label-light-color:              var(--s60);
-  --action-primary-label-disabled-light-color:     var(--s60);
+  --action-primary-label-light-color:              var(--text-invert-medium);
+  --action-primary-label-disabled-light-color:     var(--text-invert-disabled);
   --action-secondary-outline-light-color:          var(--s10);
-  --action-secondary-label-light-color:            var(--s10);
+  --action-secondary-label-light-color:            var(--text-high);
   --action-secondary-outline-disabled-light-color: var(--s70);
-  --action-secondary-label-disabled-light-color:   var(--s10);
-  --action-tertiary-label-light-color:             var(--s10);
-  --action-tertiary-label-disabled-light-color:    var(--s10);
+  --action-secondary-label-disabled-light-color:   var(--text-disabled);
+  --action-tertiary-label-light-color:             var(--text-high);
+  --action-tertiary-label-disabled-light-color:    var(--text-disabled);
 
   /* Base — dark mode */
-  --action-primary-default-dark-color:    var(--p60);
-  --action-primary-overlay-dark-color:    var(--p80);
+  --action-primary-default-dark-color:    var(--p80);
+  --action-primary-overlay-dark-color:    var(--p90);
   --action-secondary-disabled-dark-color: var(--s30);
   --action-secondary-default-dark-color:  var(--p50);
   --action-secondary-overlay-dark-color:  var(--p80);
@@ -156,14 +168,14 @@
   --action-neutral-disabled-dark-color:   var(--n30);
   --action-neutral-filled-dark-color:     var(--n20);
   /* Button labels & outlines — dark mode */
-  --action-primary-label-dark-color:              var(--s10);
-  --action-primary-label-disabled-dark-color:     var(--s10);
+  --action-primary-label-dark-color:              var(--text-invert-high);
+  --action-primary-label-disabled-dark-color:     var(--text-invert-disabled);
   --action-secondary-outline-dark-color:          var(--s60);
-  --action-secondary-label-dark-color:            var(--s60);
+  --action-secondary-label-dark-color:            var(--text-high);
   --action-secondary-outline-disabled-dark-color: var(--s30);
-  --action-secondary-label-disabled-dark-color:   var(--s60);
-  --action-tertiary-label-dark-color:             var(--s60);
-  --action-tertiary-label-disabled-dark-color:    var(--s60);
+  --action-secondary-label-disabled-dark-color:   var(--text-disabled);
+  --action-tertiary-label-dark-color:             var(--text-high);
+  --action-tertiary-label-disabled-dark-color:    var(--text-disabled);
 
   /* Active aliases — point to light set; .dark {} switches to dark set */
   --action-primary-default-color:    var(--action-primary-default-light-color);   /* base state */
@@ -209,18 +221,17 @@
 
   /* ==========================================================================
      SHAPE — semantic tier (raw scale lives in _base.css)
-     shape-control is for small controls (checkbox, radio) which are 16px tall.
      ========================================================================== */
 
   /* Tier 2 — semantic */
-  --shape-xs:      var(--sh32);  /* 4px — xs components (h32) */
-  --shape-s:       var(--sh40);  /* 5px — s  components (h40) */
-  --shape-m:       var(--sh48);  /* 6px — m  components (h48) */
-  --shape-l:       var(--sh56);  /* 7px — l  components (h56) */
-  --shape-xl:      var(--sh64);  /* 8px — xl components (h64) */
-  --shape-xxl:     var(--sh72);  /* 9px — xl components at scr-l (h72) */
+  --shape-xxs:     var(--sh16);  /* 2px — xxs components (h16) */
+  --shape-xs:      var(--sh32);  /* 4px — xs  components (h32) */
+  --shape-s:       var(--sh40);  /* 5px — s   components (h40) */
+  --shape-m:       var(--sh48);  /* 6px — m   components (h48) */
+  --shape-l:       var(--sh56);  /* 7px — l   components (h56) */
+  --shape-xl:      var(--sh64);  /* 8px — xl  components (h64) */
+  --shape-xxl:     var(--sh72);  /* 9px — xxl components at scr-l (h72) */
   --shape-full:    var(--sh-full); /* pill */
-  --shape-control: var(--sh16);  /* 2px — checkboxes/radios (h16) */
 
 }
 

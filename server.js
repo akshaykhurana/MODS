@@ -73,6 +73,14 @@ function parseSemanticConfig() {
 
   // Follow alias chains to their leaf palette step (up to 10 hops, cycle-safe).
   // e.g. --text-color → text-light-color → s10 returns s10.
+  // Stops at semantic active aliases (e.g. text-invert-color) when crossing category
+  // boundaries, so cross-category references like action-primary-label → text-invert-color
+  // are preserved rather than resolved all the way to a palette step.
+  function isSemanticAlias(varName) {
+    // Active alias: ends in -color but NOT in -light-color, -dark-color, or -global-color.
+    return /-color$/.test(varName) &&
+           !/-(?:light|dark|global)-color$/.test(varName);
+  }
   function resolveAliases(map, rootAll) {
     const resolved = {};
     for (const [key, val] of Object.entries(map)) {
@@ -80,6 +88,9 @@ function parseSemanticConfig() {
       for (let i = 0; i < 10; i++) {
         const next = rootAll['--' + current];
         if (next === undefined || next === current) break;
+        // Stop if we've already moved at least one hop and the current value is a
+        // semantic active alias — preserves cross-category references.
+        if (i > 0 && isSemanticAlias(current)) break;
         current = next;
       }
       resolved[key] = current;
@@ -104,7 +115,41 @@ function parseSemanticConfig() {
       }
       return result;
     })(),
-  };
+    fontImports: (() => {
+      // Parse @import url('https://fonts.googleapis.com/css2?family=Name:...') lines
+      // and return an array of { name, weights: string[], italic: boolean }
+      const baseVarsContent = fs.readFileSync(BASE_VARS, 'utf8');
+      const entries = [];
+      const importRe = /@import url\(['"]?(https:\/\/fonts\.googleapis\.com\/css2\?[^'"\)]+)['"]?\)/g;
+      let im;
+      while ((im = importRe.exec(baseVarsContent)) !== null) {
+        const url = im[1];
+        // Extract family name from ?family=Name:...
+        const famMatch = url.match(/[?&]family=([^:&]+)/);
+        if (!famMatch) continue;
+        const name = decodeURIComponent(famMatch[1].replace(/\+/g, ' '));
+        // Extract weights — supports ital,wght@... and wght@... formats
+        const weights = new Set();
+        let italic = false;
+        // ital,wght format: 0,400;0,700;1,400 etc.
+        const italWght = url.match(/ital,wght@([^&]+)/);
+        if (italWght) {
+          for (const pair of italWght[1].split(';')) {
+            const [style, w] = pair.split(',');
+            if (w) weights.add(w);
+            if (style === '1') italic = true;
+          }
+        } else {
+          // plain wght@400;700 format
+          const wghtOnly = url.match(/wght@([^&]+)/);
+          if (wghtOnly) {
+            for (const w of wghtOnly[1].split(';')) if (w) weights.add(w);
+          }
+        }
+        entries.push({ name, weights: [...weights], italic });
+      }
+      return entries;
+    })(),  };
 }
 
 // ---- File writing helpers ----

@@ -49,6 +49,20 @@ function buildSelectOptions(selectedVar) {
   }).join('');
 }
 
+// Text-role options for label dropdowns — the 8 pre-composed text emphasis vars only.
+const TEXT_ROLE_OPTS = [
+  { group: 'On surface',        vars: ['text-high', 'text-medium', 'text-low', 'text-disabled'] },
+  { group: 'On invert surface', vars: ['text-invert-high', 'text-invert-medium', 'text-invert-low', 'text-invert-disabled'] },
+];
+function buildTextSelectOptions(selectedVar) {
+  return TEXT_ROLE_OPTS.map(g => {
+    const opts = g.vars.map(v =>
+      `<option value="${v}"${v === selectedVar ? ' selected' : ''}>${v}</option>`
+    ).join('');
+    return `<optgroup label="${g.group}">${opts}</optgroup>`;
+  }).join('');
+}
+
 // ── Palette swatch rendering ──────────────────────────────────────────
 function makeSwatch(name, val) {
   return `<div class="pg-swatch" data-var="--${name}">` +
@@ -131,6 +145,7 @@ const dirtySemanticL   = new Map();
 const dirtySemanticD   = new Map();
 const dirtySemanticRaw = new Map(); // raw non-var values e.g. --surfaces-alpha
 const dirtyFonts       = new Map(); // '--font-{role}' | '--letter-spacing-{role}' → value
+let   dirtyLoadedFonts = false;     // true when loaded-fonts list (add/remove/weights) changed
 let   dirtyScale       = false;     // true when type scale grid has been edited
 
 // ── Cached save-bar elements (queried once at load) ────────────────────
@@ -141,7 +156,7 @@ const discardBtn = document.getElementById('discard-btn');
 function updateSaveBar() {
   const palCount = paletteMode === 'full' ? 1 : dirtyPalette.size;
   const total    = palCount + dirtySemanticL.size + dirtySemanticD.size + dirtySemanticRaw.size
-                 + dirtyFonts.size + (dirtyScale ? 1 : 0);
+                 + dirtyFonts.size + (dirtyLoadedFonts ? 1 : 0) + (dirtyScale ? 1 : 0);
   if (total === 0) {
     statusEl.className   = 'pg-save-status';
     statusEl.textContent = 'No unsaved changes';
@@ -254,6 +269,24 @@ async function loadConfig() {
       const v = semanticConfig.rawValues && semanticConfig.rawValues[`--shadow-${layer}-global-alpha`];
       if (v) { const i = document.getElementById(`shadow-${layer}-global-alpha`); if (i) i.value = v; }
     });
+    // Seed loadedFonts from the @import lines already in _base.css so font role
+    // dropdowns are usable immediately without needing to re-add every font.
+    (semanticConfig.fontImports || []).forEach(e => {
+      const slug = fontSlug(e.name);
+      if (!loadedFonts.has(slug)) {
+        const entry = {
+          name:             e.name,
+          weights:          new Set(e.weights),
+          italic:           e.italic,
+          availableWeights: null, // unknown until re-discovered
+          hasItalic:        null,
+        };
+        loadedFonts.set(slug, entry);
+        injectFontLink(slug, buildGFUrl(entry));
+      }
+    });
+    refreshFontList();
+    repopulateRoleSelects();
   } catch (e) {
     // server not running — dropdowns default to first option
   }
@@ -382,14 +415,16 @@ function initDropdowns() {
   const lightMap = semanticConfig.light || {};
   const darkMap  = semanticConfig.dark  || {};
   document.querySelectorAll('.pg-swatch-select[data-mode="light"]').forEach(sel => {
-    sel.innerHTML = buildSelectOptions(lightMap[sel.dataset.var] || '');
+    const builder = sel.dataset.options === 'text' ? buildTextSelectOptions : buildSelectOptions;
+    sel.innerHTML = builder(lightMap[sel.dataset.var] || '');
   });
   document.querySelectorAll('.pg-swatch-select[data-mode="dark"]').forEach(sel => {
     // Fall back to light value for tokens that are mode-independent (no .dark override).
     const val = darkMap[sel.dataset.var] !== undefined
       ? darkMap[sel.dataset.var]
       : (lightMap[sel.dataset.var] || '');
-    sel.innerHTML = buildSelectOptions(val);
+    const builder = sel.dataset.options === 'text' ? buildTextSelectOptions : buildSelectOptions;
+    sel.innerHTML = builder(val);
   });
   initTextControls();
   initBorderControls();
@@ -574,7 +609,7 @@ async function save() {
     semanticDark:  Object.fromEntries(dirtySemanticD),
     semanticRaw:   Object.fromEntries(dirtySemanticRaw),
     fonts:         Object.fromEntries(dirtyFonts),
-    fontImports:   dirtyFonts.size > 0
+    fontImports:   (dirtyFonts.size > 0 || dirtyLoadedFonts)
                      ? [...loadedFonts.values()].map(e => ({ name: e.name, weights: [...e.weights], italic: e.italic }))
                      : null,
     scale:         dirtyScale ? { ...currentScaleValues } : null,
@@ -612,6 +647,7 @@ function connectSSE() {
       dirtySemanticD.clear();
       dirtySemanticRaw.clear();
       dirtyFonts.clear();
+      dirtyLoadedFonts = false;
       dirtyScale = false;
       paletteMode = 'patch';
       clearAllDirty();
@@ -976,14 +1012,15 @@ function rebuildAPCA() {
     { label: 'l5',     rgb: compositeRGB(resolveToRGB('rgb(var(--surfaces-l5-color))'),  sAlpha, baseRGB) },
   ];
 
-  const aHigh = getCSSAlpha('--text-high-alpha')        || 1;
-  const aMid  = getCSSAlpha('--text-medium-alpha')      || 0.87;
-  const aLow  = getCSSAlpha('--text-low-alpha')         || 0.60;
-  const aDis  = getCSSAlpha('--text-disabled-alpha')    || 0.38;
+  const m = isDark() ? 'dark' : 'light';
+  const aHigh = getCSSAlpha(`--text-high-${m}-alpha`)        || 1;
+  const aMid  = getCSSAlpha(`--text-medium-${m}-alpha`)      || 0.87;
+  const aLow  = getCSSAlpha(`--text-low-${m}-alpha`)         || 0.60;
+  const aDis  = getCSSAlpha(`--text-disabled-${m}-alpha`)    || 0.38;
 
-  const aAccHigh = getCSSAlpha('--text-accent-high-alpha')   || 0.85;
-  const aAccMid  = getCSSAlpha('--text-accent-medium-alpha') || 0.60;
-  const aAccLow  = getCSSAlpha('--text-accent-low-alpha')    || 0.38;
+  const aAccHigh = getCSSAlpha(`--text-accent-high-${m}-alpha`)   || 0.85;
+  const aAccMid  = getCSSAlpha(`--text-accent-medium-${m}-alpha`) || 0.60;
+  const aAccLow  = getCSSAlpha(`--text-accent-low-${m}-alpha`)    || 0.38;
 
   const textColorRGB  = resolveToRGB('rgb(var(--text-color))');
   const accentRGB     = resolveToRGB('rgb(var(--text-accent-color))');
@@ -1016,9 +1053,9 @@ function rebuildAPCA() {
   ];
 
   const borderColor = resolveToRGB('rgb(var(--border-color))');
-  const aBHigh = getCSSAlpha('--border-high-alpha')   || 0.87;
-  const aBMid  = getCSSAlpha('--border-medium-alpha') || 0.38;
-  const aBLow  = getCSSAlpha('--border-low-alpha')    || 0.12;
+  const aBHigh = getCSSAlpha(`--border-high-${m}-alpha`)   || 0.87;
+  const aBMid  = getCSSAlpha(`--border-medium-${m}-alpha`) || 0.38;
+  const aBLow  = getCSSAlpha(`--border-low-${m}-alpha`)    || 0.12;
   const aBFoc  = getCSSAlpha('--border-focus-global-alpha')  || 1;
   const borderTokens = [
     { label: 'high',   rgb: borderColor,                                alpha: aBHigh },
@@ -1274,6 +1311,8 @@ async function addFont(rawName) {
   injectFontLink(slug, buildGFUrl(entry));
   refreshFontList();
   repopulateRoleSelects();
+  dirtyLoadedFonts = true;
+  updateSaveBar();
   return true;
 }
 
@@ -1308,12 +1347,16 @@ document.getElementById('pg-loaded-fonts-list')?.addEventListener('change', e =>
     if (e.target.checked) entry.weights.add(weight);
     else entry.weights.delete(weight);
     injectFontLink(slug, buildGFUrl(entry));
+    dirtyLoadedFonts = true;
+    updateSaveBar();
   } else if (e.target.matches('.pg-fw-italic-cb')) {
     const { slug } = e.target.dataset;
     const entry = loadedFonts.get(slug);
     if (!entry) return;
     entry.italic = e.target.checked;
     injectFontLink(slug, buildGFUrl(entry));
+    dirtyLoadedFonts = true;
+    updateSaveBar();
   }
 });
 
@@ -1324,6 +1367,8 @@ document.getElementById('pg-loaded-fonts-list')?.addEventListener('click', e => 
   removeFontLink(slug);
   document.getElementById(`pg-font-entry-${slug}`)?.remove();
   repopulateRoleSelects();
+  dirtyLoadedFonts = true;
+  updateSaveBar();
 });
 
 // ── Font role selects ─────────────────────────────────────────────────

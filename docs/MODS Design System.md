@@ -15,7 +15,7 @@ The same pattern governs every part of the system.
 | **Typography leading** | `lb1`–`lb8`, `lt1`–`lt15`, `ld6`–`ld15` | baked into Semantic component classes |
 | **Elevation** | `level0`–`level5`, `shadow-level1`–`shadow-level5` | component classes (to be defined per project) |
 | **Spacing** | `g0`–`g25` + half-steps | `p-g3`, `gap-g2`, `.gap-default` |
-| **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xs`–`--shape-xxl`, `--shape-full`, `--shape-control` |
+| **Shape** | `sh8`–`sh72`, `sh-full` | `--shape-xxs`–`--shape-xxl`, `--shape-full` |
 
 Base variables live in `src/_base.css`.  
 The Semantic layer lives in `src/_semantic-tokens.css` (colour, shape) and `src/_components.css` (everything else).
@@ -131,10 +131,17 @@ Additional accent palettes (`a10`–`a100`, `b10`–`b100` etc.) can be added pe
 
 Semantic tokens map base palette steps to named roles. These are what Tailwind utilities reference.
 
-Each token that carries an alpha value uses a separate colour var (raw RGB channels) and an alpha var, composed at point of use:
+Each token that carries an alpha value uses a separate colour var (raw RGB channels) and an alpha var. These are pre-composed into convenience vars for direct use:
 
 ```css
-color: rgb(var(--text-high) / var(--text-medium-alpha));
+color: var(--text-high);     /* pre-composed rgb + alpha */
+color: var(--text-medium);   /* pre-composed rgb + alpha */
+```
+
+The raw alpha vars are still available for manual composition when needed (e.g. overlays, custom components):
+
+```css
+color: rgb(var(--text-color) / var(--text-medium-alpha));
 ```
 
 `high`-level tokens are always fully opaque and have no alpha var.
@@ -181,6 +188,23 @@ All mode-switching tokens follow the **Variables Naming Pattern**:
 1. Named base vars `--{cat}-{prop}-light-color` / `--{cat}-{prop}-dark-color` in `:root` hold the raw palette step.
 2. Active aliases `--{cat}-{prop}` point to the light set by default.
 3. `.dark {}` re-points aliases to the dark set — `.dark {}` is never written programmatically.
+
+##### Composed text emphasis vars
+
+Eight pre-composed vars combine a text colour alias with an emphasis alpha. They live in `_semantic-tokens.css` and auto-switch in dark mode because both their dependencies (`--text-color` / `--text-invert-color` and `--text-*-alpha`) already switch.
+
+| Var | Composition | Use |
+|---|---|---|
+| `--text-high` | `rgb(var(--text-color) / var(--text-high-alpha))` | Body text, headings |
+| `--text-medium` | `rgb(var(--text-color) / var(--text-medium-alpha))` | Secondary text |
+| `--text-low` | `rgb(var(--text-color) / var(--text-low-alpha))` | Hints, captions |
+| `--text-disabled` | `rgb(var(--text-color) / var(--text-disabled-alpha))` | Disabled labels |
+| `--text-invert-high` | `rgb(var(--text-invert-color) / var(--text-high-alpha))` | Labels on filled/invert surfaces |
+| `--text-invert-medium` | `rgb(var(--text-invert-color) / var(--text-medium-alpha))` | Secondary labels on invert surfaces |
+| `--text-invert-low` | `rgb(var(--text-invert-color) / var(--text-low-alpha))` | Hints on invert surfaces |
+| `--text-invert-disabled` | `rgb(var(--text-invert-color) / var(--text-disabled-alpha))` | Disabled labels on invert surfaces |
+
+Use these directly as `color` values — `color: var(--text-high)`. They are the preferred way to apply text colour in components; raw `rgb(var(--text-color) / ...)` composition is reserved for cases where neither standard emphasis level fits.
 
 ```css
 /* src/_semantic-tokens.css */
@@ -451,6 +475,8 @@ Hover and pressed states use a **state layer overlay** model. A brand-tinted ove
 | `action-secondary-label-color` / `action-secondary-label-disabled-color` | — | Label colour on secondary buttons (default + disabled) |
 | `action-tertiary-label-color` / `action-tertiary-label-disabled-color` | — | Label colour on tertiary/ghost buttons (default + disabled) |
 
+Label and outline tokens accept either a composed text emphasis var (`var(--text-invert-high)`) or a raw palette step (`var(--s60)`). Using a composed var means the label colour automatically follows both the text colour token and the emphasis alpha — dark-mode switching is free. The playground label dropdowns list the 8 composed vars only; outline dropdowns remain on palette steps.
+
 | Alpha token | Default | Role |
 |---|---|---|
 | `--action-overlay-hover-global-alpha` | 0.12 | Applied to overlay colour on hover |
@@ -631,12 +657,13 @@ Each text role has its own font family, font weight, and letter-spacing CSS vari
   --font-body:      'Roboto', system-ui, sans-serif; /* body-* */
   --font-label:     'Roboto', system-ui, sans-serif; /* label-*, overline-* */
 
-  /* Font weights — one per role (body has regular + bold separately) */
+  /* Font weights — one per role (body has regular + bold + italic separately) */
   --font-weight-display:      700;
   --font-weight-heading:      700;
   --font-weight-title:        700;
   --font-weight-body-regular: 400;
   --font-weight-body-bold:    700;
+  --font-weight-body-italic:  400;
   --font-weight-label:        600;
 
   /* Letter spacing — in em units (scales proportionally with font size) */
@@ -651,7 +678,7 @@ Each text role has its own font family, font weight, and letter-spacing CSS vari
 
 `--font-display` and `--font-heading` default to the same value and are typically a display or brand typeface. `--font-title` defaults to the same but is intentionally separate — card titles and section titles often follow the body typeface on projects where the display font would be too heavy at smaller sizes.
 
-Body has two weight vars (`--font-weight-body-regular` and `--font-weight-body-bold`) because the same font family is used at both weights within the body role. All other roles use a single weight var.
+Body has three weight vars (`--font-weight-body-regular`, `--font-weight-body-bold`, and `--font-weight-body-italic`) because the same font family is used at different weights and styles within the body role. `--font-weight-body-italic` is the weight applied to italic body text (defaults to 400, but can be set to a lighter or heavier value when the italic variant of a variable font calls for it). All other roles use a single weight var.
 
 **Letter spacing** is stored in `em` so it scales proportionally at every breakpoint. Every type class in `_components.css` applies `letter-spacing: var(--letter-spacing-{role})`. The overline default is `0.167em` — this matches the old hardcoded `2px` value at the overline base size of 12px.
 
@@ -953,6 +980,7 @@ At `scr-l`, a component steps up one height tier and one shape tier simultaneous
 
 | Shape token | Base token | Radius | Component height | Sample components |
 |---|---|---|---|---|
+| `--shape-xxs` | `sh16` | 2px | 16px | checkboxes, radios |
 | `--shape-xs` | `sh32` | 4px | 32px | `.btn-xs`, `.btn-icon-xs`, `.input-s`, `.chip` |
 | `--shape-s` | `sh40` | 5px | 40px | `.btn-s`, `.btn-icon-s`, `.input-m` |
 | `--shape-m` | `sh48` | 6px | 48px | `.btn-m`, `.btn-icon-m`, `.input-l` |
@@ -960,11 +988,11 @@ At `scr-l`, a component steps up one height tier and one shape tier simultaneous
 | `--shape-xl` | `sh64` | 8px | 64px | `.btn-xl`, `.btn-icon-xl` |
 | `--shape-xxl` | `sh72` | 9px | 72px | `.btn-xl` at scr-l, `.btn-icon-xl` at scr-l |
 | `--shape-full` | `sh-full` | 9999px | any | chips, badges, radios, toggles, icon buttons (default) |
-| `--shape-control` | `sh16` | 2px | 16px | checkboxes |
 
 ```css
 /* src/_semantic-tokens.css */
 :root {
+  --shape-xxs:     var(--sh16);   /* 2px — 16px checkboxes/radios */
   --shape-xs:      var(--sh32);    /* 4px — 32px height */
   --shape-s:       var(--sh40);    /* 5px — 40px height */
   --shape-m:       var(--sh48);    /* 6px — 48px height */
@@ -972,7 +1000,6 @@ At `scr-l`, a component steps up one height tier and one shape tier simultaneous
   --shape-xl:      var(--sh64);    /* 8px — 64px height */
   --shape-xxl:     var(--sh72);    /* 9px — 72px height */
   --shape-full:    var(--sh-full); /* 9999px — pill shape */
-  --shape-control: var(--sh16);   /* 2px — 16px checkboxes */
 }
 ```
 
@@ -1106,7 +1133,7 @@ All input components share a base height scale that follows the global scr-l rul
 
 | Class | Description |
 |---|---|
-| `.checkbox` | 16×16px (scr-l: 20×20px), `--shape-control`. Unchecked: `border-medium`. Checked: `action-primary-default` fill, white tick. Indeterminate: `action-primary-default` fill, white dash. |
+| `.checkbox` | 16×16px (scr-l: 20×20px), `--shape-xxs`. Unchecked: `border-medium`. Checked: `action-primary-default` fill, white tick. Indeterminate: `action-primary-default` fill, white dash. |
 | `.radio` | 16×16px (scr-l: 20×20px), `--shape-full`. Unchecked: `border-medium`. Checked: outer ring `action-primary-default`, filled centre dot. |
 | `.checkbox:disabled`, `.radio:disabled` | `action-secondary-disabled` fill/border, no pointer events |
 
@@ -1153,3 +1180,27 @@ npm run build:css   # outputs dist/style.css
 Build script: `npx tailwindcss -i src/style.css -o dist/style.css`
 
 Tailwind v4 uses automatic content detection — no `content` paths needed in configuration.
+
+---
+
+## Engineering Decisions
+
+### Shape token naming — `--shape-xxs` replaces `--shape-control`
+
+**Decision:** The `--shape-control` semantic token was renamed to `--shape-xxs`.
+
+**Rationale:** All other semantic shape tokens are named by size tier (`xs`, `s`, `m`, `l`, `xl`, `xxl`, `full`). `--shape-control` broke the pattern by encoding a component category (controls) rather than a size. A size-based name is more composable — any future component at 16px height can use `--shape-xxs` without the name implying it is a form control. The full scale is now `xxs → xs → s → m → l → xl → xxl → full`.
+
+**Files changed:** `src/_semantic-tokens.css`, `src/_components.css`, `playground/index.html`, `docs/MODS Design System.md`.
+
+---
+
+### Playground APCA table — reads mode-specific base vars directly
+
+**Problem:** `rebuildAPCA()` was reading the active alias vars (`--text-high-alpha`, `--border-high-alpha`, etc.) via `getComputedStyle(document.documentElement)`. These active aliases are re-pointed to their dark-mode base vars inside a `.dark {}` rule on `body`, not on `:root`. So `documentElement` always resolved through the light chain regardless of which mode the playground was in. Nudging a dark alpha input wrote the correct base var but the APCA table never reflected it.
+
+**Decision rejected:** Keeping both light and dark input rows always visible, bridged by the active alias. This approach requires a three-layer chain (base var → active alias → APCA read) and the bug falls out of the gap between `documentElement` and `body` scope. It also makes the APCA table permanently ambiguous — you cannot validate dark alphas against a light surface or vice versa.
+
+**Decision adopted:** `rebuildAPCA()` now reads mode-specific base vars directly, e.g. `--text-high-dark-alpha` or `--text-high-light-alpha`, chosen by `isDark()` at call time. The playground CSS already hides the inactive alpha row (`.pg-text-alpha-light` / `.pg-text-alpha-dark`) via `body:not(.dark)` / `body.dark` selectors. The invariant "visible inputs = active mode = APCA context" is now enforced at the DOM level rather than by CSS cascade indirection.
+
+**Files changed:** `playground/playground.js`.
