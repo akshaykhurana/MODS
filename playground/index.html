@@ -1484,6 +1484,167 @@
   </div>
   <div class="pg-comp-note">resting · .input-error + .input-error-msg · readonly · disabled — label colour tracks state automatically</div>
 
+  <!-- ---- Phone (international) ---- -->
+  <h3 class="pg-subsection-title">Phone (international)</h3>
+
+  <div class="pg-comp-label">Country dropdown · medium</div>
+  <div class="field" style="max-width:420px;margin-bottom:12px;">
+    <label class="field-label" for="pg-phone-m-national">Phone</label>
+    <div class="input input-m input-phone">
+      <div class="input-phone-country">
+        <div class="select-wrap">
+          <select class="select select-in-phone" aria-label="Country or region">
+            <option value="in" selected>🇮🇳 India +91</option>
+            <option value="us">🇺🇸 United States +1</option>
+            <option value="gb">🇬🇧 United Kingdom +44</option>
+            <option value="jp">🇯🇵 Japan +81</option>
+          </select>
+        </div>
+      </div>
+      <span class="input-phone-divider" aria-hidden="true"></span>
+      <input class="input-field" id="pg-phone-m-national" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210">
+    </div>
+    <p class="input-hint">Flag emoji in <code>&lt;option&gt;</code> text — host owns full country list and E.164.</p>
+  </div>
+  <div class="pg-comp-note"><code>.input.input-m.input-phone</code> · <code>.input-phone-country</code> · <code>.select-in-phone</code> · <code>.input-phone-divider</code></div>
+
+  <div class="pg-comp-label">Country dropdown · small (dense)</div>
+  <div class="field" style="max-width:360px;margin-bottom:12px;">
+    <label class="field-label" for="pg-phone-s-national">Mobile</label>
+    <div class="input input-s input-phone">
+      <div class="input-phone-country">
+        <div class="select-wrap">
+          <select class="select select-in-phone" aria-label="Country or region">
+            <option value="in" selected>🇮🇳 +91</option>
+            <option value="us">🇺🇸 +1</option>
+            <option value="de">🇩🇪 +49</option>
+          </select>
+        </div>
+      </div>
+      <span class="input-phone-divider" aria-hidden="true"></span>
+      <input class="input-field" id="pg-phone-s-national" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Number">
+    </div>
+  </div>
+  <div class="pg-comp-note">Short <code>&lt;option&gt;</code> labels on small widths — same pattern</div>
+
+  <div class="pg-comp-label">Fixed country</div>
+  <div class="field" style="max-width:380px;margin-bottom:8px;">
+    <label class="field-label" for="pg-phone-fix-national">Phone</label>
+    <div class="input input-m input-phone">
+      <span class="input-phone-prefix" aria-hidden="true">🇮🇳 +91</span>
+      <span class="input-phone-divider" aria-hidden="true"></span>
+      <input class="input-field" id="pg-phone-fix-national" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210" aria-label="Phone number (India)">
+    </div>
+    <p class="input-hint">Region locked — prefix is not a control.</p>
+  </div>
+  <div class="pg-comp-note"><code>.input-phone-prefix</code> instead of <code>.input-phone-country</code></div>
+
+  <!-- ---- OTP (one-time code) ---- -->
+  <h3 class="pg-subsection-title">One-time code (OTP)</h3>
+
+  <div class="pg-comp-label">6 digits + resend</div>
+  <div class="field" style="max-width:420px;margin-bottom:12px;">
+    <label class="field-label" id="pg-otp6-label" for="pg-otp6-0">Verification code</label>
+    <div class="otp-stack">
+      <div class="otp" role="group" aria-labelledby="pg-otp6-label">
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-0" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6"></div>
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-1" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 6"></div>
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-2" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 6"></div>
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-3" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 6"></div>
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-4" inputmode="numeric" maxlength="1" aria-label="Digit 5 of 6"></div>
+        <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp6-5" inputmode="numeric" maxlength="1" aria-label="Digit 6 of 6"></div>
+      </div>
+      <div class="otp-resend">
+        <button type="button" class="btn btn-tertiary btn-s">Resend code</button>
+      </div>
+    </div>
+    <p class="input-hint">We sent a code to your phone. Resend is available after cooldown in production.</p>
+  </div>
+  <div class="pg-comp-note">.otp-stack · .otp · .input.input-otp-cell · .otp-resend · <code>btn btn-tertiary btn-s</code></div>
+
+  <div class="pg-comp-label">Error state (group)</div>
+  <div class="field" style="max-width:420px;margin-bottom:12px;">
+    <label class="field-label" id="pg-otp-err-lbl" for="pg-otp-err-0">Code</label>
+    <div class="otp-stack">
+      <div class="otp" role="group" aria-labelledby="pg-otp-err-lbl">
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" id="pg-otp-err-0" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 1 of 6"></div>
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" inputmode="numeric" maxlength="1" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 2 of 6"></div>
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" inputmode="numeric" maxlength="1" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 3 of 6"></div>
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" inputmode="numeric" maxlength="1" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 4 of 6"></div>
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" inputmode="numeric" maxlength="1" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 5 of 6"></div>
+        <div class="input input-m input-otp-cell input-error"><input class="input-field" inputmode="numeric" maxlength="1" aria-invalid="true" aria-describedby="pg-otp-err-msg" aria-label="Digit 6 of 6"></div>
+      </div>
+      <div class="otp-resend"><button type="button" class="btn btn-tertiary btn-s">Resend code</button></div>
+    </div>
+    <p class="input-error-msg" id="pg-otp-err-msg">That code is invalid or expired.</p>
+  </div>
+  <div class="pg-comp-note"><code>.input-error</code> on each cell · hint hidden when paired with stack + error (use one message)</div>
+
+  <div class="pg-comp-label">4 digits</div>
+  <div class="field" style="max-width:280px;margin-bottom:8px;">
+    <label class="field-label" id="pg-otp4-label" for="pg-otp4-0">Backup code</label>
+    <div class="otp-stack">
+      <div class="otp" role="group" aria-labelledby="pg-otp4-label">
+        <div class="input input-s input-otp-cell"><input class="input-field" id="pg-otp4-0" inputmode="numeric" maxlength="1" aria-label="Digit 1 of 4"></div>
+        <div class="input input-s input-otp-cell"><input class="input-field" id="pg-otp4-1" inputmode="numeric" maxlength="1" aria-label="Digit 2 of 4"></div>
+        <div class="input input-s input-otp-cell"><input class="input-field" id="pg-otp4-2" inputmode="numeric" maxlength="1" aria-label="Digit 3 of 4"></div>
+        <div class="input input-s input-otp-cell"><input class="input-field" id="pg-otp4-3" inputmode="numeric" maxlength="1" aria-label="Digit 4 of 4"></div>
+      </div>
+      <div class="otp-resend">
+        <button type="button" class="btn btn-tertiary btn-s" disabled aria-disabled="true">Resend in 45s</button>
+      </div>
+    </div>
+    <p class="input-hint">Example disabled resend (cooldown).</p>
+  </div>
+  <div class="pg-comp-note">Four- vs six-cell is markup only; same CSS · optional <code>disabled</code> on resend during cooldown</div>
+
+  <div class="pg-comp-label">Sizes (xs · m · xl) — 6 cells, full width</div>
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:100%;margin-bottom:8px;">
+    <div class="field" style="max-width:260px;">
+      <label class="field-label" id="pg-otp-xs-lbl" for="pg-otp-xs-0">Extra small</label>
+      <div class="otp-stack">
+        <div class="otp" role="group" aria-labelledby="pg-otp-xs-lbl">
+          <div class="input input-xs input-otp-cell"><input class="input-field" id="pg-otp-xs-0" inputmode="numeric" maxlength="1" aria-label="XS digit 1"></div>
+          <div class="input input-xs input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XS digit 2"></div>
+          <div class="input input-xs input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XS digit 3"></div>
+          <div class="input input-xs input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XS digit 4"></div>
+          <div class="input input-xs input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XS digit 5"></div>
+          <div class="input input-xs input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XS digit 6"></div>
+        </div>
+        <div class="otp-resend"><button type="button" class="btn btn-tertiary btn-xs">Resend</button></div>
+      </div>
+    </div>
+    <div class="field" style="max-width:480px;">
+      <label class="field-label" id="pg-otp-m2-lbl" for="pg-otp-m2-0">Medium</label>
+      <div class="otp-stack">
+        <div class="otp" role="group" aria-labelledby="pg-otp-m2-lbl">
+          <div class="input input-m input-otp-cell"><input class="input-field" id="pg-otp-m2-0" inputmode="numeric" maxlength="1" aria-label="M digit 1"></div>
+          <div class="input input-m input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="M digit 2"></div>
+          <div class="input input-m input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="M digit 3"></div>
+          <div class="input input-m input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="M digit 4"></div>
+          <div class="input input-m input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="M digit 5"></div>
+          <div class="input input-m input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="M digit 6"></div>
+        </div>
+        <div class="otp-resend"><button type="button" class="btn btn-tertiary btn-s">Resend code</button></div>
+      </div>
+    </div>
+    <div class="field" style="max-width:560px;">
+      <label class="field-label" id="pg-otp-xl-lbl" for="pg-otp-xl-0">Extra large</label>
+      <div class="otp-stack">
+        <div class="otp" role="group" aria-labelledby="pg-otp-xl-lbl">
+          <div class="input input-xl input-otp-cell"><input class="input-field" id="pg-otp-xl-0" inputmode="numeric" maxlength="1" aria-label="XL digit 1"></div>
+          <div class="input input-xl input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XL digit 2"></div>
+          <div class="input input-xl input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XL digit 3"></div>
+          <div class="input input-xl input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XL digit 4"></div>
+          <div class="input input-xl input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XL digit 5"></div>
+          <div class="input input-xl input-otp-cell"><input class="input-field" inputmode="numeric" maxlength="1" aria-label="XL digit 6"></div>
+        </div>
+        <div class="otp-resend"><button type="button" class="btn btn-tertiary btn-l">Resend code</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="pg-comp-note">Cells share row width (<code>flex: 1</code>) · resend button size can track field scale</div>
+
   <!-- ---- Textarea ---- -->
   <h3 class="pg-subsection-title">Textarea</h3>
 

@@ -1194,6 +1194,89 @@ Hint and error are mutually exclusive by convention — swap them at validation 
 
 ---
 
+### International phone
+
+One compound **`.input`** with **`input-phone`**: country **`select`** (or a **fixed prefix**) + vertical divider + national **`tel`** field. **Sizes use the same `input-xs` … `input-xl` classes** as single-line fields. Below the control: one **`.input-hint`** or **`.input-error-msg`** — same rules as a normal input.
+
+MODS examples default to **India (+91)** for country and sample numbers; swap in your product’s primary market as needed.
+
+**Country dropdown:** Wrap **`select.select.select-in-phone`** in **`div.select-wrap`** inside **`div.input-phone-country`**. Do **not** add **`select-s` / `select-m` / `select-l`** on the same element as **`select-in-phone`** — height and type scale come from the parent **`.input.input-{xs|s|m|l|xl}.input-phone`**. Use **`🇮🇳 India +91`**-style text in **`<option>`**s (Unicode flag emoji + label + dial code). Image-based flags require a **custom combobox** in the host app, not a native `<select>`.
+
+**Fixed country:** Replace the **`select`** with **`<span class="input-phone-prefix">`** (flag + dial code). Typography tracks the active **`.input-*`** size via nested rules.
+
+**Accessibility:** Label the national field with **`for`**. On the country **`select`**, add **`aria-label="Country or region"`** (or similar) when there is no visible `<label>` bound to it. The composite is still one **`.field`** with one **`field-label`** aimed at the national input.
+
+**Host responsibility:** Country list ordering, lookup, and **E.164** / libphonenumber-style validation are **not** part of MODS — document in your product.
+
+**Error state:** Add **`.input-error`** on the outer **`.input.input-phone`** (one border around the whole control), same as a single text field.
+
+```html
+<div class="field">
+  <label class="field-label" for="phone-national">Phone</label>
+  <div class="input input-m input-phone">
+    <div class="input-phone-country">
+      <div class="select-wrap">
+        <select class="select select-in-phone" aria-label="Country or region">
+          <option value="in" selected>🇮🇳 India +91</option>
+          <option value="us">🇺🇸 United States +1</option>
+          <option value="gb">🇬🇧 United Kingdom +44</option>
+        </select>
+      </div>
+    </div>
+    <span class="input-phone-divider" aria-hidden="true"></span>
+    <input class="input-field" id="phone-national" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210">
+  </div>
+  <p class="input-hint">Include area code.</p>
+</div>
+```
+
+**Fixed-country example:** same **`input input-m input-phone`**, but **`span.input-phone-prefix`** instead of **`input-phone-country`** + **`select`**, then **divider** + **`.input-field`**.
+
+| Class | Description |
+|---|---|
+| `.input-phone` | Modifier on **`.input`** — zeroes horizontal padding on the wrapper; splits layout into country / divider / national field. |
+| `.input-phone-country` | Holds **`select-wrap`** + **`select`**. `max-width` capped so the national segment keeps space. |
+| `.select-in-phone` | **`select`** modifier: no border, transparent bg, **no** paired **`select-s/m/l`**; focus outline suppressed — **`input:focus-within`** supplies the ring. |
+| `.input-phone-divider` | 1px vertical divider between country and national segments. |
+| `.input-phone-prefix` | Non-interactive country + dial code when the country is fixed. |
+
+Standalone **`.select-xs`** is also available for form rows that are not phone compounds — it mirrors **`.input-xs`** heights.
+
+---
+
+### One-time code (OTP)
+
+Use **one label** and **one** `.input-hint` or `.input-error-msg` for the whole code. Digits are **separate `.input` wrappers** so states match single-line fields; they sit in a full-width **`.otp`** row with equal flex columns. **4** or **6** digits are the supported variants (same CSS — only the number of cells changes).
+
+**Resend:** Place a **`.otp-resend`** row **inside** **`.otp-stack`** (below the digit row). Use a **text-style button** — typically **`btn btn-tertiary btn-s`** (or **`btn-tight`**). Label clearly (e.g. “Resend code”). **Cooldown** (disabled + “Resend in 42s”) is host logic; use `disabled` on the button during the wait. Do not use `required` on individual digit inputs if the field is optional to submit partial codes—product choice.
+
+```html
+<div class="field" style="max-width: 360px">
+  <label class="field-label" id="otp-label" for="otp-d0">Verification code</label>
+  <div class="otp-stack">
+    <div class="otp" role="group" aria-labelledby="otp-label">
+      <div class="input input-m input-otp-cell"><input class="input-field" id="otp-d0" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1 of 6"></div>
+      <!-- … repeat for digits 2–6 (or 1–4 for a 4-digit code) … -->
+    </div>
+    <div class="otp-resend">
+      <button type="button" class="btn btn-tertiary btn-s">Resend code</button>
+    </div>
+  </div>
+  <p class="input-hint">We sent a code to your phone.</p>
+</div>
+```
+
+| Class | Description |
+|---|---|
+| `.otp-stack` | Column wrapper: digit row + resend row. `width: 100%`, `gap-g1` between children. |
+| `.otp` | Flex row: `gap-g1`, full width. `role="group"` + `aria-labelledby` or `aria-label`. |
+| `.input-otp-cell` | Modifier on each `.input` — `flex: 1 1 0`, `min-width: 0`; inner field centred, tabular numerals. |
+| `.otp-resend` | Flex row, end-aligned — holds the resend **`<button>`** (not a second label). |
+
+Group error: add **`.input-error`** to **every** digit cell. **`.otp-stack:has(.input-error) ~ .input-hint`** and **`.otp:has(.input-error) ~ .input-hint`** hide the hint when any cell is in error (same idea as **`.input-error` → `.input-hint`** for a single control).
+
+---
+
 ### Textarea
 
 `.textarea` is a **wrapper `<div>` with `display: block`** (not flex — required for `resize: vertical` on the inner field to work naturally). The bare `<textarea>` goes inside as `.textarea-field`.
