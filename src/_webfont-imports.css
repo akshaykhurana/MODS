@@ -1,0 +1,25 @@
+/* ==========================================================================
+   _webfont-imports.css
+   Google Fonts @import declarations for the MODS playground.
+
+   PURPOSE
+   -------
+   CSS requires @import to appear before any other rules. Tailwind v4 bundles
+   _base.css AFTER its own prelude (layers, theme), so any @import inside
+   _base.css would violate that rule and be silently dropped in packed output.
+
+   This file is NOT referenced from src/style.css and is therefore never
+   processed by @tailwindcss/cli. The playground dev server reads it directly
+   to inject font <link> tags into the browser at runtime.
+
+   The packed dist/style.css produced by `npm run pack` does NOT contain these
+   @import lines — by design. Host projects must load typefaces themselves
+   (next/font, <link>, self-hosted CSS, etc.) to match the --font-* family
+   names in the packed CSS.
+
+   When branding changes fonts in the playground and the change is saved,
+   the server rewrites @import lines in this file. It stays in git and is
+   copied into mods-snapshot/ by `npm run pack`.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,600;0,800;1,400;1,600;1,800&display=swap');

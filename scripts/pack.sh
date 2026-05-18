@@ -48,11 +48,12 @@ mv "$PACK_TMP" "$MODS_DEST"
 echo "Published compiled CSS  → $MODS_DEST"
 
 # ── Token snapshot ────────────────────────────────────────────────────
-# Copies _base.css and _semantic-tokens.css alongside the compiled CSS
-# so token values survive a MODS re-clone and can be restored by an agent.
+# Copies _base.css, _semantic-tokens.css, and _webfont-imports.css alongside
+# the compiled CSS so token values survive a MODS re-clone and can be restored
+# by an agent. These files are NOT imported by the host project.
 SNAPSHOT_DIR="$DEST_DIR/mods-snapshot"
 mkdir -p "$SNAPSHOT_DIR"
-cp src/_base.css src/_semantic-tokens.css "$SNAPSHOT_DIR/"
+cp src/_base.css src/_semantic-tokens.css src/_webfont-imports.css "$SNAPSHOT_DIR/"
 
 TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
 
@@ -63,13 +64,39 @@ cat > "$SNAPSHOT_DIR/README.md" << 'HEREDOC'
 
 Packed: __TIMESTAMP__
 
-Verbatim copies of `mods/src/_base.css` and `mods/src/_semantic-tokens.css` at the
-time `npm run pack` was last run. These files are not imported by the host project —
-they exist so token values can be restored after MODS is re-cloned.
+Verbatim copies of `mods/src/_base.css`, `mods/src/_semantic-tokens.css`, and
+`mods/src/_webfont-imports.css` at the time `npm run pack` was last run. These files
+are not imported by the host project — they exist so branding decisions can be restored
+after MODS is re-cloned.
 
 The snapshot captures:
-- `_base.css`            — palette RGB values, scalar vars (alphas, border widths, letter spacing)
-- `_semantic-tokens.css` — semantic pointings (which palette steps each role maps to in light and dark mode)
+- `_base.css`             — palette RGB values, scalar vars (alphas, border widths, letter spacing)
+- `_semantic-tokens.css`  — semantic pointings (which palette steps each role maps to in light and dark mode)
+- `_webfont-imports.css`  — Google Fonts `@import` URLs used by the MODS playground (see font note below)
+
+---
+
+## Fonts and the packed bundle
+
+**The compiled CSS file (`mods.css` / whatever `MODS_DEST` points to) does NOT contain
+Google Fonts `@import` lines.** This is intentional: Tailwind v4 inlines `_base.css`
+after its own prelude, so any `@import` inside that file would violate the CSS rule
+requiring `@import` before all other rules and would be silently dropped by browsers.
+
+`_webfont-imports.css` in this snapshot is for the **MODS playground only** (it is read
+by the dev server to inject font `<link>` tags). It is never part of the compiled bundle.
+
+**The host app must load typefaces itself** using `next/font`, a `<link>` tag, self-hosted
+CSS, or any other font-loading strategy — the exact mechanism depends on the project.
+The family names used by the host must match the `--font-*` CSS variables in the packed CSS.
+
+When branding changes fonts:
+1. Update the font-loading in the host app.
+2. Set the matching `--font-*` token values in MODS (playground or direct edit).
+3. Re-run `npm run pack` so the compiled CSS reflects the new values.
+
+The Google Fonts URLs in `_webfont-imports.css` are provided as a reference for which
+typefaces MODS was configured with — you can copy them into the host's font setup.
 
 ---
 
@@ -98,9 +125,10 @@ The snapshot captures:
    ```
 
    The script copies only the user-editable token values (palette, scalar vars, semantic
-   pointings) into the fresh source files — it leaves file structure, comments, and
-   non-editable sections untouched. It reports any tokens that are new since the snapshot
-   (kept at MODS defaults) or were removed (skipped with a warning).
+   pointings) into the fresh source files, and restores `_webfont-imports.css` in full.
+   It leaves file structure, comments, and non-editable sections untouched. It reports
+   any tokens that are new since the snapshot (kept at MODS defaults) or were removed
+   (skipped with a warning).
 
 3. After the script completes, re-pack to publish the restored CSS and refresh the snapshot:
 
@@ -118,14 +146,18 @@ any agent tool:
 
 > Migrate token values from the MODS snapshot into the fresh MODS source files.
 >
-> Source (old values): `mods-snapshot/_base.css` and `mods-snapshot/_semantic-tokens.css`
-> in the same directory as this README.
-> Target (new files):  `mods/src/_base.css` and `mods/src/_semantic-tokens.css`.
+> Source (old values): `mods-snapshot/_base.css`, `mods-snapshot/_semantic-tokens.css`,
+> and `mods-snapshot/_webfont-imports.css` (if present) in the same directory as this README.
+> Target (new files):  `mods/src/_base.css`, `mods/src/_semantic-tokens.css`, and
+> `mods/src/_webfont-imports.css`.
 >
 > Rules:
 > - Copy ONLY values from sections marked USER EDITABLE in `_base.css` (the PALETTE
 >   block and the BASE VARS block).
 > - In `_semantic-tokens.css`, copy all `var(--)` assignments from `:root {}` and `.dark {}`.
+> - If `_webfont-imports.css` exists in the snapshot, copy it verbatim to
+>   `mods/src/_webfont-imports.css`. This file holds Google Fonts @import URLs for the
+>   MODS playground — it is NOT imported by the Tailwind bundle or by the host project.
 > - Do NOT touch sections marked DO NOT EDIT, TAILWIND THEME COMPOSITION, or any
 >   `@theme` block in `_base.css`.
 > - Token in snapshot but not in new file → report as warning (removed or renamed), skip it.

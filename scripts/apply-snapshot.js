@@ -9,13 +9,14 @@
  *   MODS_SNAPSHOT=../my-project/mods-snapshot npm run apply-snapshot
  *
  * What it restores:
- *   _base.css            — PALETTE and BASE VARS sections (user-editable raw tokens)
- *   _semantic-tokens.css — all var() assignments in :root {}, .dark {}, and the
- *                          @media (prefers-color-scheme: dark) :root:not(.light) {} block
+ *   _base.css             — PALETTE and BASE VARS sections (user-editable raw tokens)
+ *   _semantic-tokens.css  — all var() assignments in :root {}, .dark {}, and the
+ *                           @media (prefers-color-scheme: dark) :root:not(.light) {} block
+ *   _webfont-imports.css  — verbatim copy (if present in snapshot; older packs may not have it)
  *
  * What it leaves untouched:
- *   _base.css            — DO NOT EDIT section, TAILWIND THEME COMPOSITION, TYPE SCALE @theme block
- *   _semantic-tokens.css — file structure, comments, whitespace, block wrappers
+ *   _base.css             — DO NOT EDIT section, TAILWIND THEME COMPOSITION, TYPE SCALE @theme block
+ *   _semantic-tokens.css  — file structure, comments, whitespace, block wrappers
  *
  * Reports:
  *   Tokens in the snapshot that no longer exist in MODS → skipped with a warning
@@ -243,6 +244,19 @@ if (allNew.size) {
   [...allNew].forEach(n => console.log(`    + ${n}`));
 }
 console.log(`  ${totalApplied} tokens restored.`);
+
+// ── Restore _webfont-imports.css ──────────────────────────────────────────
+
+const snapWebfont = path.resolve(snapshotDir, '_webfont-imports.css');
+const srcWebfont  = path.resolve(__dirname, '../src/_webfont-imports.css');
+
+console.log('\nRestoring _webfont-imports.css…');
+if (fs.existsSync(snapWebfont)) {
+  fs.copyFileSync(snapWebfont, srcWebfont);
+  console.log('  Restored (verbatim copy from snapshot).');
+} else {
+  console.log('  Not found in snapshot (older pack) — leaving current file unchanged.');
+}
 
 // ── Rebuild ────────────────────────────────────────────────────────────────
 

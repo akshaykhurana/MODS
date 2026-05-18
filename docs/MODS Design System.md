@@ -61,7 +61,8 @@ All CSS custom properties in MODS follow a strict 4-part naming rule:
 src/
   style.css               ← Entry point. @import "tailwindcss" + all partials.
   _base.css               ← All raw tokens: @theme block, :root palette, alpha scales, shape scale,
-                            Google Fonts import, font families, font weights, font sizes, line heights
+                            font families, font weights, font sizes, line heights
+  _webfont-imports.css    ← Google Fonts @import URLs (playground only — not in Tailwind bundle)
   _semantic-tokens.css    ← :root CSS vars: brand, surfaces, actions, text, borders, shadows
   _components.css         ← @layer components: all Semantic utility classes
 dist/

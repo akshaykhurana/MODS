@@ -22,8 +22,9 @@ const ROOT     = __dirname;
 // The aliases below preserve readability at call sites — every alias points
 // to the same file. _semantic-tokens.css is the only other file the server
 // writes to (alias re-pointings only).
-const BASE_CSS = path.join(ROOT, 'src', '_base.css');
-const PALETTE  = BASE_CSS;
+const BASE_CSS          = path.join(ROOT, 'src', '_base.css');
+const WEBFONT_IMPORTS_CSS = path.join(ROOT, 'src', '_webfont-imports.css');
+const PALETTE   = BASE_CSS;
 const BASE_VARS = BASE_CSS;
 const FONTS_CSS = BASE_CSS;
 const THEME_CSS = BASE_CSS;
@@ -73,8 +74,10 @@ function parseSemanticConfig() {
     })(),
     fontImports: (() => {
       // Parse @import url('https://fonts.googleapis.com/css2?family=Name:...') lines
-      // and return an array of { name, weights: string[], italic: boolean }
-      const baseVarsContent = fs.readFileSync(BASE_VARS, 'utf8');
+      // from _webfont-imports.css (not _base.css — Google @imports must not enter the
+      // Tailwind bundle). Returns an array of { name, weights: string[], italic: boolean }.
+      let baseVarsContent = '';
+      try { baseVarsContent = fs.readFileSync(WEBFONT_IMPORTS_CSS, 'utf8'); } catch (_) {}
       const entries = [];
       const importRe = /@import url\(['"]?(https:\/\/fonts\.googleapis\.com\/css2\?[^'"\)]+)['"]?\)/g;
       let im;
@@ -135,8 +138,9 @@ function parsePalette() {
 // Full rewrite of the palette :root {} block in _base.css from a flat vars
 // object. The block is delimited by two sentinel comments:
 //   /* ===== PALETTE ===== */    \u2014 marks the start; everything before
-//                                  (including the Google Fonts @import and
-//                                  file header) is preserved verbatim.
+//                                  (the file header) is preserved verbatim.
+//                                  Google Fonts @import lines live in
+//                                  _webfont-imports.css, not _base.css.
 //   /* ===== BASE VARS ===== */  \u2014 marks the end; everything from this
 //                                  marker on is preserved verbatim.
 // chart-* vars are preserved from the existing file.
@@ -247,29 +251,31 @@ function buildGFUrlServer(entry) {
 }
 
 // Write font-family and letter-spacing changes to _base.css.
-// fontImports (array of { name, weights, italic }) triggers @import reconstruction.
+// fontImports (array of { name, weights, italic }) triggers @import reconstruction in
+// _webfont-imports.css — NOT in _base.css, because @import lines must not enter the
+// Tailwind bundle (they would land after Tailwind's prelude and be dropped by the parser).
 function saveFonts(fontChanges, fontImports) {
-  let content = fs.readFileSync(FONTS_CSS, 'utf8');
-
   if (fontImports && fontImports.length > 0) {
     const newImports = fontImports
       .map(e => `@import url('${buildGFUrlServer(e)}');`)
       .join('\n');
-    if (/@import url\(/.test(content)) {
-      // Replace the existing @import block in one pass
-      content = content.replace(/((?:@import url\([^)]+\);[ \t]*\r?\n?)+)/, newImports + '\n');
+    let wfContent = '';
+    try { wfContent = fs.readFileSync(WEBFONT_IMPORTS_CSS, 'utf8'); } catch (_) {}
+    if (/@import url\(/.test(wfContent)) {
+      wfContent = wfContent.replace(/((?:@import url\([^)]+\);[ \t]*\r?\n?)+)/, newImports + '\n');
     } else {
-      // No existing imports — insert after header comment
-      const commentEnd = content.indexOf('*/');
-      const insertAt = commentEnd !== -1 ? content.indexOf('\n', commentEnd) + 1 : 0;
-      content = content.slice(0, insertAt) + '\n' + newImports + '\n' + content.slice(insertAt);
+      // No existing imports — append after the header comment block (or at end)
+      const commentEnd = wfContent.lastIndexOf('*/');
+      const insertAt = commentEnd !== -1 ? wfContent.indexOf('\n', commentEnd) + 1 : wfContent.length;
+      wfContent = wfContent.slice(0, insertAt) + '\n' + newImports + '\n' + wfContent.slice(insertAt);
     }
+    fs.writeFileSync(WEBFONT_IMPORTS_CSS, wfContent, 'utf8');
   }
 
+  let content = fs.readFileSync(FONTS_CSS, 'utf8');
   for (const [cssVar, value] of Object.entries(fontChanges || {})) {
     content = replaceVarInFile(content, cssVar, value);
   }
-
   fs.writeFileSync(FONTS_CSS, content, 'utf8');
 }
 

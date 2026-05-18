@@ -134,16 +134,33 @@ Do not delete the base typography classes (`.h1`–`.h3`, `.body-*`, `.label-*`)
 
 ## Step 4 — Fonts (`src/_base.css`, USER EDITABLE → TYPE SCALE + FONT FAMILIES)
 
-Fonts live entirely in `_base.css`:
+Fonts live in two places:
 
-1. The Google Fonts `@import` URL on line 1 (must stay first per CSS spec).
-2. The `@theme {}` block — font variables, font sizes (`--font-size-f*`), and line heights.
-3. The BASE VARS block — font-weight variables and letter-spacing variables.
+1. **`src/_webfont-imports.css`** — Google Fonts `@import` URLs. This file is read by the
+   playground dev server to inject font `<link>` tags at runtime. It is **not** part of the
+   Tailwind bundle and is **not** shipped to the host by `npm run pack`.
+2. **`src/_base.css`**, `@theme {}` block — font-family variables (`--font-display` etc.),
+   font sizes (`--font-size-f*`), and line heights.
+3. **`src/_base.css`**, BASE VARS block — font-weight variables and letter-spacing variables.
+
+> **Packed CSS does not load fonts.** The compiled file (`mods.css`) references font-family
+> names via CSS variables but does not include any `@import` for Google Fonts. This is
+> intentional — Tailwind v4 inlines `_base.css` after its own prelude, so any `@import`
+> inside that file would violate the CSS "imports must come first" rule and be silently
+> dropped. **The host app must load typefaces itself** (`next/font`, `<link>`, self-hosted
+> CSS, etc.) using the same family names as the `--font-*` tokens in the packed CSS.
 
 If the project uses a typeface other than Jost:
 
-1. Replace the Google Fonts `@import` URL on line 1 of `_base.css` with the new font(s)
-2. Update the `--font-*` variables in the TYPE SCALE + FONT FAMILIES block:
+1. In the host app: register/load the new family using `next/font`, a `<link>` tag, or
+   self-hosted CSS — whatever the project's font-loading strategy is.
+2. In MODS playground: use the **Fonts** panel to select the new family and save — this
+   updates `src/_webfont-imports.css` (playground preview) and the `--font-*` vars in
+   `src/_base.css` (packed output) in one step.
+   Alternatively, edit `src/_webfont-imports.css` and `src/_base.css` directly:
+   - Replace the `@import url(...)` in `_webfont-imports.css` with the new Google Fonts URL.
+   - Update `--font-*` variables in the TYPE SCALE + FONT FAMILIES block of `_base.css`.
+3. Re-run `npm run pack` so the compiled CSS reflects the new family names.
 
 ```css
 @theme {
@@ -156,8 +173,6 @@ If the project uses a typeface other than Jost:
 ```
 
 `--font-display` and `--font-heading` are typically a brand/display typeface. `--font-title` is intentionally separate — card and section titles often follow the body typeface where a display font would be too heavy at smaller sizes.
-
-> **Using `_base.css` as a partial (imported by a host entry file)?** CSS requires all `@import` rules before any other rules. When `_base.css` is pulled in via `@import "mods/_base.css"` from a host `globals.css`, the Google Fonts `@import` on line 1 ends up after `@import "tailwindcss"` in the processed output and is silently dropped by the parser. Fix: move the `@import url('https://fonts.googleapis.com/...')` line to the very top of your host entry file and remove it from `_base.css`. Importing partials directly is not the recommended consumption path — see Step 6 for the standard workflow.
 
 ### Font weights
 
@@ -272,9 +287,10 @@ MODS_SNAPSHOT=../src/styles/mods-snapshot npm run apply-snapshot
 The script:
 1. Reads the snapshot `_base.css` and copies only the PALETTE and BASE VARS token values into `src/_base.css`.
 2. Reads the snapshot `_semantic-tokens.css` and copies all `var()` assignments into the matching blocks (`root {}`, `.dark {}`, `@media :root:not(.light) {}`) in `src/_semantic-tokens.css`.
-3. Leaves file structure, comments, non-editable sections, and the TYPE SCALE block untouched.
-4. Reports tokens new in fresh MODS (kept at defaults — review them) and tokens removed from MODS since the snapshot (skipped).
-5. Rebuilds `dist/style.css`.
+3. If `_webfont-imports.css` is present in the snapshot, copies it verbatim to `src/_webfont-imports.css` (restores Google Fonts URLs for the playground).
+4. Leaves file structure, comments, non-editable sections, and the TYPE SCALE block untouched.
+5. Reports tokens new in fresh MODS (kept at defaults — review them) and tokens removed from MODS since the snapshot (skipped).
+6. Rebuilds `dist/style.css`.
 
 After the restore, re-pack so the snapshot reflects the current MODS version:
 
@@ -293,14 +309,17 @@ If `apply-snapshot` is unavailable (e.g. an older MODS clone), `mods-snapshot/RE
 In the host project's CSS entry point (e.g. `globals.css`), import the compiled CSS file published by `pack`:
 
 ```css
-/* At the very top of globals.css — before @import "tailwindcss" */
-@import url('https://fonts.googleapis.com/css2?family=...');
-
 @import "tailwindcss";
 @import './styles/mods.css';   /* adjust path to match MODS_DEST */
 ```
 
-The Google Fonts `@import` must be the first line in the entry file. Do not rely on the one inside `mods/src/_base.css` — when `_base.css` is processed as part of a larger CSS pipeline, that `@import` lands after `@import "tailwindcss"` and is silently dropped by the CSS parser.
+The packed `mods.css` does **not** include Google Fonts `@import` lines — by design, so the compiled file is always valid CSS. Load typefaces separately using `next/font`, a `<link>` tag, self-hosted CSS, or any strategy that suits the project.
+
+If you need the exact Google Fonts URL that MODS was configured with (e.g. to reproduce the playground's Jost setup), copy it from `mods-snapshot/_webfont-imports.css` in the host project.
+
+> **CSS `@import` ordering note:** If the host entry file uses any Google Fonts `@import`,
+> it must appear before `@import "tailwindcss"`. CSS requires all `@import` rules before
+> any other rules — a misplaced `@import` is silently dropped by browsers.
 
 ### Gitignore
 
