@@ -18,8 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "@material/material-color-utilities": "^0.3.0",
-    "@tailwindcss/cli": "^4.0.0",
+    "@tailwindcss/cli": "^4.3.0",
     "apca-w3": "^0.1.9",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.3.0"
   }
 }
