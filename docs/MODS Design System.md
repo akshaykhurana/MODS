@@ -1298,19 +1298,23 @@ The practical test: if it would be wrong to render it as a `<span>`, it's a `.ch
 
 ### Tags
 
-Tags are non-interactive labels. Outlined pill — border and text share the same chart colour; background is transparent. No hover state. Colour is always supplied by a variant class.
+Tags are non-interactive labels. Outlined pill — border and text share the same colour; background is a **light translucent wash** (not a solid/opaque fill). Chart variants use ~10% chart colour; neutral and transparent use low-alpha `surfaces-l1`. No hover state. Use one variant class for colour (chart, neutral, or transparent).
 
 | Class | Description |
 |---|---|
-| `.tag` | Base (medium): `--shape-full px-g1h py-g0h`, `.label-s` text, `border: 1px solid`, transparent bg, `w-fit` |
+| `.tag` | Base (medium): `--shape-full px-g1h py-g0h`, `.label-s` text, `border: 1px solid`, default subtle neutral wash (`surfaces-l1` @ 10%), `w-fit` |
 | `.tag.tag-s` | Small: `px-g1 py-0`, f2/lb2 text |
 | `.tag.tag-l` | Large: `px-g2 py-g1`, f4/lb4 text |
-| `.tag-1` … `.tag-9` | Chart-colour variants — sets `border-color` and `color` to `--chart-N` at `--chart-global-alpha` |
+| `.tag-1` … `.tag-9` | Chart-colour variants — `border-color` + `color` at `--chart-global-alpha`; fill `rgb(var(--chart-N) / 0.1)` |
+| `.tag-neutral` | Neutral label — `border-medium`, `text-medium`, `surfaces-l1` @ 12% fill |
+| `.tag-transparent` | De-emphasized label — `border-low`, `text-low`, `surfaces-l1` @ 6% fill |
 
 ```html
 <span class="tag tag-1">Electronics</span>
 <span class="tag tag-s tag-4">In Stock</span>
 <span class="tag tag-l tag-6">47% off</span>
+<span class="tag tag-neutral">Category</span>
+<span class="tag tag-s tag-transparent">Optional</span>
 ```
 
 ### Chips

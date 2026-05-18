@@ -1377,8 +1377,8 @@
 
   /* ========================================================================
      TAGS
-     Non-interactive labels. Outlined pill — border + transparent bg.
-     Colour is always supplied by a variant class (.tag-1 … .tag-9).
+     Non-interactive labels. Outlined pill — light tinted fill (not opaque).
+     Colour from a variant: chart (.tag-1 … .tag-9), neutral, or transparent.
      Three sizes: .tag-s  |  .tag (default = m)  |  .tag-l
      label-s styles inlined (cross-component @apply is unreliable in v4).
      ======================================================================== */
@@ -1389,7 +1389,8 @@
     align-items: center;
     border-radius: var(--shape-full);
     border: 1px solid;
-    background-color: transparent;
+    /* subtle default wash — variants override */
+    background-color: rgb(var(--surfaces-l1-color) / 0.1);
     /* default (m) sizing */
     padding-inline: var(--spacing-g1h);
     padding-block: var(--spacing-g0h);
@@ -1416,16 +1417,28 @@
     @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
   }
 
-  /* Chart-colour variants — border and text share the same chart token */
-  .tag-1 { border-color: rgb(var(--chart-1) / var(--chart-global-alpha)); color: rgb(var(--chart-1) / var(--chart-global-alpha)); }
-  .tag-2 { border-color: rgb(var(--chart-2) / var(--chart-global-alpha)); color: rgb(var(--chart-2) / var(--chart-global-alpha)); }
-  .tag-3 { border-color: rgb(var(--chart-3) / var(--chart-global-alpha)); color: rgb(var(--chart-3) / var(--chart-global-alpha)); }
-  .tag-4 { border-color: rgb(var(--chart-4) / var(--chart-global-alpha)); color: rgb(var(--chart-4) / var(--chart-global-alpha)); }
-  .tag-5 { border-color: rgb(var(--chart-5) / var(--chart-global-alpha)); color: rgb(var(--chart-5) / var(--chart-global-alpha)); }
-  .tag-6 { border-color: rgb(var(--chart-6) / var(--chart-global-alpha)); color: rgb(var(--chart-6) / var(--chart-global-alpha)); }
-  .tag-7 { border-color: rgb(var(--chart-7) / var(--chart-global-alpha)); color: rgb(var(--chart-7) / var(--chart-global-alpha)); }
-  .tag-8 { border-color: rgb(var(--chart-8) / var(--chart-global-alpha)); color: rgb(var(--chart-8) / var(--chart-global-alpha)); }
-  .tag-9 { border-color: rgb(var(--chart-9) / var(--chart-global-alpha)); color: rgb(var(--chart-9) / var(--chart-global-alpha)); }
+  /* Chart-colour variants — border, text, and a ~10% fill share the chart token */
+  .tag-1 { border-color: rgb(var(--chart-1) / var(--chart-global-alpha)); color: rgb(var(--chart-1) / var(--chart-global-alpha)); background-color: rgb(var(--chart-1) / 0.1); }
+  .tag-2 { border-color: rgb(var(--chart-2) / var(--chart-global-alpha)); color: rgb(var(--chart-2) / var(--chart-global-alpha)); background-color: rgb(var(--chart-2) / 0.1); }
+  .tag-3 { border-color: rgb(var(--chart-3) / var(--chart-global-alpha)); color: rgb(var(--chart-3) / var(--chart-global-alpha)); background-color: rgb(var(--chart-3) / 0.1); }
+  .tag-4 { border-color: rgb(var(--chart-4) / var(--chart-global-alpha)); color: rgb(var(--chart-4) / var(--chart-global-alpha)); background-color: rgb(var(--chart-4) / 0.1); }
+  .tag-5 { border-color: rgb(var(--chart-5) / var(--chart-global-alpha)); color: rgb(var(--chart-5) / var(--chart-global-alpha)); background-color: rgb(var(--chart-5) / 0.1); }
+  .tag-6 { border-color: rgb(var(--chart-6) / var(--chart-global-alpha)); color: rgb(var(--chart-6) / var(--chart-global-alpha)); background-color: rgb(var(--chart-6) / 0.1); }
+  .tag-7 { border-color: rgb(var(--chart-7) / var(--chart-global-alpha)); color: rgb(var(--chart-7) / var(--chart-global-alpha)); background-color: rgb(var(--chart-7) / 0.1); }
+  .tag-8 { border-color: rgb(var(--chart-8) / var(--chart-global-alpha)); color: rgb(var(--chart-8) / var(--chart-global-alpha)); background-color: rgb(var(--chart-8) / 0.1); }
+  .tag-9 { border-color: rgb(var(--chart-9) / var(--chart-global-alpha)); color: rgb(var(--chart-9) / var(--chart-global-alpha)); background-color: rgb(var(--chart-9) / 0.1); }
+
+  .tag-neutral {
+    border-color: rgb(var(--border-color) / var(--border-medium-alpha));
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    background-color: rgb(var(--surfaces-l1-color) / 0.12);
+  }
+
+  .tag-transparent {
+    border-color: rgb(var(--border-color) / var(--border-low-alpha));
+    color: rgb(var(--text-color) / var(--text-low-alpha));
+    background-color: rgb(var(--surfaces-l1-color) / 0.06);
+  }
 
 
   /* ========================================================================
