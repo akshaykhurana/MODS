@@ -303,3 +303,70 @@
   --text-accent-low-alpha:    var(--text-accent-low-dark-alpha);
 
 }
+
+/* System dark preference — same alias re-pointings as .dark.
+   Add class="light" on html to force light mode when the OS is dark. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+
+  /* Surfaces — re-point aliases to dark base set */
+  --surfaces-base-color:   var(--surfaces-base-dark-color);
+  --surfaces-l1-color:     var(--surfaces-l1-dark-color);
+  --surfaces-l2-color:     var(--surfaces-l2-dark-color);
+  --surfaces-l2a-color:    var(--surfaces-l2a-dark-color);
+  --surfaces-l3-color:     var(--surfaces-l3-dark-color);
+  --surfaces-l4-color:     var(--surfaces-l4-dark-color);
+  --surfaces-l5-color:     var(--surfaces-l5-dark-color);
+  --surfaces-invert-color: var(--surfaces-invert-dark-color);
+
+  /* Text — re-point aliases to dark base set */
+  --text-color:               var(--text-dark-color);
+  --text-accent-color:        var(--text-accent-dark-color);
+  --text-invert-color:        var(--text-invert-dark-color);
+  --text-invert-accent-color: var(--text-invert-accent-dark-color);
+
+  /* Borders — re-point aliases to dark base set */
+  --border-color:       var(--border-dark-color);
+  --border-focus-color: var(--border-focus-dark-color);
+  --border-high-alpha:   var(--border-high-dark-alpha);
+  --border-medium-alpha: var(--border-medium-dark-alpha);
+  --border-low-alpha:    var(--border-low-dark-alpha);
+
+  /* Brand — re-point alias to dark base set */
+  --brand-main-color: var(--brand-main-dark-color);
+
+  /* Actions — re-point aliases to dark base set */
+  --action-primary-default-color:    var(--action-primary-default-dark-color);
+  --action-primary-overlay-color:    var(--action-primary-overlay-dark-color);
+  --action-secondary-disabled-color: var(--action-secondary-disabled-dark-color);
+  --action-secondary-default-color:  var(--action-secondary-default-dark-color);
+  --action-secondary-overlay-color:  var(--action-secondary-overlay-dark-color);
+  --action-neutral-default-color:    var(--action-neutral-default-dark-color);
+  --action-neutral-disabled-color:   var(--action-neutral-disabled-dark-color);
+  --action-neutral-filled-color:     var(--action-neutral-filled-dark-color);
+  --action-primary-label-color:              var(--action-primary-label-dark-color);
+  --action-primary-label-disabled-color:     var(--action-primary-label-disabled-dark-color);
+  --action-secondary-outline-color:          var(--action-secondary-outline-dark-color);
+  --action-secondary-label-color:            var(--action-secondary-label-dark-color);
+  --action-secondary-outline-disabled-color: var(--action-secondary-outline-disabled-dark-color);
+  --action-secondary-label-disabled-color:   var(--action-secondary-label-disabled-dark-color);
+  --action-tertiary-label-color:             var(--action-tertiary-label-dark-color);
+  --action-tertiary-label-disabled-color:    var(--action-tertiary-label-disabled-dark-color);
+
+  /* Meaning — re-point aliases to dark base set */
+  --meaning-error-color:   var(--meaning-error-dark-color);
+  --meaning-alert-color:   var(--meaning-alert-dark-color);
+  --meaning-success-color: var(--meaning-success-dark-color);
+
+  /* Text alpha — re-point aliases to dark base set */
+  --text-high-alpha:    var(--text-high-dark-alpha);
+  --text-medium-alpha:   var(--text-medium-dark-alpha);
+  --text-low-alpha: var(--text-low-dark-alpha);
+  --text-disabled-alpha:    var(--text-disabled-dark-alpha);
+  --text-accent-alpha:        var(--text-accent-dark-alpha);
+  --text-accent-high-alpha:   var(--text-accent-high-dark-alpha);
+  --text-accent-medium-alpha: var(--text-accent-medium-dark-alpha);
+  --text-accent-low-alpha:    var(--text-accent-low-dark-alpha);
+
+  }
+}

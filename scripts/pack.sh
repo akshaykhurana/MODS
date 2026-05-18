@@ -35,6 +35,16 @@ fi
 DEST_DIR=$(dirname "$MODS_DEST")
 mkdir -p "$DEST_DIR"
 cp dist/style.css "$MODS_DEST"
+
+PACK_TS=$(date -u +"%Y-%m-%d %H:%M UTC")
+MODS_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+PACK_BANNER="/* MODS v${MODS_VERSION} | packed ${PACK_TS} | commit ${GIT_COMMIT} */"
+PACK_TMP=$(mktemp)
+printf '%s\n' "$PACK_BANNER" > "$PACK_TMP"
+cat "$MODS_DEST" >> "$PACK_TMP"
+mv "$PACK_TMP" "$MODS_DEST"
+
 echo "Published compiled CSS  → $MODS_DEST"
 
 # ── Token snapshot ────────────────────────────────────────────────────

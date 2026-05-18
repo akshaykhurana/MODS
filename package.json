@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "MODS design system playground — live token editor",
   "private": true,
-  "main": "index.js",
   "engines": { "node": ">=18.0.0" },
   "scripts": {
     "dev": "node server.js",
     "build:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css",
     "watch:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css --watch",
-    "pack": "sh scripts/pack.sh"
+    "pack": "sh scripts/pack.sh",
+    "postinstall": "npm run build:css",
+    "test": "node --test test/*.test.js"
   },
   "keywords": [],
   "author": "",

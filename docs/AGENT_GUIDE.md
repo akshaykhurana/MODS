@@ -105,7 +105,7 @@ Active aliases omit `{mode}` — mode is resolved at runtime by `.dark {}`. Full
 
 ### Using the playground to re-point tokens
 
-The playground provides live dropdowns for all semantic colour tokens — no need to edit `_semantic-tokens.css` by hand for colour decisions. Open `http://localhost:3001`, select a token category panel (Surfaces, Text, Borders, Actions), pick palette steps from the dropdowns, and hit **Save**. The server rewrites the relevant vars in `_semantic-tokens.css` and triggers a rebuild.
+The playground provides live dropdowns for all semantic colour tokens — no need to edit `_semantic-tokens.css` by hand for colour decisions. Open `http://localhost:3001`, select a token category panel (Surfaces, Text, Borders, Actions), pick palette steps from the dropdowns, and hit **Save**. The server rewrites the relevant vars in `_semantic-tokens.css`; the persistent Tailwind watcher (`watch:css`) picks up the file change and rebuilds `dist/style.css` automatically, then the playground reloads via SSE.
 
 **How the server writes semantic tokens.** The playground sends the active alias name (e.g. `action-primary-default-color`) plus a mode (`light` or `dark`). The server resolves this to the matching base var by inserting the mode before the last dash-segment (the property): `action-primary-default-color` → `action-primary-default-light-color`. It writes only to base vars in `:root {}`; the active aliases and `.dark {}` block are never touched. If you ever see an active alias pointing directly to a palette step (e.g. `var(--p80)` instead of `var(--action-primary-default-light-color)`), that means a save corrupted it — restore it to point at its `-light-color` base var.
 
@@ -127,6 +127,8 @@ Common candidates for removal:
 - Elevation classes for surface levels that will never appear in the UI
 
 Do not delete the base typography classes (`.h1`–`.h3`, `.body-*`, `.label-*`) unless you are replacing the entire type system with a project-specific one.
+
+> **Future improvement:** `npm run pack` could write a `components-prune-manifest.json` alongside the snapshot, listing which `@layer components` blocks are present at pack time. An agent restoring from snapshot could compare this list against the fresh `_components.css` and re-apply the same pruning automatically. Not yet implemented.
 
 ---
 
@@ -207,7 +209,7 @@ If you prefer to edit `_base.css` directly, the token names are `--font-size-f1`
 npm run build:css
 ```
 
-This produces `dist/style.css` inside the MODS tool directory for use by the playground. `npm run pack` (Step 6) runs this build automatically, so you only need to call this step directly when iterating inside the playground without publishing to the host yet.
+This produces `dist/style.css` inside the MODS tool directory. When `npm run dev` is running, the built-in watcher handles rebuilds automatically on every save — you do not need to call this step manually during a playground session. Call it directly only when working outside the playground (e.g. in CI, or to confirm a clean build before pack). `npm run pack` (Step 6) also runs this build automatically.
 
 ---
 

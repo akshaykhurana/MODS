@@ -8,7 +8,13 @@
 const http = require('http');
 const fs   = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
+const {
+  replaceVarInFile,
+  parseSemanticContent,
+  toBaseVarName,
+  applySemanticSave,
+} = require('./lib/css-writers');
 
 const PORT     = 3001;
 const ROOT     = __dirname;
@@ -33,11 +39,9 @@ function broadcast(event) {
   }
 }
 
-// Watch dist/style.css for external rebuilds (e.g. npm run build:css in another terminal)
-// distMtime is updated inside the exec callback so when fs.watch fires afterwards
-// the mtime matches and no duplicate broadcast is sent.
-let distMtime    = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : 0;
-let buildInFlight = false; // guard against concurrent /save builds
+// Watch dist/style.css — the persistent watcher (or any external build) writes here.
+// Broadcast rebuild-done to all SSE clients whenever the file changes.
+let distMtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : 0;
 fs.watch(path.join(ROOT, 'dist'), (_, filename) => {
   if (filename === 'style.css') {
     const mtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : 0;
@@ -49,61 +53,13 @@ fs.watch(path.join(ROOT, 'dist'), (_, filename) => {
 });
 
 // ---- Config endpoint — parse current semantic token mappings ----
-// Returns { light: { "--brand-main": "p50", ... }, dark: { "--brand-main": "p30", ... } }
-// For Variables Naming Pattern tokens, alias chains are resolved to their leaf palette step
-// so dropdowns get the actual palette step — e.g. --text-color → text-light-color → s10.
 function parseSemanticConfig() {
   const content = fs.readFileSync(SEMANTIC, 'utf8');
-  // Match the actual selector line (starts at beginning of line), not comments
-  const darkMatch = content.match(/^\.dark\s*\{/m);
-  const darkIdx = darkMatch ? darkMatch.index : -1;
-  const rootPart = darkIdx !== -1 ? content.slice(0, darkIdx) : content;
-  const darkPart = darkIdx !== -1 ? content.slice(darkIdx) : '';
-
-  function extractMappings(block) {
-    const result = {};
-    // Match lines like:  --foo-bar: var(--p40);
-    const lineRe = /(--[\w-]+):\s*var\(--([\w-]+)\)/g;
-    let m;
-    while ((m = lineRe.exec(block)) !== null) {
-      result[m[1]] = m[2];
-    }
-    return result;
-  }
-
-  // Follow alias chains to their leaf palette step (up to 10 hops, cycle-safe).
-  // e.g. --text-color → text-light-color → s10 returns s10.
-  // Stops at semantic active aliases (e.g. text-invert-color) when crossing category
-  // boundaries, so cross-category references like action-primary-label → text-invert-color
-  // are preserved rather than resolved all the way to a palette step.
-  function isSemanticAlias(varName) {
-    // Active alias: ends in -color but NOT in -light-color, -dark-color, or -global-color.
-    return /-color$/.test(varName) &&
-           !/-(?:light|dark|global)-color$/.test(varName);
-  }
-  function resolveAliases(map, rootAll) {
-    const resolved = {};
-    for (const [key, val] of Object.entries(map)) {
-      let current = val;
-      for (let i = 0; i < 10; i++) {
-        const next = rootAll['--' + current];
-        if (next === undefined || next === current) break;
-        // Stop if we've already moved at least one hop and the current value is a
-        // semantic active alias — preserves cross-category references.
-        if (i > 0 && isSemanticAlias(current)) break;
-        current = next;
-      }
-      resolved[key] = current;
-    }
-    return resolved;
-  }
-
-  const rootAll = extractMappings(rootPart);
-  const darkAll = extractMappings(darkPart);
+  const parsed = parseSemanticContent(content);
 
   return {
-    light: resolveAliases(rootAll, rootAll),
-    dark:  resolveAliases(darkAll, rootAll),
+    light: parsed.light,
+    dark: parsed.dark,
     rawValues: (() => {
       const result = {};
       const baseVarsContent = fs.readFileSync(BASE_VARS, 'utf8');
@@ -153,17 +109,6 @@ function parseSemanticConfig() {
 }
 
 // ---- File writing helpers ----
-
-// Replace a single CSS var value line in a file.
-// Matches: --varName: <anything>;
-function replaceVarInFile(content, varName, newValue) {
-  // Escape var name for regex
-  const escaped = varName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`([ \\t]*${escaped}:[ \\t]*)([^;]+)(;)`, 'g');
-  return content.replace(re, (_, prefix, _old, semi) => {
-    return `${prefix}${newValue}${semi}`;
-  });
-}
 
 // Write palette changes to _base.css
 function savePalette(changes) {
@@ -283,38 +228,10 @@ function saveSemanticRaw(rawChanges) {
   fs.writeFileSync(BASE_VARS, content, 'utf8');
 }
 
-// For Variables Naming Pattern tokens, resolve the alias var name to its base var counterpart before writing.
-// Active alias:  {cat}-{type}-{property}          e.g. action-primary-default-color
-// Base var:      {cat}-{type}-{mode}-{property}   e.g. action-primary-default-dark-color
-// Mode is inserted before the last dash-segment (the property).
-// Falls back to the original name if no matching base var exists.
-function toBaseVarName(varName, mode, content) {
-  const lastDash = varName.lastIndexOf('-');
-  if (lastDash === -1) return varName;
-  const baseVar = `${varName.slice(0, lastDash)}-${mode}${varName.slice(lastDash)}`;
-  const escaped = baseVar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`--${escaped}:`).test(content) ? baseVar : varName;
-}
-
-// Write semantic token changes to _semantic-tokens.css.
-// Both light and dark changes are written to :root (all base vars live there).
-// .dark {} is frozen — it contains only alias re-pointings and is never modified.
+// Write semantic token changes to _semantic-tokens.css (.dark {} block is frozen).
 function saveSemantic(lightChanges, darkChanges) {
-  let content = fs.readFileSync(SEMANTIC, 'utf8');
-  const darkSplit = content.match(/^\.dark\s*\{/m);
-  const darkIdx = darkSplit ? darkSplit.index : -1;
-  let rootPart = darkIdx !== -1 ? content.slice(0, darkIdx) : content;
-  const darkPart = darkIdx !== -1 ? content.slice(darkIdx) : ''; // frozen — alias re-pointings only
-
-  for (const [varName, value] of Object.entries(lightChanges || {})) {
-    const target = toBaseVarName(varName, 'light', rootPart);
-    rootPart = replaceVarInFile(rootPart, target, `var(--${value})`);
-  }
-  for (const [varName, value] of Object.entries(darkChanges || {})) {
-    const target = toBaseVarName(varName, 'dark', rootPart);
-    rootPart = replaceVarInFile(rootPart, target, `var(--${value})`);
-  }
-  fs.writeFileSync(SEMANTIC, rootPart + darkPart, 'utf8');
+  const content = fs.readFileSync(SEMANTIC, 'utf8');
+  fs.writeFileSync(SEMANTIC, applySemanticSave(content, lightChanges, darkChanges), 'utf8');
 }
 
 // Build a Google Fonts CSS2 API URL from a font entry (mirrors client buildGFUrl).
@@ -476,29 +393,11 @@ const server = http.createServer((req, res) => {
         if (scale && Object.keys(scale).length)
           saveScale(scale);
 
-        if (buildInFlight) {
-          res.writeHead(429, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ ok: false, error: 'Build already in progress — please retry' }));
-          return;
-        }
-        buildInFlight = true;
-        // Rebuild CSS — stamp distMtime before broadcasting so fs.watch
-        // sees no mtime change and stays silent (avoids double broadcast).
-        exec('npm run build:css', { cwd: ROOT }, (err, stdout, stderr) => {
-          buildInFlight = false;
-          distMtime = fs.existsSync(DIST_CSS) ? fs.statSync(DIST_CSS).mtimeMs : distMtime;
-          if (err) {
-            console.error('Build error:', stderr);
-            broadcast('rebuild-error');
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: stderr }));
-          } else {
-            console.log('Build ok:', stdout.trim());
-            broadcast('rebuild-done');
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ ok: true }));
-          }
-        });
+        // CSS files have been written — the persistent watcher picks up the
+        // changes and rebuilds automatically. Respond immediately; the SSE
+        // 'rebuild-done' event arrives via fs.watch once the watcher finishes.
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
       } catch (e) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: false, error: e.message }));
@@ -538,6 +437,24 @@ const server = http.createServer((req, res) => {
   });
 });
 
+// Spawn the persistent Tailwind watcher. It performs a full build on first run
+// then rebuilds incrementally on each source change — much faster than a cold
+// start per save. Restarts automatically if it exits unexpectedly.
+function spawnWatcher() {
+  const w = spawn(
+    'npx',
+    ['@tailwindcss/cli', '-i', 'src/style.css', '-o', 'dist/style.css', '--watch'],
+    { cwd: ROOT, stdio: 'inherit' }
+  );
+  w.on('exit', code => {
+    if (code !== 0) {
+      console.warn(`watch:css exited (${code}) — restarting in 1s`);
+      setTimeout(spawnWatcher, 1000);
+    }
+  });
+}
+
+spawnWatcher();
 server.listen(PORT, () => {
   console.log(`\nMODS Playground running at http://localhost:${PORT}\n`);
 });

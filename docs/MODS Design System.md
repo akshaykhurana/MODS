@@ -874,7 +874,11 @@ The `level*` token names stay the same in dark mode. The CSS variables they refe
 - **Borders**: `border-low` (`--border-color` / `--border-low-alpha` = 12%) applied as a default border on all elevated elements. This is the primary way surfaces are visually separated from each other in dark mode.
 - **Actions, text, borders, meaning**: same token names, different palette step values resolved via CSS vars
 
-Switching theme is achieved entirely by swapping the CSS variable values in a `.dark` class or `prefers-color-scheme: dark` media query — no Tailwind class changes are needed in markup.
+Switching theme is achieved by swapping CSS variable values — no Tailwind class changes are needed in markup.
+
+- **Class toggle:** add `.dark` on `body` (or any ancestor). The playground uses `body.dark`.
+- **System preference:** `@media (prefers-color-scheme: dark)` re-points the same aliases on `:root:not(.light)`.
+- **Force light:** add `class="light"` on `html` to keep light tokens when the OS prefers dark.
 
 ---
 
@@ -1306,7 +1310,7 @@ npm install
 npm run build:css   # outputs dist/style.css
 ```
 
-Build script: `npx tailwindcss -i src/style.css -o dist/style.css`
+Build script: `npx @tailwindcss/cli -i src/style.css -o dist/style.css`
 
 Tailwind v4 uses automatic content detection — no `content` paths needed in configuration.
 

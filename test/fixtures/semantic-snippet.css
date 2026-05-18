@@ -1,0 +1,18 @@
+:root {
+  --text-light-color: var(--s10);
+  --text-dark-color: var(--s90);
+  --text-color: var(--text-light-color);
+  --text-invert-light-color: var(--n10);
+  --text-invert-dark-color: var(--n90);
+  --text-invert-color: var(--text-invert-light-color);
+  --action-primary-label-light-color: var(--text-invert-color);
+  --action-primary-label-dark-color: var(--text-invert-color);
+  --action-primary-default-light-color: var(--p40);
+  --action-primary-default-dark-color: var(--p80);
+  --action-primary-default-color: var(--action-primary-default-light-color);
+}
+
+.dark {
+  --text-color: var(--text-dark-color);
+  --action-primary-default-color: var(--action-primary-default-dark-color);
+}
