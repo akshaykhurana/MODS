@@ -211,6 +211,14 @@ npm run build:css
 
 This produces `dist/style.css` inside the MODS tool directory. When `npm run dev` is running, the built-in watcher handles rebuilds automatically on every save — you do not need to call this step manually during a playground session. Call it directly only when working outside the playground (e.g. in CI, or to confirm a clean build before pack). `npm run pack` (Step 6) also runs this build automatically.
 
+### Packed CSS and g-scale spacing utilities (interim)
+
+Hosts that `@import` only the compiled `mods.css` do **not** run MODS `@theme` through their own Tailwind build. Tailwind also **does not scan `.css` files** for class names, so MODS’s heavy use of `var(--spacing-g*)` never triggers generation of utilities like `pt-g10` or `gap-g4`.
+
+`src/style.css` therefore includes a Tailwind v4 **`@source inline(…)`** safelist: it forces the full cross-product of common spacing-related prefixes and every `g*` step declared in `_base.css` into `dist/style.css`, so those classes survive `pack` into the host bundle.
+
+**Tradeoff:** larger `mods.css`. **Revisit soon:** trim prefixes to what products actually use, point `@source` at host app paths from `mods/` if you want detection-driven output instead, or document a host-only fallback for rare classes.
+
 ---
 
 ## Step 6 — Pack to host project
@@ -247,10 +255,34 @@ Alongside the compiled CSS, `pack` writes a `mods-snapshot/` folder:
   mods-snapshot/
     _base.css           ← verbatim copy of src/_base.css at pack time
     _semantic-tokens.css
-    README.md           ← restore instructions + agent prompt
+    README.md           ← restore instructions
 ```
 
-The snapshot is git-tracked and survives a MODS tool deletion. If you re-clone MODS and need to restore your palette and token decisions, open `mods-snapshot/README.md` and follow the agent restore prompt there. The agent reads both the snapshot and the fresh source files, copies only USER EDITABLE values, and reports any tokens that are new or have been removed between versions.
+The snapshot captures both your palette decisions (`_base.css`) and your semantic pointing decisions (`_semantic-tokens.css`). It is git-tracked and survives a MODS tool deletion.
+
+### Re-cloning MODS and restoring token values
+
+Each project keeps its own `mods-snapshot/` alongside the compiled CSS. When you re-clone MODS for a project update, run `apply-snapshot` from inside the new `mods/` directory to restore that project's exact palette and semantic token state:
+
+```bash
+# From inside mods/ — adjust the path to match your project layout
+MODS_SNAPSHOT=../src/styles/mods-snapshot npm run apply-snapshot
+```
+
+The script:
+1. Reads the snapshot `_base.css` and copies only the PALETTE and BASE VARS token values into `src/_base.css`.
+2. Reads the snapshot `_semantic-tokens.css` and copies all `var()` assignments into the matching blocks (`root {}`, `.dark {}`, `@media :root:not(.light) {}`) in `src/_semantic-tokens.css`.
+3. Leaves file structure, comments, non-editable sections, and the TYPE SCALE block untouched.
+4. Reports tokens new in fresh MODS (kept at defaults — review them) and tokens removed from MODS since the snapshot (skipped).
+5. Rebuilds `dist/style.css`.
+
+After the restore, re-pack so the snapshot reflects the current MODS version:
+
+```bash
+MODS_DEST=<same-path-as-before> npm run pack
+```
+
+If `apply-snapshot` is unavailable (e.g. an older MODS clone), `mods-snapshot/README.md` contains a fallback agent restore prompt.
 
 ---
 
@@ -320,7 +352,7 @@ When working with files inside /mods/, follow the workflow in mods/docs/AGENT_GU
 |---|---|
 | `src/_base.css` → DO NOT EDIT | Breakpoints, spacing scale (g0–g25), shadow geometry literals. System-wide, rarely changed. Only edit if the project requires a fundamentally different spatial grid or shadow language. |
 | `src/_base.css` → TAILWIND THEME COMPOSITION | The `@theme inline {}` block at the bottom of the file. Changing it adds/removes utility categories. Edit only with intent. |
-| `src/style.css` | Entry point import chain — only edit to add or remove partial files. |
+| `src/style.css` | Entry `@import` chain plus the **`@source inline` spacing safelist** (packed-CSS hosts). Do not delete the safelist without reading **Packed CSS and g-scale spacing utilities** under Step 5. |
 | `dist/style.css` | Compiled output — never edit by hand, always overwritten by the build. |
 | `server.js` | Playground dev server — leave as-is unless modifying the playground itself. |
 

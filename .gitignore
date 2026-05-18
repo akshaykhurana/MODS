@@ -1,6 +1,9 @@
 # Build output
 dist/
 
+# Local `npm run pack` smoke output (use MODS_DEST in a real host tree for tracked CSS)
+packed/
+
 # Dependencies
 node_modules/
 node_modules/.package-lock.json

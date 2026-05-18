@@ -3,3 +3,9 @@
 @import "./_base.css";
 @import "./_semantic-tokens.css";
 @import "./_components.css";
+
+/* Packed-CSS hosts: force full g-scale spacing utilities into dist/style.css.
+   Tailwind does not scan .css for class names; MODS mostly uses var(--spacing-*),
+   so pt-g10 / gap-g4 etc. would otherwise be absent from mods.css. Revisit bundle
+   size / prefix set when host scanning or a slimmer safelist is preferred. */
+@source inline("{p-,px-,py-,ps-,pe-,pt-,pb-,pl-,pr-,m-,mx-,my-,ms-,me-,mt-,mb-,ml-,mr-,gap-,gap-x-,gap-y-,space-x-,space-y-,inset-,inset-x-,inset-y-,top-,right-,bottom-,left-,size-,w-,h-,min-w-,max-w-,min-h-,max-h-,translate-x-,translate-y-,scroll-m-,scroll-mx-,scroll-my-,scroll-ms-,scroll-me-,scroll-mt-,scroll-mb-,scroll-ml-,scroll-mr-,scroll-p-,scroll-px-,scroll-py-,scroll-ps-,scroll-pe-,scroll-pt-,scroll-pb-,scroll-pl-,scroll-pr-}{g0,g0h,g1,g1h,g2,g2h,g3,g3h,g4,g4h,g5,g5h,g6,g6h,g7,g7h,g8,g8h,g9,g9h,g10,g10h,g11,g11h,g12,g12h,g13,g13h,g15,g16,g20,g25}");

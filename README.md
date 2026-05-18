@@ -14,6 +14,8 @@ MODS is a Tailwind v4 CSS-first design system starter. Clone it into a project, 
 
 The MODS tool directory is gitignored in the host project. The compiled CSS at `MODS_DEST` (and `mods-snapshot/` beside it) are tracked.
 
+**Spacing utilities (`pt-g10`, `gap-g4`, …) in packed `mods.css`:** the host’s Tailwind does not regenerate MODS utilities from `@theme`. MODS’s own build must emit them. `src/style.css` uses Tailwind’s `@source inline()` to include the full g-scale spacing utility matrix in `dist/style.css` (larger bundle; interim until the workflow is revisited). See [`docs/AGENT_GUIDE.md`](docs/AGENT_GUIDE.md) (Step 5, “Packed CSS and g-scale spacing utilities”).
+
 ---
 
 ## Quick start
@@ -66,7 +68,7 @@ The DO NOT EDIT and TAILWIND THEME COMPOSITION sections of `_base.css` are syste
 
 ```
 src/
-  style.css               ← Entry point — @import chain
+  style.css               ← Entry — @import chain + spacing `@source inline` for pack
   _base.css               ← Raw tokens + Tailwind @theme blocks
   _semantic-tokens.css    ← Semantic aliases + dark-mode switching
   _components.css         ← @layer components and @utility definitions
