@@ -939,7 +939,7 @@
     </div>
     <div class="pg-shape-item">
       <div class="pg-shape-box" style="border-radius: var(--shape-full); width: 72px; height: 32px;"></div>
-      <div class="pg-shape-meta">--shape-full<br>sh-full · pill<br>badges, chips</div>
+      <div class="pg-shape-meta">--shape-full<br>sh-full · pill<br>tags, chips, badges</div>
     </div>
     <div class="pg-shape-item">
       <div class="pg-shape-box" style="border-radius: var(--shape-xxs); width: 16px; height: 16px;"></div>
@@ -1182,19 +1182,41 @@
 
   </div>
 
-  <!-- ---- Badges ---- -->
-  <h3 class="pg-subsection-title">Badges</h3>
+  <!-- ---- Tags ---- -->
+  <h3 class="pg-subsection-title">Tags</h3>
+  <div class="pg-comp-label">Sizes</div>
   <div class="pg-comp-row">
-    <span class="badge badge-primary">Primary</span>
-    <span class="badge badge-success">Success</span>
-    <span class="badge badge-error">Error</span>
-    <span class="badge badge-alert">Alert</span>
-    <span class="badge badge-neutral">Neutral</span>
+    <span class="tag tag-s tag-1">Small</span>
+    <span class="tag tag-1">Medium (default)</span>
+    <span class="tag tag-l tag-1">Large</span>
   </div>
-  <div class="pg-comp-note">.badge .badge-{primary|success|error|alert|neutral}</div>
+  <div class="pg-comp-note">.tag.tag-s &nbsp;· .tag &nbsp;· .tag.tag-l</div>
+
+  <div class="pg-comp-label">Colour variants (.tag-1 … .tag-9)</div>
+  <div class="pg-comp-row">
+    <span class="tag tag-1">Tag 1</span>
+    <span class="tag tag-2">Tag 2</span>
+    <span class="tag tag-3">Tag 3</span>
+    <span class="tag tag-4">Tag 4</span>
+    <span class="tag tag-5">Tag 5</span>
+    <span class="tag tag-6">Tag 6</span>
+    <span class="tag tag-7">Tag 7</span>
+    <span class="tag tag-8">Tag 8</span>
+    <span class="tag tag-9">Tag 9</span>
+  </div>
+  <div class="pg-comp-note">.tag .tag-{1–9}</div>
 
   <!-- ---- Chips ---- -->
   <h3 class="pg-subsection-title">Chips</h3>
+  <div class="pg-comp-label">Sizes</div>
+  <div class="pg-comp-row">
+    <button class="chip chip-s">Small</button>
+    <button class="chip">Medium (default)</button>
+    <button class="chip chip-l">Large</button>
+  </div>
+  <div class="pg-comp-note">.chip.chip-s &nbsp;· .chip &nbsp;· .chip.chip-l</div>
+
+  <div class="pg-comp-label">States</div>
   <div class="pg-comp-row">
     <button class="chip">Default</button>
     <button class="chip selected">Selected</button>
@@ -1205,6 +1227,35 @@
     </button>
   </div>
   <div class="pg-comp-note">.chip &nbsp;· .chip.selected &nbsp;· .chip[disabled] &nbsp;· .chip.selected + .chip-dismiss</div>
+
+  <!-- ---- Badges ---- -->
+  <h3 class="pg-subsection-title">Badges</h3>
+  <div class="pg-comp-label">Dot (no text)</div>
+  <div class="pg-comp-row" style="align-items: center;">
+    <span class="badge badge-primary"></span>
+    <span class="badge badge-error"></span>
+  </div>
+  <div class="pg-comp-note">.badge .badge-{primary|error}</div>
+
+  <div class="pg-comp-label">With count</div>
+  <div class="pg-comp-row" style="align-items: center;">
+    <span class="badge badge-count badge-primary">3</span>
+    <span class="badge badge-count badge-error">99+</span>
+  </div>
+  <div class="pg-comp-note">.badge.badge-count .badge-{primary|error}</div>
+
+  <div class="pg-comp-label">In context (over icon)</div>
+  <div class="pg-comp-row" style="align-items: center;">
+    <span style="position: relative; display: inline-flex;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 17H20L18.595 15.595A1 1 0 0118 14.878V11A6 6 0 106 11v3.878a1 1 0 01-.595.717L4 17H9M15 17V18A3 3 0 119 18V17M15 17H9"/></svg>
+      <span class="badge badge-error" style="position: absolute; top: -2px; right: -2px;"></span>
+    </span>
+    <span style="position: relative; display: inline-flex;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 17H20L18.595 15.595A1 1 0 0118 14.878V11A6 6 0 106 11v3.878a1 1 0 01-.595.717L4 17H9M15 17V18A3 3 0 119 18V17M15 17H9"/></svg>
+      <span class="badge badge-count badge-error" style="position: absolute; top: -4px; right: -6px;">5</span>
+    </span>
+  </div>
+  <div class="pg-comp-note">position: absolute on .badge, position: relative on parent</div>
 
   <!-- ---- Select ---- -->
   <h3 class="pg-subsection-title">Select</h3>

@@ -1008,13 +1008,13 @@ At `scr-l`, a component steps up one height tier and one shape tier simultaneous
 | Shape token | Base token | Radius | Component height | Sample components |
 |---|---|---|---|---|
 | `--shape-xxs` | `sh16` | 2px | 16px | checkboxes, radios, `.input-xs` |
-| `--shape-xs` | `sh32` | 4px | 32px | `.btn-xs`, `.btn-icon-xs`, `.input-s`, `.chip` |
+| `--shape-xs` | `sh32` | 4px | 32px | `.btn-xs`, `.btn-icon-xs`, `.input-s` |
 | `--shape-s` | `sh40` | 5px | 40px | `.btn-s`, `.btn-icon-s`, `.input-m` |
 | `--shape-m` | `sh48` | 6px | 48px | `.btn-m`, `.btn-icon-m`, `.input-l` |
 | `--shape-l` | `sh56` | 7px | 56px | `.btn-l`, `.btn-icon-l`, `.input-xl` |
 | `--shape-xl` | `sh64` | 8px | 64px | `.btn-xl`, `.btn-icon-xl` |
 | `--shape-xxl` | `sh72` | 9px | 72px | `.btn-xl` at scr-l, `.btn-icon-xl` at scr-l |
-| `--shape-full` | `sh-full` | 9999px | any | chips, badges, radios, toggles, icon buttons (default) |
+| `--shape-full` | `sh-full` | 9999px | any | tags, chips, badges, radios, toggles, icon buttons (default) |
 
 ```css
 /* src/_semantic-tokens.css */
@@ -1282,29 +1282,76 @@ No extra class needed. `.field:has(:required) .field-label::after` appends a red
 | `.toggle` | Pill track (32×16px, scr-l: 40×20px), `--shape-full`. Off: `action-neutral-default` track. On: `action-primary-default` track. Thumb is white, `--shape-full`, with `shadow-level2`. |
 | `.toggle:disabled` | `action-secondary-disabled` / `action-neutral-disabled` fills |
 
-### Badges
+### Pill-shaped indicators — Tags vs Chips vs Badges
 
-Badges are non-interactive labels. No hover state.
+MODS uses three distinct components that can all look like small pills or dots. They share a visual language but have different roles:
+
+| Component | Interactive? | Element | Use when |
+|---|---|---|---|
+| `.tag` | No | `<span>` | Labelling content — categories, attributes, status text |
+| `.chip` | Yes | `<button>` | User acts on it — toggles a filter, removes a selection |
+| `.badge` | No | `<span>` | Notification indicator overlaid on an icon — not a label |
+
+The practical test: if it would be wrong to render it as a `<span>`, it's a `.chip`. If it sits on top of an icon to signal a count or alert, it's a `.badge`.
+
+---
+
+### Tags
+
+Tags are non-interactive labels. Outlined pill — border and text share the same chart colour; background is transparent. No hover state. Colour is always supplied by a variant class.
 
 | Class | Description |
 |---|---|
-| `.badge` | Base: `--shape-full px-g1h py-g0h`, `.label-s` text, `w-fit` |
-| `.badge-primary` | `brand-main` bg, inverted text |
-| `.badge-success` | `meaning-success` bg or tint; `meaning-success` text |
-| `.badge-error` | `meaning-error` bg or tint; `meaning-error` text |
-| `.badge-alert` | `meaning-alert` bg or tint; `meaning-alert` text |
-| `.badge-neutral` | `surfaces-l2` bg, `text-medium` text |
+| `.tag` | Base (medium): `--shape-full px-g1h py-g0h`, `.label-s` text, `border: 1px solid`, transparent bg, `w-fit` |
+| `.tag.tag-s` | Small: `px-g1 py-0`, f2/lb2 text |
+| `.tag.tag-l` | Large: `px-g2 py-g1`, f4/lb4 text |
+| `.tag-1` … `.tag-9` | Chart-colour variants — sets `border-color` and `color` to `--chart-N` at `--chart-global-alpha` |
+
+```html
+<span class="tag tag-1">Electronics</span>
+<span class="tag tag-s tag-4">In Stock</span>
+<span class="tag tag-l tag-6">47% off</span>
+```
 
 ### Chips
 
-Chips are interactive — selectable and/or dismissible.
+Chips are interactive — selectable and/or dismissible. Three sizes available.
 
 | Class | Description |
 |---|---|
-| `.chip` | Base: 32px height (scr-l: 40px), `--shape-full px-g2`, `.label-s` text, `border-medium` border, `surfaces-l1` bg. Matches `.btn-xs` height. |
+| `.chip` | Base (medium): 32px height (scr-l: 40px), `--shape-full px-g2`, `.label-s` text, `border-medium` border, `surfaces-l1` bg |
+| `.chip.chip-s` | Small: 24px height (scr-l: 32px), `px-g1h`, f2/lb2 text |
+| `.chip.chip-l` | Large: 40px height (scr-l: 48px), `px-g2h`, f4/lb4 text |
 | `.chip.selected` | `action-primary-default` border, `brand-lighter` bg, `text-accent` text |
-| `.chip-dismiss` | Adds a trailing `×` icon button wired to remove the chip |
+| `.chip-dismiss` | Trailing `×` icon button wired to remove the chip |
 | `.chip:disabled` | `text-low` colour, no pointer events |
+
+### Badges
+
+Badges are small circular notification indicators overlaid on icons. Not pills — always circular. Two sizes; colour is always supplied by a variant class.
+
+| Class | Description |
+|---|---|
+| `.badge` | Dot: 8×8px circle. No text. Pure colour indicator. |
+| `.badge.badge-count` | Count: min-width 16px, height 16px, `px: 4px`, f1/lb1 text. For numbers or short labels. |
+| `.badge-primary` | `brand-main` fill |
+| `.badge-error` | `meaning-error` fill |
+
+Positioning is left to the consumer — typically `position: absolute` on the badge and `position: relative` on the parent icon wrapper.
+
+```html
+<!-- Dot only -->
+<span style="position: relative; display: inline-flex;">
+  <svg .../>
+  <span class="badge badge-error" style="position: absolute; top: -2px; right: -2px;"></span>
+</span>
+
+<!-- With count -->
+<span style="position: relative; display: inline-flex;">
+  <svg .../>
+  <span class="badge badge-count badge-error" style="position: absolute; top: -4px; right: -6px;">5</span>
+</span>
+```
 
 ---
 

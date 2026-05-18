@@ -7,7 +7,7 @@
         (cannot go in @theme inline because they compose two separate vars)
      2. @layer components — all component classes in order:
         Typography → Buttons → Icon buttons → Form controls →
-        Badges → Chips → Layout utilities
+        Tags → Chips → Badges → Layout utilities
    ========================================================================== */
 
 
@@ -1376,19 +1376,23 @@
 
 
   /* ========================================================================
-     BADGES
-     Non-interactive labels. No hover state. shape-full pill.
+     TAGS
+     Non-interactive labels. Outlined pill — border + transparent bg.
+     Colour is always supplied by a variant class (.tag-1 … .tag-9).
+     Three sizes: .tag-s  |  .tag (default = m)  |  .tag-l
      label-s styles inlined (cross-component @apply is unreliable in v4).
      ======================================================================== */
 
-  .badge {
+  .tag {
     width: fit-content;
     display: inline-flex;
     align-items: center;
     border-radius: var(--shape-full);
+    border: 1px solid;
+    background-color: transparent;
+    /* default (m) sizing */
     padding-inline: var(--spacing-g1h);
     padding-block: var(--spacing-g0h);
-    /* label-s inlined */
     font-family: var(--font-label);
     font-weight: var(--font-weight-label);
     font-size: var(--font-size-f3);
@@ -1396,35 +1400,40 @@
     @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
   }
 
-  .badge-primary {
-    background-color: rgb(var(--brand-main-color));
-    color: rgb(var(--text-invert-color) / var(--text-medium-alpha));
+  .tag.tag-s {
+    padding-inline: var(--spacing-g1);
+    padding-block: 0;
+    font-size: var(--font-size-f2);
+    line-height: var(--line-height-lb2);
+    @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
   }
 
-  .badge-success {
-    background-color: rgb(var(--meaning-success-color) / 0.15);
-    color: rgb(var(--meaning-success-color));
+  .tag.tag-l {
+    padding-inline: var(--spacing-g2);
+    padding-block: var(--spacing-g1);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
   }
 
-  .badge-error {
-    background-color: rgb(var(--meaning-error-color) / 0.15);
-    color: rgb(var(--meaning-error-color));
-  }
-
-  .badge-alert {
-    background-color: rgb(var(--meaning-alert-color) / 0.15);
-    color: rgb(var(--meaning-alert-color));
-  }
-
-  .badge-neutral {
-    background-color: rgb(var(--surfaces-l2-color) / var(--surfaces-global-alpha));
-    color: rgb(var(--text-color) / var(--text-low-alpha));
-  }
+  /* Chart-colour variants — border and text share the same chart token */
+  .tag-1 { border-color: rgb(var(--chart-1) / var(--chart-global-alpha)); color: rgb(var(--chart-1) / var(--chart-global-alpha)); }
+  .tag-2 { border-color: rgb(var(--chart-2) / var(--chart-global-alpha)); color: rgb(var(--chart-2) / var(--chart-global-alpha)); }
+  .tag-3 { border-color: rgb(var(--chart-3) / var(--chart-global-alpha)); color: rgb(var(--chart-3) / var(--chart-global-alpha)); }
+  .tag-4 { border-color: rgb(var(--chart-4) / var(--chart-global-alpha)); color: rgb(var(--chart-4) / var(--chart-global-alpha)); }
+  .tag-5 { border-color: rgb(var(--chart-5) / var(--chart-global-alpha)); color: rgb(var(--chart-5) / var(--chart-global-alpha)); }
+  .tag-6 { border-color: rgb(var(--chart-6) / var(--chart-global-alpha)); color: rgb(var(--chart-6) / var(--chart-global-alpha)); }
+  .tag-7 { border-color: rgb(var(--chart-7) / var(--chart-global-alpha)); color: rgb(var(--chart-7) / var(--chart-global-alpha)); }
+  .tag-8 { border-color: rgb(var(--chart-8) / var(--chart-global-alpha)); color: rgb(var(--chart-8) / var(--chart-global-alpha)); }
+  .tag-9 { border-color: rgb(var(--chart-9) / var(--chart-global-alpha)); color: rgb(var(--chart-9) / var(--chart-global-alpha)); }
 
 
   /* ========================================================================
      CHIPS
-     Interactive — selectable and/or dismissible. Matches .btn-xs height.
+     Interactive — selectable and/or dismissible.
+     Three sizes: .chip-s  |  .chip (default = m)  |  .chip-l
+     Size modifiers override height, padding-inline, and font only.
+     All other behaviour (selected, dismiss, disabled) inherits from .chip.
      label-s styles inlined.
      ======================================================================== */
 
@@ -1477,6 +1486,68 @@
   .chip[aria-disabled="true"] {
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
     pointer-events: none;
+  }
+
+  .chip.chip-s {
+    height: var(--spacing-g3);
+    padding-inline: var(--spacing-g1h);
+    font-size: var(--font-size-f2);
+    line-height: var(--line-height-lb2);
+    @media (min-width: 1920px) {
+      height: var(--spacing-g4);
+      font-size: var(--font-size-f3);
+      line-height: var(--line-height-lb3);
+    }
+  }
+
+  .chip.chip-l {
+    height: var(--spacing-g5);
+    padding-inline: var(--spacing-g2h);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) {
+      height: var(--spacing-g6);
+      font-size: var(--font-size-f5);
+      line-height: var(--line-height-lb5);
+    }
+  }
+
+
+  /* ========================================================================
+     BADGES
+     Notification dot overlaid on icons. Not a pill — always circular.
+     Two sizes: .badge (8×8 dot)  |  .badge-count (16×16 with text)
+     Colour is supplied by a variant class (.badge-primary etc.).
+     Positioning (absolute/relative) is left to the consumer.
+     ======================================================================== */
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--shape-full);
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+  }
+
+  .badge.badge-count {
+    width: auto;
+    min-width: 16px;
+    height: 16px;
+    padding-inline: 4px;
+    font-family: var(--font-label);
+    font-weight: var(--font-weight-label);
+    font-size: var(--font-size-f1);
+    line-height: var(--line-height-lb1);
+  }
+
+  .badge-primary {
+    background-color: rgb(var(--brand-main-color));
+  }
+
+  .badge-error {
+    background-color: rgb(var(--meaning-error-color));
   }
 
 
