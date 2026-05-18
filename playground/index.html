@@ -1261,16 +1261,16 @@
   <div class="pg-comp-label">States</div>
   <div class="pg-form-cols">
     <div class="pg-form-col">
-      <textarea class="textarea" rows="3" placeholder="Default textarea"></textarea>
-      <div class="pg-form-note">.textarea</div>
+      <div class="textarea textarea-m"><textarea class="textarea-field" rows="3" placeholder="Default textarea"></textarea></div>
+      <div class="pg-form-note">.textarea > .textarea-field</div>
     </div>
     <div class="pg-form-col">
-      <textarea class="textarea textarea-error" rows="3">Invalid content</textarea>
+      <div class="textarea textarea-m textarea-error"><textarea class="textarea-field" rows="3">Invalid content</textarea></div>
       <div class="input-error-msg">This field has an error</div>
-      <div class="pg-form-note">.textarea .textarea-error</div>
+      <div class="pg-form-note">.textarea.textarea-error</div>
     </div>
     <div class="pg-form-col">
-      <textarea class="textarea" rows="3" placeholder="Disabled textarea" disabled></textarea>
+      <div class="textarea textarea-m"><textarea class="textarea-field" rows="3" placeholder="Disabled textarea" disabled></textarea></div>
       <div class="pg-form-note">disabled</div>
     </div>
   </div>
@@ -1450,7 +1450,7 @@
       <div class="textarea textarea-xl"><textarea class="textarea-field" id="ta-xl" placeholder="Extra large"></textarea></div>
     </div>
   </div>
-  <div class="pg-comp-note">.textarea .textarea-{xs|s|m|l|xl} &gt; .textarea-field</div>
+  <div class="pg-comp-note">.textarea.textarea-{xs|s|m|l|xl} > .textarea-field</div>
 
   <div class="pg-comp-label">States</div>
   <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;margin-bottom:8px;">
@@ -1460,7 +1460,7 @@
     </div>
     <div class="field">
       <label class="field-label" for="ta-err">Error</label>
-      <div class="textarea textarea-m input-error"><textarea class="textarea-field" id="ta-err" aria-invalid="true" aria-describedby="ta-err-msg">Some invalid content</textarea></div>
+      <div class="textarea textarea-m textarea-error"><textarea class="textarea-field" id="ta-err" aria-invalid="true" aria-describedby="ta-err-msg">Some invalid content</textarea></div>
       <p class="input-error-msg" id="ta-err-msg">Content exceeds the character limit.</p>
     </div>
     <div class="field">
@@ -1472,7 +1472,167 @@
       <div class="textarea textarea-m"><textarea class="textarea-field" id="ta-dis" disabled>Not available yet.</textarea></div>
     </div>
   </div>
-  <div class="pg-comp-note">resting · .input-error + .input-error-msg · readonly · disabled</div>
+  <div class="pg-comp-note">resting · .textarea-error + .input-error-msg · readonly · disabled</div>
+
+
+  <!-- ---- Inline Alert ---- -->
+  <h3 class="pg-subsection-title">Inline Alert</h3>
+
+  <div class="pg-comp-label">Variants</div>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;margin-bottom:8px;">
+    <div class="alert alert-error">
+      <span>Error — something went wrong. Please check your input and try again.</span>
+      <button class="alert-dismiss" aria-label="Dismiss">✕</button>
+    </div>
+    <div class="alert alert-warning">
+      <span>Warning — your session will expire in 5 minutes.</span>
+      <button class="alert-dismiss" aria-label="Dismiss">✕</button>
+    </div>
+    <div class="alert alert-success">
+      <span>Success — your changes have been saved.</span>
+    </div>
+    <div class="alert alert-info">
+      <span>Info — a new version is available. Refresh to update.</span>
+    </div>
+  </div>
+  <div class="pg-comp-note">.alert .alert-{error|warning|success|info} · optional .alert-dismiss</div>
+
+
+  <!-- ---- Dropdown Menu ---- -->
+  <h3 class="pg-subsection-title">Dropdown Menu</h3>
+
+  <div class="pg-comp-label">Menu</div>
+  <div style="max-width:220px;margin-bottom:8px;">
+    <div class="menu">
+      <div class="menu-label">File</div>
+      <button class="menu-item">New document</button>
+      <button class="menu-item">Open…</button>
+      <button class="menu-item">Save</button>
+      <div class="menu-divider"></div>
+      <div class="menu-label">Actions</div>
+      <button class="menu-item">Export as PDF</button>
+      <button class="menu-item menu-item-disabled">Share (unavailable)</button>
+    </div>
+  </div>
+  <div class="pg-comp-note">.menu > .menu-label · .menu-item · .menu-divider · .menu-item-disabled</div>
+
+
+  <!-- ---- Accordion ---- -->
+  <h3 class="pg-subsection-title">Accordion</h3>
+
+  <div class="pg-comp-label">Small</div>
+  <div class="accordion accordion-s" style="max-width:560px;margin-bottom:8px;">
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false" onclick="this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');this.nextElementSibling.toggleAttribute('hidden')">
+        <span>What is MODS?</span>
+        <svg class="accordion-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-content" hidden>MODS is a CSS-only design system built on Tailwind v4 semantic tokens.</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false" onclick="this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');this.nextElementSibling.toggleAttribute('hidden')">
+        <span>Does it require JavaScript?</span>
+        <svg class="accordion-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-content" hidden>Open/close state is managed by the host. The CSS handles visual transitions.</div>
+    </div>
+  </div>
+  <div class="pg-comp-note">.accordion.accordion-s</div>
+
+  <div class="pg-comp-label">Medium (default)</div>
+  <div class="accordion" style="max-width:560px;margin-bottom:8px;">
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="true" onclick="this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');this.nextElementSibling.toggleAttribute('hidden')">
+        <span>Installation</span>
+        <svg class="accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-content">Run <code>npm install</code> and import the compiled CSS into your project.</div>
+    </div>
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false" onclick="this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');this.nextElementSibling.toggleAttribute('hidden')">
+        <span>Theming</span>
+        <svg class="accordion-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-content" hidden>Edit the palette and semantic tokens in <code>_base.css</code> and <code>_semantic-tokens.css</code>.</div>
+    </div>
+  </div>
+  <div class="pg-comp-note">.accordion (default m)</div>
+
+  <div class="pg-comp-label">Large</div>
+  <div class="accordion accordion-l" style="max-width:560px;margin-bottom:8px;">
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false" onclick="this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true');this.nextElementSibling.toggleAttribute('hidden')">
+        <span>Getting started</span>
+        <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="accordion-content" hidden>Follow the setup guide in docs/AGENT_GUIDE.md to configure MODS for your project.</div>
+    </div>
+  </div>
+  <div class="pg-comp-note">.accordion.accordion-l</div>
+
+
+  <!-- ---- Skeleton ---- -->
+  <h3 class="pg-subsection-title">Skeleton</h3>
+
+  <div class="pg-comp-label">Common patterns</div>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:400px;margin-bottom:8px;">
+    <div class="skeleton" style="height:16px;width:80%;"></div>
+    <div class="skeleton" style="height:16px;width:60%;"></div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <div class="skeleton" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+        <div class="skeleton" style="height:14px;width:70%;"></div>
+        <div class="skeleton" style="height:12px;width:50%;"></div>
+      </div>
+    </div>
+    <div class="skeleton" style="height:120px;width:100%;"></div>
+  </div>
+  <div class="pg-comp-note">.skeleton — width, height, and border-radius set by host</div>
+
+
+  <!-- ---- Pagination ---- -->
+  <h3 class="pg-subsection-title">Pagination</h3>
+
+  <div class="pg-comp-label">Sizes</div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:8px;">
+    <nav class="pagination pagination-xs" aria-label="Pagination xs">
+      <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+      <a class="pagination-link pagination-link-active" aria-current="page">1</a>
+      <a class="pagination-link">2</a>
+      <a class="pagination-link">3</a>
+      <a class="pagination-link">›</a>
+    </nav>
+    <nav class="pagination pagination-s" aria-label="Pagination s">
+      <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+      <a class="pagination-link">1</a>
+      <a class="pagination-link pagination-link-active" aria-current="page">2</a>
+      <a class="pagination-link">3</a>
+      <a class="pagination-link">›</a>
+    </nav>
+    <nav class="pagination pagination-m" aria-label="Pagination m">
+      <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+      <a class="pagination-link">1</a>
+      <a class="pagination-link">2</a>
+      <a class="pagination-link pagination-link-active" aria-current="page">3</a>
+      <a class="pagination-link">4</a>
+      <a class="pagination-link">5</a>
+      <a class="pagination-link">›</a>
+    </nav>
+    <nav class="pagination pagination-l" aria-label="Pagination l">
+      <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+      <a class="pagination-link">1</a>
+      <a class="pagination-link pagination-link-active" aria-current="page">2</a>
+      <a class="pagination-link">3</a>
+      <a class="pagination-link">›</a>
+    </nav>
+    <nav class="pagination pagination-xl" aria-label="Pagination xl">
+      <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+      <a class="pagination-link pagination-link-active" aria-current="page">1</a>
+      <a class="pagination-link">2</a>
+      <a class="pagination-link">›</a>
+    </nav>
+  </div>
+  <div class="pg-comp-note">.pagination.pagination-{xs|s|m|l|xl} > .pagination-link · .pagination-link-active · .pagination-link-disabled</div>
 
 </section>
 

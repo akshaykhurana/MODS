@@ -1195,15 +1195,19 @@ Hint and error are mutually exclusive by convention — swap them at validation 
 
 ### Textarea
 
-`.textarea` is a **wrapper `<div>` with `display: block`** (not flex — required for `resize: vertical` to work naturally). The bare `<textarea>` goes inside as `.textarea-field`. No icon slots.
+`.textarea` is a **wrapper `<div>` with `display: block`** (not flex — required for `resize: vertical` on the inner field to work naturally). The bare `<textarea>` goes inside as `.textarea-field`.
+
+The wrapper pattern mirrors `.input` exactly, which means **icon slots work**: place a clear button, character counter, AI-assist trigger, or expand icon as a sibling of `.textarea-field` inside the wrapper and position it absolutely.
 
 ```html
 <div class="textarea textarea-m">
   <textarea class="textarea-field" placeholder="Write here"></textarea>
+  <!-- optional icon slot -->
+  <button class="textarea-icon-trail" aria-label="Clear">✕</button>
 </div>
 ```
 
-All state rules mirror `.input` exactly: hover, focus + inner shadow, disabled, read-only, error.
+All state rules use `:has()` to observe the inner field: hover, focus (+ inner shadow), `.textarea-error`, disabled, and readonly.
 
 #### Size classes
 
@@ -1215,7 +1219,7 @@ All state rules mirror `.input` exactly: hover, focus + inner shadow, disabled, 
 | `.textarea-l` | 48px | 56px | `--shape-m` → `--shape-l` |
 | `.textarea-xl` | 56px | 64px | `--shape-l` → `--shape-xl` |
 
-`.textarea-field` uses `resize: vertical` — users can drag to expand. Min-height is the floor.
+`.textarea-field` carries `resize: vertical` — users can drag to expand. Min-height is the floor. `resize` is suppressed automatically on disabled and readonly fields.
 
 ---
 
@@ -1300,6 +1304,131 @@ Chips are interactive — selectable and/or dismissible.
 | `.chip.selected` | `action-primary-default` border, `brand-lighter` bg, `text-accent` text |
 | `.chip-dismiss` | Adds a trailing `×` icon button wired to remove the chip |
 | `.chip:disabled` | `text-low` colour, no pointer events |
+
+---
+
+### Inline Alert
+
+Persistent in-flow feedback strip — not floating like `.toast`. Sits in the page layout and uses meaning tokens for semantic colour. Typical uses: form validation summaries, system status messages, API error notices.
+
+```html
+<div class="alert alert-error">
+  <span>Something went wrong. Please try again.</span>
+  <button class="alert-dismiss" aria-label="Dismiss">✕</button>
+</div>
+```
+
+| Class | Description |
+|---|---|
+| `.alert` | `flex row`, `gap-g1h`, `padding g1h/g2`, `shape-xs` radius, `3px` left-border accent, body-m text |
+| `.alert-error` | `--meaning-error-color` border-left + 8% tinted background |
+| `.alert-warning` | `--meaning-alert-color` |
+| `.alert-success` | `--meaning-success-color` |
+| `.alert-info` | `--brand-main-color` |
+| `.alert-dismiss` | Right-aligned close button slot; inherits text colour from parent |
+
+---
+
+### Dropdown Menu
+
+Action menu triggered by a button click. Not a form control — use `<select>` for form pickers. Open/close is the host's responsibility (toggle `hidden` attribute or a `data-open` class). Positioning (absolute/fixed) is also host-controlled.
+
+```html
+<div class="menu">
+  <div class="menu-label">Actions</div>
+  <button class="menu-item">Edit</button>
+  <button class="menu-item">Duplicate</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item menu-item-disabled">Archive (unavailable)</button>
+</div>
+```
+
+| Class | Description |
+|---|---|
+| `.menu` | `surfaces-l2` background, `shape-s` radius, `shadow-level3`, `border-low` border, `py-g0h` inner padding |
+| `.menu-item` | Full-width row, `px-g2 py-g1`, body-m text, secondary overlay on hover |
+| `.menu-item-disabled` | `text-disabled`, no pointer events |
+| `.menu-label` | Group heading; overline style, `text-low`, uppercase |
+| `.menu-divider` | 1px `border-low` separator line with `my-g0h` margin |
+
+---
+
+### Accordion
+
+Collapsible disclosure sections. CSS handles styling and the chevron rotation; host JS toggles `aria-expanded` on `.accordion-trigger` and the `hidden` attribute on `.accordion-content`.
+
+```html
+<div class="accordion accordion-m">
+  <div class="accordion-item">
+    <button class="accordion-trigger" aria-expanded="false">
+      <span>Section title</span>
+      <svg class="accordion-chevron" .../>
+    </button>
+    <div class="accordion-content" hidden>Content here.</div>
+  </div>
+</div>
+```
+
+Three sizes control trigger and content typography. The size modifier goes on `.accordion`.
+
+| Class | Trigger font | Content font |
+|---|---|---|
+| `.accordion-s` | `title-xs` (f3/lt3) | `body-s` (f3/lb3) |
+| `.accordion` / `.accordion-m` | `title-s` (f4/lt4) — default | `body-m` (f4/lb4) |
+| `.accordion-l` | `title-m` (f5/lt5) | `body-m` (f5/lb5) |
+
+The `.accordion-chevron` rotates 180° when `[aria-expanded="true"]` is present on the trigger.
+
+---
+
+### Skeleton
+
+Loading placeholder. Size, shape, and border-radius are all set by the host — `.skeleton` only provides the animated surface.
+
+```html
+<!-- Text line -->
+<div class="skeleton" style="height:16px;width:80%;"></div>
+
+<!-- Avatar circle -->
+<div class="skeleton" style="width:40px;height:40px;border-radius:50%;"></div>
+```
+
+| Class | Description |
+|---|---|
+| `.skeleton` | `action-secondary-disabled` background, `shape-s` default radius, horizontal shimmer sweep animation (`mods-skeleton-shimmer`, 1.5s infinite) |
+
+Override `border-radius` with inline styles or utility classes to match the shape of the content being loaded.
+
+---
+
+### Pagination
+
+| Class | Description |
+|---|---|
+| `.pagination` | `flex row`, `gap-g0h`, wraps `.pagination-link` items |
+| `.pagination-link` | Square-ish button (min-width = height), `btn` overlay hover, label font, `shape-m` default radius |
+| `.pagination-link-active` | `action-primary-default` background, inverted label colour, no hover needed |
+| `.pagination-link-disabled` | `text-disabled`, no pointer events |
+
+Size modifier on the `.pagination` wrapper scales all links together:
+
+| Wrapper class | Link height | Font | Radius |
+|---|---|---|---|
+| `.pagination-xs` | `g4` (32px) | f2 | `shape-xs` |
+| `.pagination-s` | `g5` (40px) | f3 | `shape-s` |
+| `.pagination-m` | `g6` (48px) | f4 | `shape-m` — default |
+| `.pagination-l` | `g7` (56px) | f5 | `shape-l` |
+| `.pagination-xl` | `g8` (64px) | f6 | `shape-xl` |
+
+```html
+<nav class="pagination pagination-m" aria-label="Page navigation">
+  <a class="pagination-link pagination-link-disabled" aria-disabled="true">‹</a>
+  <a class="pagination-link">1</a>
+  <a class="pagination-link pagination-link-active" aria-current="page">2</a>
+  <a class="pagination-link">3</a>
+  <a class="pagination-link">›</a>
+</nav>
+```
 
 ---
 

@@ -9,6 +9,7 @@
     "build:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css",
     "watch:css": "npx @tailwindcss/cli -i src/style.css -o dist/style.css --watch",
     "pack": "sh scripts/pack.sh",
+    "apply-snapshot": "node scripts/apply-snapshot.js",
     "postinstall": "npm run build:css",
     "test": "node --test test/*.test.js"
   },

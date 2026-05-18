@@ -64,8 +64,12 @@ cat > "$SNAPSHOT_DIR/README.md" << 'HEREDOC'
 Packed: __TIMESTAMP__
 
 Verbatim copies of `mods/src/_base.css` and `mods/src/_semantic-tokens.css` at the
-time `npm run pack` was last run. For reference and agent-assisted restore only —
-these files are not imported by the host project.
+time `npm run pack` was last run. These files are not imported by the host project —
+they exist so token values can be restored after MODS is re-cloned.
+
+The snapshot captures:
+- `_base.css`            — palette RGB values, scalar vars (alphas, border widths, letter spacing)
+- `_semantic-tokens.css` — semantic pointings (which palette steps each role maps to in light and dark mode)
 
 ---
 
@@ -80,11 +84,37 @@ these files are not imported by the host project.
    cd mods && npm install
    ```
 
-2. Run the following agent prompt (works with GitHub Copilot, Cursor, or any agent tool):
+2. Run the restore script from inside the `mods/` directory:
+
+   ```bash
+   MODS_SNAPSHOT=<path/to/this/mods-snapshot> npm run apply-snapshot
+   ```
+
+   The path is relative to the `mods/` directory. For example, if the snapshot lives at
+   `../src/styles/mods-snapshot` relative to `mods/`:
+
+   ```bash
+   MODS_SNAPSHOT=../src/styles/mods-snapshot npm run apply-snapshot
+   ```
+
+   The script copies only the user-editable token values (palette, scalar vars, semantic
+   pointings) into the fresh source files — it leaves file structure, comments, and
+   non-editable sections untouched. It reports any tokens that are new since the snapshot
+   (kept at MODS defaults) or were removed (skipped with a warning).
+
+3. After the script completes, re-pack to publish the restored CSS and refresh the snapshot:
+
+   ```bash
+   MODS_DEST=<same-path-as-before> npm run pack
+   ```
 
 ---
 
-**Agent restore prompt — copy and paste as-is:**
+## Fallback: agent restore prompt
+
+If `apply-snapshot` is unavailable (e.g. on an older MODS version), an agent can perform
+the same migration manually. Copy and paste this prompt into GitHub Copilot, Cursor, or
+any agent tool:
 
 > Migrate token values from the MODS snapshot into the fresh MODS source files.
 >
@@ -98,23 +128,11 @@ these files are not imported by the host project.
 > - In `_semantic-tokens.css`, copy all `var(--)` assignments from `:root {}` and `.dark {}`.
 > - Do NOT touch sections marked DO NOT EDIT, TAILWIND THEME COMPOSITION, or any
 >   `@theme` block in `_base.css`.
-> - Token in snapshot but not in new file → report as warning (removed or renamed),
->   skip it.
-> - Token in new file but not in snapshot → leave at its default value, report as
->   new token requiring a decision.
+> - Token in snapshot but not in new file → report as warning (removed or renamed), skip it.
+> - Token in new file but not in snapshot → leave at its default value, report as a new
+>   token requiring a decision.
 > - Do not alter file structure, comments, whitespace, or formatting in the target
 >   files — only replace values on the right-hand side of matching `--token-name:` lines.
-
----
-
-3. After the agent migration:
-
-   ```bash
-   npm run build:css && MODS_DEST=<same-path-as-before> npm run pack
-   ```
-
-   This rebuilds the compiled CSS from the restored tokens and overwrites the snapshot
-   with fresh copies, so the next re-clone starts from the latest state.
 HEREDOC
 
 # Inject timestamp (portable: no -i flag dependency)

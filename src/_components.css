@@ -1061,17 +1061,20 @@
 
   /* ========================================================================
      TEXTAREA
-     .textarea is a wrapper <div> (display: block — not flex, so resize works).
-     The bare <textarea> goes inside as .textarea-field.
-     No icon slots — not applicable to multiline.
+     .textarea is a wrapper <div> (display: block — not flex, so the inner
+     field's resize handle works naturally). The bare <textarea> goes inside
+     as .textarea-field. Icon slots (clear button, char counter, AI trigger,
+     expand icon, etc.) are placed as siblings of .textarea-field inside the
+     wrapper and positioned absolutely.
      ======================================================================== */
 
   /* --- Wrapper --- */
   .textarea {
+    position: relative;
     width: 100%;
     display: block;
     border: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
-    background-color: rgb(var(--action-neutral-filled-color));
+    background-color: rgb(var(--surfaces-l1-color) / var(--surfaces-global-alpha));
     color: rgb(var(--text-color) / var(--text-medium-alpha));
     padding-inline: var(--spacing-g2);
     outline: none;
@@ -1087,23 +1090,26 @@
     border: none;
     outline: none;
     padding: 0;
-    font: inherit;
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
     color: inherit;
     resize: vertical;
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
   }
   .textarea-field::placeholder {
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
   }
 
   /* --- States — same order as .input --- */
-
-  .textarea:not(:has(.textarea-field:disabled)):not(:has(.textarea-field:read-only)):not(.input-error):hover {
+  .textarea:not(:has(.textarea-field:disabled)):not(:has(.textarea-field[readonly])):not(.textarea-error):hover {
     border-color: rgb(var(--border-color) / var(--border-high-alpha));
   }
-  .textarea.input-error {
+  .textarea.textarea-error {
     border-color: rgb(var(--meaning-error-color));
   }
-  .textarea:focus-within:not(:has(.textarea-field:read-only)):not(:has(.textarea-field:disabled)) {
+  .textarea:focus-within:not(:has(.textarea-field[readonly])):not(:has(.textarea-field:disabled)) {
     border-color: rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
     box-shadow: var(--shadow-level1-inner);
   }
@@ -1113,10 +1119,16 @@
     pointer-events: none;
     box-shadow: none;
   }
-  .textarea:has(.textarea-field:read-only) {
+  .textarea:has(.textarea-field:disabled) .textarea-field {
+    resize: none;
+  }
+  .textarea:has(.textarea-field[readonly]) {
     background-color: rgb(var(--action-secondary-disabled-color));
     color: rgb(var(--text-color) / var(--text-medium-alpha));
     cursor: text;
+  }
+  .textarea:has(.textarea-field[readonly]) .textarea-field {
+    resize: none;
   }
 
   /* --- Size classes --- */
@@ -1221,7 +1233,7 @@
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
   }
   .field:has(.input-field:read-only) .field-label,
-  .field:has(.textarea-field:read-only) .field-label {
+  .field:has(.textarea-field[readonly]) .field-label {
     color: rgb(var(--text-color) / var(--text-disabled-alpha));
   }
   .field:has(.input-error) .field-label {
@@ -1540,46 +1552,6 @@
   }
 
 
-  /* ========================================================================
-     TEXTAREA
-     No size variants — height controlled by rows attribute.
-     ======================================================================== */
-
-  .textarea {
-    width: 100%;
-    display: block;
-    resize: vertical;
-    border: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
-    background-color: rgb(var(--surfaces-l1-color) / var(--surfaces-global-alpha));
-    color: rgb(var(--text-color) / var(--text-medium-alpha));
-    padding: var(--spacing-g2);
-    border-radius: var(--shape-s);
-    outline: none;
-    transition: all 150ms;
-    font-family: var(--font-body);
-    font-weight: var(--font-weight-body-regular);
-    font-size: var(--font-size-f4);
-    line-height: var(--line-height-lb4);
-    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
-  }
-  .textarea::placeholder {
-    color: rgb(var(--text-color) / var(--text-disabled-alpha));
-  }
-  .textarea:focus {
-    border-color: rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
-  }
-  .textarea:disabled {
-    background-color: rgb(var(--action-secondary-disabled-color));
-    color: rgb(var(--text-color) / var(--text-disabled-alpha));
-    resize: none;
-    pointer-events: none;
-  }
-  .textarea-error {
-    border-color: rgb(var(--meaning-error-color)) !important;
-  }
-  .textarea-success {
-    border-color: rgb(var(--meaning-success-color)) !important;
-  }
 
 
   /* ========================================================================
@@ -1880,6 +1852,386 @@
     padding-inline: var(--spacing-g2);
     @media (min-width: 768px)  { padding-inline: var(--spacing-g3); }
     @media (min-width: 1280px) { padding-inline: var(--spacing-g4); }
+  }
+
+
+  /* ========================================================================
+     INLINE ALERT
+     Persistent in-flow feedback strip. Four semantic variants using meaning
+     tokens. Unlike .toast (transient, floating), .alert sits in the document
+     flow. Typical uses: form validation summaries, system status notices,
+     API error messages shown inline.
+     ======================================================================== */
+
+  .alert {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-g1h);
+    padding: var(--spacing-g1h) var(--spacing-g2);
+    border-radius: var(--shape-xs);
+    border-left: 3px solid transparent;
+    color: rgb(var(--text-color) / var(--text-high-alpha));
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
+  }
+
+  .alert-error {
+    background-color: rgb(var(--meaning-error-color) / 0.08);
+    border-left-color: rgb(var(--meaning-error-color));
+  }
+  .alert-warning {
+    background-color: rgb(var(--meaning-alert-color) / 0.08);
+    border-left-color: rgb(var(--meaning-alert-color));
+  }
+  .alert-success {
+    background-color: rgb(var(--meaning-success-color) / 0.08);
+    border-left-color: rgb(var(--meaning-success-color));
+  }
+  .alert-info {
+    background-color: rgb(var(--brand-main-color) / 0.08);
+    border-left-color: rgb(var(--brand-main-color));
+  }
+
+  /* Dismiss button — push to the right, inherits text colour from parent */
+  .alert-dismiss {
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-g0h);
+    border-radius: var(--shape-xxs);
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity 150ms;
+  }
+  .alert-dismiss:hover {
+    opacity: 1;
+  }
+  .alert-dismiss:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+  }
+
+
+  /* ========================================================================
+     DROPDOWN MENU
+     Action menu triggered by a button click — not a form control.
+     CSS only; open/close toggled by host JS via the hidden attribute or
+     a [data-open] class. Position (absolute/fixed) is the host's concern.
+     ======================================================================== */
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    background-color: rgb(var(--surfaces-l2-color) / var(--surfaces-global-alpha));
+    border-radius: var(--shape-s);
+    border: 1px solid rgb(var(--border-color) / var(--border-low-alpha));
+    box-shadow: var(--shadow-level3);
+    padding-block: var(--spacing-g0h);
+    overflow: hidden;
+  }
+
+  .menu-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-g1h);
+    width: 100%;
+    padding: var(--spacing-g1) var(--spacing-g2);
+    background: transparent;
+    border: none;
+    text-align: start;
+    cursor: pointer;
+    color: rgb(var(--text-color) / var(--text-high-alpha));
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    transition: background-image 150ms;
+    text-decoration: none;
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
+  }
+  .menu-item:hover {
+    background-image: linear-gradient(
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)),
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha))
+    );
+  }
+  .menu-item:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: -2px;
+  }
+  .menu-item-disabled {
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .menu-label {
+    padding: var(--spacing-g1) var(--spacing-g2) var(--spacing-g0h);
+    color: rgb(var(--text-color) / var(--text-low-alpha));
+    font-family: var(--font-label);
+    font-weight: var(--font-weight-label);
+    font-size: var(--font-size-f2);
+    line-height: var(--line-height-lb2);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-overline);
+    @media (min-width: 1920px) { font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
+  }
+
+  .menu-divider {
+    height: 1px;
+    background-color: rgb(var(--border-color) / var(--border-low-alpha));
+    margin-block: var(--spacing-g0h);
+  }
+
+
+  /* ========================================================================
+     ACCORDION
+     Collapsible disclosure sections. CSS only; host JS sets aria-expanded
+     on .accordion-trigger and toggles the hidden attribute on
+     .accordion-content.
+     Sizes: .accordion-s / default (m) / .accordion-l.
+     ======================================================================== */
+
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid rgb(var(--border-color) / var(--border-medium-alpha));
+  }
+
+  .accordion-trigger {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-g2);
+    width: 100%;
+    padding-block: var(--spacing-g1h);
+    padding-inline: 0;
+    background: transparent;
+    border: none;
+    text-align: start;
+    cursor: pointer;
+    color: rgb(var(--text-color) / var(--text-high-alpha));
+    user-select: none;
+    transition: background-image 150ms;
+    /* Default (m) typography */
+    font-family: var(--font-title);
+    font-weight: var(--font-weight-title);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lt4);
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lt5); }
+  }
+  .accordion-trigger:hover {
+    background-image: linear-gradient(
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)),
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha))
+    );
+  }
+  .accordion-trigger:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+    border-radius: var(--shape-xxs);
+  }
+
+  .accordion-chevron {
+    flex-shrink: 0;
+    transition: transform 200ms;
+  }
+  .accordion-trigger[aria-expanded="true"] .accordion-chevron {
+    transform: rotate(180deg);
+  }
+
+  .accordion-content {
+    padding-bottom: var(--spacing-g2);
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    /* Default (m) typography */
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-body-regular);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) { font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
+  }
+  .accordion-content[hidden] {
+    display: none;
+  }
+
+  /* --- Size overrides --- */
+  .accordion-s .accordion-trigger {
+    font-size: var(--font-size-f3);
+    line-height: var(--line-height-lt3);
+    @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lt4); }
+  }
+  .accordion-s .accordion-content {
+    font-size: var(--font-size-f3);
+    line-height: var(--line-height-lb3);
+    @media (min-width: 1920px) { font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
+  }
+
+  .accordion-l .accordion-trigger {
+    font-size: var(--font-size-f5);
+    line-height: var(--line-height-lt5);
+    @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lt6); }
+  }
+  .accordion-l .accordion-content {
+    font-size: var(--font-size-f5);
+    line-height: var(--line-height-lb5);
+    @media (min-width: 1920px) { font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
+  }
+
+
+  /* ========================================================================
+     SKELETON
+     Loading placeholder. Size, width, and border-radius are set by the host
+     via inline styles or utility classes. The shimmer sweeps horizontally.
+     ======================================================================== */
+
+  @keyframes mods-skeleton-shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    background-color: rgb(var(--action-secondary-disabled-color));
+    border-radius: var(--shape-s);
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgb(var(--action-neutral-filled-color) / 0.4) 50%,
+      transparent 100%
+    );
+    animation: mods-skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+
+  /* ========================================================================
+     PAGINATION
+     .pagination wraps .pagination-link items. Add a size class to the
+     .pagination wrapper to scale all links together.
+     Active page: add .pagination-link-active.
+     Disabled (prev/next at limits): add .pagination-link-disabled.
+     ======================================================================== */
+
+  .pagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-g0h);
+    flex-wrap: wrap;
+  }
+
+  .pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+    transition: all 150ms;
+    color: rgb(var(--text-color) / var(--text-medium-alpha));
+    font-family: var(--font-label);
+    font-weight: var(--font-weight-label);
+    /* Default (m) size */
+    height: var(--spacing-g6);
+    min-width: var(--spacing-g6);
+    padding-inline: var(--spacing-g1);
+    border-radius: var(--shape-m);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) {
+      height: var(--spacing-g7);
+      min-width: var(--spacing-g7);
+      border-radius: var(--shape-l);
+      font-size: var(--font-size-f5);
+      line-height: var(--line-height-lb5);
+    }
+  }
+  .pagination-link:hover:not(.pagination-link-disabled):not(.pagination-link-active) {
+    background-image: linear-gradient(
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha)),
+      rgb(var(--action-secondary-overlay-color) / var(--action-overlay-hover-global-alpha))
+    );
+    color: rgb(var(--text-color) / var(--text-high-alpha));
+  }
+  .pagination-link:focus-visible {
+    outline: 2px solid rgb(var(--border-focus-color) / var(--border-focus-global-alpha));
+    outline-offset: 2px;
+  }
+  .pagination-link-active {
+    background-color: rgb(var(--action-primary-default-color));
+    color: var(--action-primary-label-color);
+    cursor: default;
+  }
+  .pagination-link-disabled {
+    color: rgb(var(--text-color) / var(--text-disabled-alpha));
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* --- Size classes (on .pagination wrapper) --- */
+  .pagination-xs .pagination-link {
+    height: var(--spacing-g4);
+    min-width: var(--spacing-g4);
+    border-radius: var(--shape-xs);
+    font-size: var(--font-size-f2);
+    line-height: var(--line-height-lb2);
+    @media (min-width: 1920px) { height: var(--spacing-g5); min-width: var(--spacing-g5); border-radius: var(--shape-s); font-size: var(--font-size-f3); line-height: var(--line-height-lb3); }
+  }
+  .pagination-s .pagination-link {
+    height: var(--spacing-g5);
+    min-width: var(--spacing-g5);
+    border-radius: var(--shape-s);
+    font-size: var(--font-size-f3);
+    line-height: var(--line-height-lb3);
+    @media (min-width: 1920px) { height: var(--spacing-g6); min-width: var(--spacing-g6); border-radius: var(--shape-m); font-size: var(--font-size-f4); line-height: var(--line-height-lb4); }
+  }
+  .pagination-m .pagination-link {
+    height: var(--spacing-g6);
+    min-width: var(--spacing-g6);
+    border-radius: var(--shape-m);
+    font-size: var(--font-size-f4);
+    line-height: var(--line-height-lb4);
+    @media (min-width: 1920px) { height: var(--spacing-g7); min-width: var(--spacing-g7); border-radius: var(--shape-l); font-size: var(--font-size-f5); line-height: var(--line-height-lb5); }
+  }
+  .pagination-l .pagination-link {
+    height: var(--spacing-g7);
+    min-width: var(--spacing-g7);
+    border-radius: var(--shape-l);
+    font-size: var(--font-size-f5);
+    line-height: var(--line-height-lb5);
+    @media (min-width: 1920px) { height: var(--spacing-g8); min-width: var(--spacing-g8); border-radius: var(--shape-xl); font-size: var(--font-size-f6); line-height: var(--line-height-lb6); }
+  }
+  .pagination-xl .pagination-link {
+    height: var(--spacing-g8);
+    min-width: var(--spacing-g8);
+    border-radius: var(--shape-xl);
+    font-size: var(--font-size-f6);
+    line-height: var(--line-height-lb6);
+    @media (min-width: 1920px) { height: var(--spacing-g9); min-width: var(--spacing-g9); border-radius: var(--shape-xxl); font-size: var(--font-size-f7); line-height: 36px; }
   }
 
 }
